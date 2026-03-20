@@ -75,6 +75,83 @@ Examples: `feature/user-login`, `fix/api-timeout`, `hotfix/security-patch`
 - Be constructive and specific in feedback
 - Owner addresses all comments before merge
 
+## Pull Request Review Checklist
+
+### PR Author - Before Submitting
+
+- [ ] PR title follows conventional commit format (`type(scope): description`)
+- [ ] PR description explains **what** and **why** (not how)
+- [ ] All tests pass locally
+- [ ] No console.log/printStackTrace left in code
+- [ ] No commented-out code
+- [ ] No debug/development-only code
+- [ ] Sensitive data (credentials, tokens) not included
+- [ ] Related issue linked (`Fixes #123` or `Closes #123`)
+- [ ] Self-reviewed the diff before requesting review
+
+### Reviewer - General Code Review
+
+#### Functionality
+- [ ] Code does what the PR claims
+- [ ] Edge cases handled appropriately
+- [ ] Error handling is in place
+- [ ] No obvious bugs or logic errors
+
+#### Code Quality
+- [ ] Follows project naming conventions
+- [ ] Code is readable and well-organized
+- [ ] Functions are small and focused
+- [ ] No code duplication without justification
+- [ ] Magic numbers/names extracted to constants
+
+#### Security
+- [ ] No sensitive data hardcoded
+- [ ] Input validation present
+- [ ] SQL injection prevented (parameterized queries)
+- [ ] XSS prevention (proper escaping)
+
+#### Performance
+- [ ] No N+1 queries
+- [ ] Large data sets handled efficiently
+- [ ] Proper pagination where applicable
+- [ ] No memory leaks
+
+#### Testing
+- [ ] Unit tests added/updated for new logic
+- [ ] Tests are meaningful and not just coverage
+- [ ] Happy path and error cases covered
+
+### Reviewer - Frontend Specific
+
+- [ ] Components properly typed (TypeScript)
+- [ ] No `any` types without justification
+- [ ] Responsive design works on required breakpoints
+- [ ] Loading/error states implemented
+- [ ] Accessibility: proper ARIA labels, keyboard navigation
+
+### Reviewer - Backend Specific
+
+- [ ] API endpoints follow REST conventions
+- [ ] Proper HTTP status codes used
+- [ ] Request validation in place
+- [ ] DTOs used instead of exposing entities
+- [ ] Transactions used appropriately
+- [ ] Logging is appropriate (info/warn/error)
+- [ ] Database migrations are reversible
+
+### Reviewer - Approval
+
+- [ ] All comments resolved
+- [ ] PR can be merged without conflicts
+- [ ] No breaking changes without discussion
+- [ ] Documentation updated if needed
+
+### After Approval
+
+- [ ] Merge strategy: squash and merge
+- [ ] Delete branch after merge
+- [ ] Verify CI/CD pipeline passes
+
 ## Cross-Team Coordination
 
 - When frontend depends on backend changes:
