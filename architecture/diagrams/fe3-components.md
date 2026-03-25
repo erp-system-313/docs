@@ -1,8 +1,8 @@
-## 1. NavigationShell
+## 1. NavigationLayout
 
 | Component | Purpose |
 |-----------|---------|
-| **NavigationShell** | Root layout container providing consistent navigation structure across all ERP modules. Manages sidebar state and top bar coordination. |
+| **NavigationLayout** | Root layout container providing consistent navigation structure across all ERP modules. Manages sidebar state and top bar coordination. |
 | **Sidebar** | Collapsible navigation panel containing module links and collapse controls. |
 | ↳ NavItems | List of navigation links organized by module access (Inventory, Sales, HR, Admin). |
 | ↳ CollapseButton | Toggles sidebar expanded/collapsed state, persists preference in localStorage. |
@@ -16,7 +16,7 @@
 
 ---
 
-## 2. DashboardWidget
+## 2. DashboardWidgets
 
 | Component | Purpose |
 |-----------|---------|
@@ -151,7 +151,7 @@
 
 ---
 
-## 8. Attendance
+## 7. Attendance
 
 | Component | Purpose |
 |-----------|---------|
@@ -177,7 +177,7 @@
 
 ---
 
-## 9. LeaveRequest
+## 8. LeaveRequest
 
 | Component | Purpose |
 |-----------|---------|
