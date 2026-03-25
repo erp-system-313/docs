@@ -1,0 +1,22 @@
+graph TD
+    NS[NavigationShell]
+    NS --> Sidebar[Sidebar]
+    NS --> TopBar[TopBar]
+
+    Sidebar --> NavItems[NavItems]
+    Sidebar --> CollapseBtn[CollapseButton]
+
+    NavItems --> InventoryLink[InventoryLink]
+    NavItems --> SalesLink[SalesLink]
+    NavItems --> HRLink[HRLink]
+    NavItems --> AdminLink[AdminLink]
+
+    TopBar --> GlobalSearch[GlobalSearch]
+    TopBar --> NotificationBell[NotificationBell]
+    TopBar --> UserMenu[UserProfileMenu]
+
+    UserMenu --> ProfileLink[ProfileLink]
+    UserMenu --> SettingsLink[SettingsLink]
+    UserMenu --> LogoutBtn[LogoutButton]
+
+    NotificationBell --> NotificationDropdown[NotificationList]
