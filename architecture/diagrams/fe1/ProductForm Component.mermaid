@@ -1,0 +1,36 @@
+graph TB
+    subgraph ProductForm
+        A[ProductForm]
+        
+        B[FormContainer]
+        C[Tabs]
+        
+        C --> D[BasicInfoTab]
+        C --> E[PricingTab]
+        C --> F[InventoryTab]
+        C --> G[ImagesTab]
+        
+        D --> H[SKUInput]
+        D --> I[NameInput]
+        D --> J[DescriptionInput]
+        D --> K[CategorySelect]
+        
+        E --> L[UnitPriceInput]
+        E --> M[CostPriceInput]
+        E --> N[TaxRateSelect]
+        
+        F --> O[StockQuantityInput]
+        F --> P[ReorderPointInput]
+        F --> Q[LocationInput]
+        
+        G --> R[ImageUploader]
+        G --> S[ImageGallery]
+        
+        T[FormActions]
+        T --> U[SubmitButton]
+        T --> V[CancelButton]
+        
+        A --> B
+        B --> C
+        A --> T
+    end
