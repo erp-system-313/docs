@@ -1,0 +1,26 @@
+graph TD
+    UM[UserManagement]
+    UM --> Header[PageHeader]
+    UM --> Content[UserManagementContent]
+
+    Header --> Title[Title]
+    Header --> AddUserBtn[AddUserButton]
+
+    Content --> FilterBar[FilterBar]
+    Content --> DataGrid[UsersDataGrid]
+    Content --> Pagination[Pagination]
+
+    FilterBar --> SearchInput[SearchInput]
+    FilterBar --> RoleFilter[RoleDropdown]
+    FilterBar --> StatusFilter[StatusDropdown]
+
+    DataGrid --> UserRow[UserRow]
+    UserRow --> Avatar[UserAvatar]
+    UserRow --> Name[UserName]
+    UserRow --> Email[UserEmail]
+    UserRow --> RoleBadge[RoleBadge]
+    UserRow --> Actions[ActionButtons]
+
+    Actions --> EditBtn[EditButton]
+    Actions --> DeleteBtn[DeleteButton]
+    Actions --> ResetPwdBtn[ResetPasswordButton]

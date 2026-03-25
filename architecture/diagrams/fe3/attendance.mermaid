@@ -1,0 +1,25 @@
+graph TD
+    ATT[Attendance]
+    ATT --> Header[AttendanceHeader]
+    ATT --> CalendarGrid[CalendarGrid]
+
+    Header --> MonthSelector[MonthYearSelector]
+    Header --> TodayBtn[TodayButton]
+    Header --> ViewToggle[DayWeekMonthToggle]
+
+    CalendarGrid --> WeekHeader[WeekDayHeaders]
+    CalendarGrid --> DayCell[DayCell]
+
+    DayCell --> DayNumber[DayNumber]
+    DayCell --> ShiftInfo[ShiftInfo]
+    DayCell --> CheckIn[CheckInTime]
+    DayCell --> CheckOut[CheckOutTime]
+    DayCell --> StatusIcon[AttendanceStatusIcon]
+
+    ATT --> Sidebar[AttendanceSidebar]
+    Sidebar --> SummaryCard[MonthlySummary]
+    Sidebar --> ClockInOut[ClockInOutPanel]
+
+    ClockInOut --> CurrentTime[CurrentTimeDisplay]
+    ClockInOut --> ClockBtn[ClockInButton]
+    ClockInOut --> Location[LocationStatus]
