@@ -1,0 +1,32 @@
+graph TD
+    JE[JournalEntries]
+    JE --> ListView[JournalEntryList]
+    JE --> EntryForm[JournalEntryForm]
+
+    ListView --> SearchFilter[Search & FilterBar]
+    ListView --> EntryGrid[JournalEntryDataGrid]
+    EntryGrid --> RowActions[View/Edit/Reverse]
+
+    EntryForm --> Header[EntryHeader]
+    EntryForm --> LinesGrid[EntryLinesGrid]
+    EntryForm --> Totals[DebitCreditTotals]
+    EntryForm --> Footer[EntryActions]
+
+    Header --> Date[DatePicker]
+    Header --> Description[DescriptionField]
+    Header --> Ref[ReferenceField]
+    Header --> Type[JournalTypeDropdown]
+
+    LinesGrid --> AccountSearch[AccountAutocomplete]
+    LinesGrid --> DebitField[DebitInput]
+    LinesGrid --> CreditField[CreditInput]
+    LinesGrid --> LineDescription[LineDescription]
+    LinesGrid --> AddRow[AddLineButton]
+
+    Totals --> TotalDebit[TotalDebitDisplay]
+    Totals --> TotalCredit[TotalCreditDisplay]
+    Totals --> BalanceWarning[ImbalanceWarning]
+
+    Footer --> SaveDraft[SaveDraft]
+    Footer --> Post[PostButton]
+    Footer --> Reverse[ReverseButton]
