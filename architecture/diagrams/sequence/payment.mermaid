@@ -1,0 +1,30 @@
+sequenceDiagram
+    participant Clerk as Accounting Clerk
+    participant UI as Payment Modal
+    participant InvoiceService as Invoice Service
+    participant PaymentService as Payment Service
+    participant JournalService as Journal Service
+    participant DB as Database
+
+    Clerk->>UI: Open payment modal for invoice #INV-123
+    UI->>InvoiceService: getInvoiceDetails(INV-123)
+    InvoiceService-->>UI: Invoice data (balance due, customer)
+    UI->>Clerk: Display invoice balance
+
+    Clerk->>UI: Enter amount, date, reference, payment method
+    Clerk->>UI: Submit payment
+
+    UI->>PaymentService: recordPayment(invoiceId, amount, date, ref, method)
+    PaymentService->>DB: begin transaction
+    PaymentService->>InvoiceService: applyPayment(invoiceId, amount)
+    InvoiceService->>DB: update invoice balance
+    InvoiceService-->>PaymentService: payment applied
+
+    PaymentService->>JournalService: createJournalEntry(payment details)
+    JournalService->>DB: insert journal entry (debit bank, credit accounts receivable)
+    JournalService-->>PaymentService: journal entry created
+
+    PaymentService->>DB: commit transaction
+    PaymentService-->>UI: success (new payment record)
+
+    UI->>Clerk: Show success message & updated invoice balance
