@@ -1,0 +1,53 @@
+classDiagram
+    class User {
+        +UUID id
+        +String username
+        +String email
+        +String passwordHash
+        +String firstName
+        +String lastName
+        +Boolean isActive
+        +DateTime createdAt
+        +DateTime updatedAt
+        +DateTime lastLoginAt
+        --
+        +login(username, password) Boolean
+        +logout() void
+        +changePassword(oldPassword, newPassword) Boolean
+        +resetPassword(email) Boolean
+        +updateProfile(userData) void
+        +hasPermission(permissionName) Boolean
+        +getRoles() List~Role~
+    }
+
+    class Role {
+        +UUID id
+        +String name
+        +String description
+        +Boolean isSystemRole
+        +DateTime createdAt
+        +DateTime updatedAt
+        --
+        +addPermission(permission) void
+        +removePermission(permission) void
+        +hasPermission(permissionName) Boolean
+        +getPermissions() List~Permission~
+        +assignToUser(userId) void
+        +revokeFromUser(userId) void
+    }
+
+    class Permission {
+        +UUID id
+        +String name
+        +String resource
+        +String action
+        +String description
+        +DateTime createdAt
+        --
+        +canAccess(resource, action) Boolean
+        +getResource() String
+        +getAction() String
+    }
+
+    User "*" -- "*" Role : has
+    Role "*" -- "*" Permission : grants
