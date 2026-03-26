@@ -1,0 +1,39 @@
+sequenceDiagram
+    participant SalesRep as Sales Rep
+    participant UI
+    participant SalesController
+    participant SalesService
+    participant InvoiceService
+    participant PaymentService
+
+    SalesRep->>UI: Create sales order
+    UI->>SalesController: POST /sales-orders
+    SalesController->>SalesService: createOrder(orderData)
+    SalesService-->>SalesController: Order created
+    SalesController-->>UI: 201 Created
+    UI-->>SalesRep: Order created
+
+    SalesRep->>UI: Confirm order
+    UI->>SalesController: PATCH /sales-orders/{id}/confirm
+    SalesController->>SalesService: confirmOrder(id)
+    SalesService->>InvoiceService: generateInvoice(order)
+    InvoiceService-->>SalesService: Invoice generated
+    SalesService-->>SalesController: Order confirmed
+    SalesController-->>UI: 200 OK
+    UI-->>SalesRep: Order confirmed
+
+    SalesRep->>UI: Ship order
+    UI->>SalesController: PATCH /sales-orders/{id}/ship
+    SalesController->>SalesService: shipOrder(id)
+    SalesService-->>SalesController: Order shipped
+    SalesController-->>UI: 200 OK
+    UI-->>SalesRep: Order shipped
+
+    SalesRep->>UI: Record payment
+    UI->>PaymentController: POST /payments
+    PaymentController->>PaymentService: recordPayment(invoiceId, amount)
+    PaymentService->>InvoiceService: markAsPaid(invoiceId)
+    InvoiceService-->>PaymentService: Invoice updated
+    PaymentService-->>PaymentController: Payment recorded
+    PaymentController-->>UI: 201 Created
+    UI-->>SalesRep: Payment recorded

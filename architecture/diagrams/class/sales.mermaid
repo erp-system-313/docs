@@ -1,0 +1,34 @@
+classDiagram
+    class Customer {
+        +Long id
+        +String name
+        +String email
+        +String phone
+        +Address address
+        +create()
+        +update()
+    }
+
+    class SalesOrder {
+        +Long id
+        +LocalDateTime orderDate
+        +String status
+        +BigDecimal totalAmount
+        +Customer customer
+        +List~SalesOrderLine~ lines
+        +confirm()
+        +ship()
+        +cancel()
+    }
+
+    class SalesOrderLine {
+        +Long id
+        +Integer quantity
+        +BigDecimal unitPrice
+        +BigDecimal subtotal
+        +Product product
+    }
+
+    Customer "1" --> "0..*" SalesOrder : places
+    SalesOrder "1" --> "1..*" SalesOrderLine : contains
+    SalesOrderLine "1" --> "1" Product : references

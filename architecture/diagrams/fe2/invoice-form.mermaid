@@ -1,0 +1,29 @@
+graph TD
+    IF[InvoiceForm]
+    IF --> Header[InvoiceHeader]
+    IF --> LineGrid[LineItemsGrid]
+    IF --> Totals[TotalsAndTaxBreakdown]
+    IF --> Footer[FooterActions]
+    IF --> Preview[PDFPreviewPanel]
+
+    Header --> InvoiceNumber[NumberField]
+    Header --> Dates[DatePickers]
+    Header --> CustomerPicker[CustomerLookup]
+    Header --> Reference[OrderReference]
+
+    LineGrid --> ProductSearch[ProductAutocomplete]
+    LineGrid --> GLAccount[GLAccountPicker]
+    LineGrid --> TaxCode[TaxCodeSelector]
+    LineGrid --> LineActions[Add/RemoveRow]
+
+    Totals --> Subtotal[Subtotal]
+    Totals --> TaxLines[TaxLinesList]
+    Totals --> GrandTotal[GrandTotal]
+
+    Footer --> Save[SaveButton]
+    Footer --> Submit[Submit/Post]
+    Footer --> Print[Print]
+    Footer --> Send[SendByEmail]
+    Footer --> RecordPayment[RecordPaymentButton]
+
+    Preview --> PDFViewer[EmbeddedPDFViewer]

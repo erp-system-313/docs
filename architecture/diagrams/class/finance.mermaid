@@ -1,0 +1,36 @@
+classDiagram
+    class Invoice {
+        +Long id
+        +LocalDateTime issueDate
+        +LocalDateTime dueDate
+        +BigDecimal amount
+        +String status
+        +SalesOrder salesOrder
+        +void markAsPaid()
+    }
+
+    class Payment {
+        +Long id
+        +LocalDateTime paymentDate
+        +BigDecimal amount
+        +String method
+        +Invoice invoice
+    }
+
+    class Account {
+        +Long id
+        +String name
+        +String type
+        +BigDecimal balance
+    }
+
+    class JournalEntry {
+        +Long id
+        +LocalDateTime entryDate
+        +String description
+        +List~JournalLine~ lines
+    }
+
+    Invoice "1" --> "0..1" Payment : settledBy
+    Payment "1" --> "1" Account : affects
+    JournalEntry "1" --> "1..*" JournalLine : contains
