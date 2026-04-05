@@ -47,18 +47,7 @@
 
 ---
 
-## Shared Deliverables (All Pairs Contribute)
-
-| Diagram Type | Lead | Contributors | File Location |
-|--------------|------|--------------|---------------|
-| **Master Use Case** | Pair C | All pairs add their actors/use cases | `diagrams/usecase/system-overview.md` |
-| **ERD** | BE1 | All backend devs define their entities | `diagrams/class/entity-relationship.md` |
-| **System Sequence** | Pair B | Cross-module flows documented | `diagrams/sequence/system-flows.md` |
-| **Activity** | Pair A | Order fulfillment, leave approval workflows | `diagrams/activity/workflows.md` |
-
----
-
-## Deliverable Summary by Pair
+## File Structure
 
 ### Pair A (FE1 + BE1)
 - 2 Use Case diagrams
@@ -79,11 +68,12 @@
 - 2 Sequence diagrams
 - 2 Class diagrams
 - 3 Component diagrams
-- Leads: Master Use Case, System Sequence, Activity
 
 ---
 
-## File Structure
+## Status: COMPLETE ✅
+
+All 01 deliverables have been created.
 
 ```
 docs/architecture/diagrams/
