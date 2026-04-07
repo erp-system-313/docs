@@ -1,0 +1,22 @@
+sequenceDiagram
+    participant WarehouseStaff as Warehouse Staff
+    participant WebApp as Web Application
+    participant POAPI as Purchase Order API
+    participant POSvc as Purchase Order Service
+    participant InventorySvc as Inventory Service
+    participant DB as Database
+
+    WarehouseStaff->>WebApp: Receive Shipment against PO
+    WebApp->>POAPI: POST /api/purchase-orders/{poId}/receive
+    POAPI->>POSvc: receiveOrder(poId, receivedItems)
+    POSvc->>DB: fetchPurchaseOrder(poId)
+    DB-->>POSvc: purchaseOrder
+    loop For each received item
+        POSvc->>InventorySvc: addStock(productId, quantity)
+        InventorySvc->>DB: updateStockLevel(productId)
+        POSvc->>DB: updatePOLineReceivedQty(lineId, quantity)
+    end
+    POSvc->>DB: updatePOStatus(poId, "COMPLETED")
+    POSvc-->>POAPI: orderReceived
+    POAPI-->>WebApp: 200 OK
+    WebApp-->>WarehouseStaff: Stock Updated
