@@ -1,0 +1,26 @@
+sequenceDiagram
+    participant User
+    participant WebApp as Web Application
+    participant AuthAPI as Auth API
+    participant AuthSvc as Auth Service
+    participant UserSvc as User Service
+    participant DB as Database
+
+    User->>WebApp: Enter Credentials (email/password)
+    WebApp->>AuthAPI: POST /api/auth/login
+    AuthAPI->>AuthSvc: authenticate(credentials)
+    AuthSvc->>UserSvc: findUserByEmail(email)
+    UserSvc->>DB: SELECT * FROM users WHERE email = ?
+    DB-->>UserSvc: userData (incl. passwordHash)
+    UserSvc-->>AuthSvc: user
+    AuthSvc->>AuthSvc: verifyPassword(password, user.passwordHash)
+    alt Valid Credentials
+        AuthSvc->>AuthSvc: generateJWT(user.id, user.role)
+        AuthSvc-->>AuthAPI: jwtToken
+        AuthAPI-->>WebApp: 200 OK (jwtToken)
+        WebApp-->>User: Login Successful
+    else Invalid Credentials
+        AuthSvc-->>AuthAPI: authenticationFailed
+        AuthAPI-->>WebApp: 401 Unauthorized
+        WebApp-->>User: Invalid Email or Password
+    end

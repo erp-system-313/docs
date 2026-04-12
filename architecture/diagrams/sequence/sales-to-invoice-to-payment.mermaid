@@ -1,0 +1,41 @@
+sequenceDiagram
+    participant SalesRep as Sales Rep
+    participant WebApp as Web Application
+    participant OrderAPI as Order API
+    participant OrderSvc as Order Service
+    participant InventorySvc as Inventory Service
+    participant InvoiceSvc as Invoice Service
+    participant AccountingSvc as Accounting Service
+    participant DB as Database
+
+    SalesRep->>WebApp: Create Sales Order
+    WebApp->>OrderAPI: POST /api/orders
+    OrderAPI->>OrderSvc: createOrder(orderData)
+    OrderSvc->>InventorySvc: checkStock(productIds)
+    InventorySvc-->>OrderSvc: stockAvailable
+    OrderSvc->>DB: saveOrder(order)
+    DB-->>OrderSvc: orderSaved
+    OrderSvc-->>OrderAPI: orderCreated
+    OrderAPI-->>WebApp: 201 Created
+    WebApp-->>SalesRep: Order Confirmed
+
+    SalesRep->>WebApp: Confirm Order (e.g., "Ship")
+    WebApp->>OrderAPI: POST /api/orders/{id}/confirm
+    OrderAPI->>OrderSvc: confirmOrder(orderId)
+    OrderSvc->>InventorySvc: reserveStock(orderLines)
+    InventorySvc-->>OrderSvc: stockReserved
+    OrderSvc->>InvoiceSvc: generateInvoice(order)
+    InvoiceSvc->>DB: saveInvoice(invoice)
+    InvoiceSvc-->>OrderSvc: invoiceGenerated
+    OrderSvc-->>OrderAPI: orderConfirmed
+    OrderAPI-->>WebApp: 200 OK
+    WebApp-->>SalesRep: Order Shipped, Invoice Ready
+
+    SalesRep->>WebApp: Record Payment
+    WebApp->>PaymentAPI: POST /api/payments
+    PaymentAPI->>AccountingSvc: recordPayment(invoiceId, amount)
+    AccountingSvc->>DB: updateInvoiceStatus(invoiceId, "PAID")
+    AccountingSvc->>DB: createJournalEntry(payment)
+    AccountingSvc-->>PaymentAPI: paymentRecorded
+    PaymentAPI-->>WebApp: 201 Created
+    WebApp-->>SalesRep: Payment Confirmed

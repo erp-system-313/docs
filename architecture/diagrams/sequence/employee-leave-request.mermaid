@@ -1,0 +1,31 @@
+sequenceDiagram
+    participant Employee as Employee
+    participant WebApp as Web Application
+    participant LeaveAPI as Leave API
+    participant LeaveSvc as Leave Service
+    participant EmployeeSvc as Employee Service
+    participant NotificationSvc as Notification Service
+    participant DB as Database
+    participant Manager as Manager
+
+    Employee->>WebApp: Submit Leave Request
+    WebApp->>LeaveAPI: POST /api/leave-requests
+    LeaveAPI->>LeaveSvc: createLeaveRequest(employeeId, dates, type)
+    LeaveSvc->>EmployeeSvc: getManager(employeeId)
+    EmployeeSvc-->>LeaveSvc: managerId
+    LeaveSvc->>DB: saveLeaveRequest(leaveRequest)
+    DB-->>LeaveSvc: leaveRequestSaved
+    LeaveSvc->>NotificationSvc: notifyManager(managerId, "New Leave Request")
+    LeaveSvc-->>LeaveAPI: requestCreated
+    LeaveAPI-->>WebApp: 201 Created
+    WebApp-->>Employee: Leave Request Submitted
+
+    Manager->>WebApp: Approve Leave Request
+    WebApp->>LeaveAPI: PATCH /api/leave-requests/{id}/approve
+    LeaveAPI->>LeaveSvc: approveLeaveRequest(requestId)
+    LeaveSvc->>DB: updateLeaveRequestStatus(requestId, "APPROVED")
+    DB-->>LeaveSvc: statusUpdated
+    LeaveSvc->>NotificationSvc: notifyEmployee(employeeId, "Leave Approved")
+    LeaveSvc-->>LeaveAPI: requestApproved
+    LeaveAPI-->>WebApp: 200 OK
+    WebApp-->>Manager: Leave Approved
