@@ -1,0 +1,11 @@
+flowchart TD
+    Start([Start]) --> A[Employee Submit]
+    A --> B[Manager Review]
+    B --> C{Approved?}
+    
+    C -->|Yes| D[Update Leave Balance]
+    D --> E[Notify Employee]
+    E --> End1([End])
+    
+    C -->|No - Rejected?| F[Notify Employee with Reason]
+    F --> End2([End])
