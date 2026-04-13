@@ -1,0 +1,11 @@
+flowchart TD
+    Start([Start]) --> A[Create PR]
+    A --> B[Manager Approval]
+    B --> C{Approved?}
+    
+    C -->|Yes| D[Create PO]
+    D --> E[Send to Supplier]
+    E --> End1([End])
+    
+    C -->|No - Rejected?| F[Notify Requester]
+    F --> End2([End])
