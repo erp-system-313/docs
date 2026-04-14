@@ -109,7 +109,15 @@ flowchart TD
     aUUpAt([updated_at]):::attr
 
     %% Product Attributes
-    eProduct --- aProId([id]):::attr
+    eProduct([id]):::attr
+    aProSku([sku]):::attr
+    aProName([name]):::attr
+    aProCatId([category_id]):::attr
+    aProUnitPrice([unit_price]):::attr
+    aProCostPrice([cost_price]):::attr
+    aProReorderLvl([reorder_level]):::attr
+    aProImageUrl([image_url]):::attr
+    aProIsActive([is_active]):::attr
 
     %% ===== CONNECTIONS =====
     eCustomer --- aCid
