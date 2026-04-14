@@ -1,0 +1,15 @@
+flowchart TD
+    Start([Start]) --> A[Receive Order]
+    A --> B[Validate Stock]
+    B --> C{Stock OK?}
+    
+    C -->|Yes| D[Create Invoice]
+    D --> E[Ship Order]
+    E --> F[Notify Customer]
+    F --> End1([End])
+    
+    C -->|No| G{Stock Low?}
+    G -->|Yes| H[Alert Inventory]
+    H --> End2([End])
+    
+    G -->|No| End3([End])
