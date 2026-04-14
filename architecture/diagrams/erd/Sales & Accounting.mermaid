@@ -1,8 +1,7 @@
 flowchart TD
-    classDef highlight fill:#d3d3d3,stroke:#ff0000,stroke-width:2px,stroke-dasharray:5 5
-    classDef pk font-weight:bold,fill:#f0f0f0
     classDef entity fill:#e1f5fe,stroke:#01579b,stroke-width:2px
     classDef attr fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,shape:oval
+    classDef rel fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px,shape:rhombus
 
     %% ===== ENTITIES =====
     eCustomer[CUSTOMER]:::entity
@@ -13,19 +12,19 @@ flowchart TD
     eJournalEntry[JOURNAL ENTRY]:::entity
     eJournalEntryLine[JOURNAL ENTRY LINE]:::entity
     eAccount[ACCOUNT]:::entity
-    eUser[USER - BE3]:::highlight
-    eProduct[PRODUCT - BE1]:::highlight
+    eUser[USER - BE3]:::entity
+    eProduct[PRODUCT - BE1]:::entity
 
-    %% ===== RELATIONSHIPS =====
-    rPlaces[places]
-    rContains[contains]
-    rProductFor[product for]:::highlight
-    rGenerates[generates]
-    rSettledBy[settled by]
-    rRecordsTo[records to]
-    rAffects[affects]
-    rSubaccountOf[subaccount of]
-    rCreatedBy[created by]:::highlight
+    %% ===== RELATIONSHIPS (diamond shape) =====
+    rPlaces[/places\]:::rel
+    rContains[/contains\]:::rel
+    rProductFor[/product for\]:::rel
+    rGenerates[/generates\]:::rel
+    rSettledBy[/settled by\]:::rel
+    rRecordsTo[/records to\]:::rel
+    rAffects[/affects\]:::rel
+    rSubaccountOf[/subaccount of\]:::rel
+    rCreatedBy[/created by\]:::rel
 
     %% ===== OVAL ATTRIBUTES =====
     %% Customer Attributes
@@ -108,7 +107,7 @@ flowchart TD
     aUCAt((created_at)):::attr
     aUUpAt((updated_at)):::attr
 
-    %% Product Attributes (simplified for this view)
+    %% Product Attributes
     aProId((id)):::attr
 
     %% ===== ATTRIBUTE CONNECTIONS =====
@@ -185,7 +184,7 @@ flowchart TD
 
     eProduct --- aProId
 
-    %% ===== RELATIONSHIP CONNECTIONS (orthogonal) =====
+    %% ===== ORTHOGONAL RELATIONSHIP CONNECTIONS =====
     eCustomer -->|1| rPlaces
     rPlaces -->|N| eSalesOrder
 
