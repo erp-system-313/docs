@@ -202,6 +202,7 @@ flowchart TD
     eProduct --- aProIsActive
 
     %% ===== ORTHOGONAL RELATIONSHIP CONNECTIONS =====
+    %% Sales Relationships
     eCustomer -->|1| rPlaces
     rPlaces -->|N| eSalesOrder
 
@@ -217,6 +218,7 @@ flowchart TD
     eSalesOrderLine -->|N| rProductFor
     rProductFor -->|1| eProduct
 
+    %% Accounting Relationships
     eJournalEntry -->|1| rRecordsTo
     rRecordsTo -->|N| eJournalEntryLine
 
