@@ -109,7 +109,7 @@ flowchart TD
     aUUpAt([updated_at]):::attr
 
     %% Product Attributes
-    eProduct([id]):::attr
+    aProduct([id]):::attr
     aProSku([sku]):::attr
     aProName([name]):::attr
     aProCatId([category_id]):::attr
@@ -192,6 +192,14 @@ flowchart TD
     eUser --- aUUpAt
 
     eProduct --- aProId
+    eProduct --- aProSku
+    eProduct --- aProName
+    eProduct --- aProCatId
+    eProduct --- aProUnitPrice
+    eProduct --- aProCostPrice
+    eProduct --- aProReorderLvl
+    eProduct --- aProImageUrl
+    eProduct --- aProIsActive
 
     %% ===== ORTHOGONAL RELATIONSHIP CONNECTIONS =====
     eCustomer -->|1| rPlaces
