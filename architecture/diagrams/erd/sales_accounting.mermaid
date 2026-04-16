@@ -1,0 +1,232 @@
+flowchart TD
+    classDef entity fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000
+    classDef attr fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,color:#000
+    classDef rel fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px,color:#000
+
+    %% ===== ENTITIES =====
+    eCustomer[CUSTOMER]:::entity
+    eSalesOrder[SALES ORDER]:::entity
+    eSalesOrderLine[SALES ORDER LINE]:::entity
+    eInvoice[INVOICE]:::entity
+    ePayment[PAYMENT]:::entity
+    eJournalEntry[JOURNAL ENTRY]:::entity
+    eJournalEntryLine[JOURNAL ENTRY LINE]:::entity
+    eAccount[ACCOUNT]:::entity
+    eUser[USER - BE3]:::entity
+    eProduct[PRODUCT - BE1]:::entity
+
+    %% ===== RELATIONSHIPS (Diamonds) =====
+    rPlaces{places}:::rel
+    rContains{contains}:::rel
+    rProductFor{product for}:::rel
+    rGenerates{generates}:::rel
+    rSettledBy{settled by}:::rel
+    rRecordsTo{records to}:::rel
+    rAffects{affects}:::rel
+    rSubaccountOf{subaccount of}:::rel
+    rCreatedBy{created by}:::rel
+
+    %% ===== ATTRIBUTES (Ovals) =====
+
+    %% Customer Attributes
+    aCid([id]):::attr
+    aCname([name]):::attr
+    aCemail([email]):::attr
+    aCphone([phone]):::attr
+    aCaddress([address]):::attr
+    aCcLimit([credit_limit]):::attr
+    aCpTerms([payment_terms]):::attr
+    aCcActive([is_active]):::attr
+
+    %% Sales Order Attributes
+    aSOid([id]):::attr
+    aSOoNum([order_number]):::attr
+    aSOcId([customer_id]):::attr
+    aSOdate([date]):::attr
+    aSOstatus([status]):::attr
+    aSOta([total_amount]):::attr
+    aSOnotes([notes]):::attr
+
+    %% Sales Order Line Attributes
+    aSOLid([id]):::attr
+    aSOLoid([order_id]):::attr
+    aSOLpId([product_id]):::attr
+    aSOLqty([quantity]):::attr
+    aSOLprice([unit_price]):::attr
+    aSOLlineT([line_total]):::attr
+
+    %% Invoice Attributes
+    aIid([id]):::attr
+    aInum([invoice_number]):::attr
+    aIsoid([sales_order_id]):::attr
+    aIdate([date]):::attr
+    aIdDue([due_date]):::attr
+    aIstatus([status]):::attr
+    aItotal([total]):::attr
+    aItax([tax_amount]):::attr
+
+    %% Payment Attributes
+    aPid([id]):::attr
+    aPinvId([invoice_id]):::attr
+    aPamount([amount]):::attr
+    aPdate([date]):::attr
+    aPmethod([method]):::attr
+    aPref([reference]):::attr
+    aPnotes([notes]):::attr
+
+    %% Journal Entry Attributes
+    aJEid([id]):::attr
+    aJEdate([date]):::attr
+    aJEdesc([description]):::attr
+    aJEref([reference]):::attr
+    aJEstatus([status]):::attr
+    aJEcBy([created_by]):::attr
+    aJEcAt([created_at]):::attr
+
+    %% Journal Entry Line Attributes
+    aJELid([id]):::attr
+    aJELeid([entry_id]):::attr
+    aJELaid([account_id]):::attr
+    aJELdeb([debit]):::attr
+    aJELcred([credit]):::attr
+
+    %% Account Attributes
+    aAid([id]):::attr
+    aAcode([code]):::attr
+    aAname([name]):::attr
+    aAtype([type]):::attr
+    aAparent([parent_id]):::attr
+    aAbal([balance]):::attr
+
+    %% User Attributes
+    aUId([id]):::attr
+    aUEmail([email]):::attr
+    aUPassword([password_hash]):::attr
+    aURoleId([role_id]):::attr
+    aUEmpId([employee_id]):::attr
+    aUActive([is_active]):::attr
+    aUCAt([created_at]):::attr
+    aUUpAt([updated_at]):::attr
+
+    %% Product Attributes
+    aProID([id]):::attr
+    aProSku([sku]):::attr
+    aProName([name]):::attr
+    aProCatId([category_id]):::attr
+    aProUnitPrice([unit_price]):::attr
+    aProCostPrice([cost_price]):::attr
+    aProReorderLvl([reorder_level]):::attr
+    aProImageUrl([image_url]):::attr
+    aProIsActive([is_active]):::attr
+
+    %% ===== CONNECTIONS =====
+    eCustomer --- aCid
+    eCustomer --- aCname
+    eCustomer --- aCemail
+    eCustomer --- aCphone
+    eCustomer --- aCaddress
+    eCustomer --- aCcLimit
+    eCustomer --- aCpTerms
+    eCustomer --- aCcActive
+
+    eSalesOrder --- aSOid
+    eSalesOrder --- aSOoNum
+    eSalesOrder --- aSOcId
+    eSalesOrder --- aSOdate
+    eSalesOrder --- aSOstatus
+    eSalesOrder --- aSOta
+    eSalesOrder --- aSOnotes
+
+    eSalesOrderLine --- aSOLid
+    eSalesOrderLine --- aSOLoid
+    eSalesOrderLine --- aSOLpId
+    eSalesOrderLine --- aSOLqty
+    eSalesOrderLine --- aSOLprice
+    eSalesOrderLine --- aSOLlineT
+
+    eInvoice --- aIid
+    eInvoice --- aInum
+    eInvoice --- aIsoid
+    eInvoice --- aIdate
+    eInvoice --- aIdDue
+    eInvoice --- aIstatus
+    eInvoice --- aItotal
+    eInvoice --- aItax
+
+    ePayment --- aPid
+    ePayment --- aPinvId
+    ePayment --- aPamount
+    ePayment --- aPdate
+    ePayment --- aPmethod
+    ePayment --- aPref
+    ePayment --- aPnotes
+
+    eJournalEntry --- aJEid
+    eJournalEntry --- aJEdate
+    eJournalEntry --- aJEdesc
+    eJournalEntry --- aJEref
+    eJournalEntry --- aJEstatus
+    eJournalEntry --- aJEcBy
+    eJournalEntry --- aJEcAt
+
+    eJournalEntryLine --- aJELid
+    eJournalEntryLine --- aJELeid
+    eJournalEntryLine --- aJELaid
+    eJournalEntryLine --- aJELdeb
+    eJournalEntryLine --- aJELcred
+
+    eAccount --- aAid
+    eAccount --- aAcode
+    eAccount --- aAname
+    eAccount --- aAtype
+    eAccount --- aAparent
+    eAccount --- aAbal
+
+    eUser --- aUId
+    eUser --- aUEmail
+    eUser --- aUPassword
+    eUser --- aURoleId
+    eUser --- aUEmpId
+    eUser --- aUActive
+    eUser --- aUCAt
+    eUser --- aUUpAt
+
+    eProduct --- aProID
+    eProduct --- aProSku
+    eProduct --- aProName
+    eProduct --- aProCatId
+    eProduct --- aProUnitPrice
+    eProduct --- aProCostPrice
+    eProduct --- aProReorderLvl
+    eProduct --- aProImageUrl
+    eProduct --- aProIsActive
+
+    %% ===== ORTHOGONAL RELATIONSHIP CONNECTIONS =====
+    %% Sales Relationships
+    eCustomer -->|1| rPlaces
+    rPlaces -->|N| eSalesOrder
+
+    eSalesOrder -->|1| rContains
+    rContains -->|N| eSalesOrderLine
+
+    eSalesOrder -->|1| rGenerates
+    rGenerates -->|N| eInvoice
+
+    eInvoice -->|1| rSettledBy
+    rSettledBy -->|N| ePayment
+
+    eSalesOrderLine -->|N| rProductFor
+    rProductFor -->|1| eProduct
+
+    %% Accounting Relationships
+    eJournalEntry -->|1| rRecordsTo
+    rRecordsTo -->|N| eJournalEntryLine
+
+    eJournalEntryLine -->|N| rAffects
+    rAffects -->|1| eAccount
+
+    eAccount -->|1| rSubaccountOf
+    rSubaccountOf -->|N| eAccount
+
+    eUser -->|1| rCreatedBy
+    rCreatedBy -->|N| eJournalEntry
