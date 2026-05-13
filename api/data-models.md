@@ -348,6 +348,127 @@ This document defines all database models with their fields, types, and constrai
 
 ---
 
+---
+
+## Project
+
+| Field      | Type          | Constraints         | Description                                     |
+| ---------- | ------------- | ------------------- | ----------------------------------------------- |
+| id         | Long          | PK, Auto-increment  | Primary key                                     |
+| name       | String(255)   | NOT NULL            | Project name                                    |
+| customerId | Long          | FK → Customer, NULL | Customer                                        |
+| dateStart  | Date          | NULL                | Start date                                      |
+| dateEnd    | Date          | NULL                | End date                                        |
+| budget     | Decimal(15,2) | NULL                | Budget                                          |
+| state      | Enum          | DEFAULT PLANNING    | PLANNING, ACTIVE, ON_HOLD, COMPLETED, CANCELLED |
+| createdAt  | Timestamp     | NOT NULL            | Creation time                                   |
+| updatedAt  | Timestamp     | NULL                | Last update                                     |
+
+---
+
+## Task
+
+| Field          | Type         | Constraints            | Description     |
+| -------------- | ------------ | ---------------------- | --------------- |
+| id             | Long         | PK, Auto-increment     | Primary key     |
+| projectId      | Long         | FK → Project, NOT NULL | Project         |
+| name           | String(255)  | NOT NULL               | Task name       |
+| description    | Text         | NULL                   | Description     |
+| assignedTo     | Long         | FK → Employee, NULL    | Assignee        |
+| stageId        | Long         | FK → TaskStage, NULL   | Stage           |
+| dueDate        | Date         | NULL                   | Due date        |
+| estimatedHours | Decimal(8,2) | NULL                   | Estimated hours |
+| actualHours    | Decimal(8,2) | NULL                   | Actual hours    |
+| createdAt      | Timestamp    | NOT NULL               | Creation time   |
+| updatedAt      | Timestamp    | NULL                   | Last update     |
+
+---
+
+## TaskStage
+
+| Field     | Type        | Constraints            | Description   |
+| --------- | ----------- | ---------------------- | ------------- |
+| id        | Long        | PK, Auto-increment     | Primary key   |
+| projectId | Long        | FK → Project, NOT NULL | Project       |
+| name      | String(100) | NOT NULL               | Stage name    |
+| sequence  | Integer     | DEFAULT 0              | Display order |
+| isDefault | Boolean     | DEFAULT false          | Default stage |
+
+---
+
+## Lead (Planned — CRM)
+
+| Field      | Type        | Constraints        | Description                                |
+| ---------- | ----------- | ------------------ | ------------------------------------------ |
+| id         | Long        | PK, Auto-increment | Primary key                                |
+| name       | String(255) | NOT NULL           | Contact name                               |
+| email      | String(255) | NULL               | Email                                      |
+| phone      | String(20)  | NULL               | Phone                                      |
+| company    | String(255) | NULL               | Company name                               |
+| source     | String(50)  | NULL               | WEBSITE, REFERRAL, COLD_CALL, etc          |
+| status     | Enum        | DEFAULT NEW        | NEW, CONTACTED, QUALIFIED, CONVERTED, LOST |
+| assignedTo | Long        | FK → User, NULL    | Assigned user                              |
+| notes      | Text        | NULL               | Notes                                      |
+| createdAt  | Timestamp   | NOT NULL           | Creation time                              |
+| updatedAt  | Timestamp   | NOT NULL           | Last update                                |
+
+---
+
+## Opportunity (Planned — CRM)
+
+| Field       | Type          | Constraints                  | Description       |
+| ----------- | ------------- | ---------------------------- | ----------------- |
+| id          | Long          | PK, Auto-increment           | Primary key       |
+| leadId      | Long          | FK → Lead, NULL              | Source lead       |
+| customerId  | Long          | FK → Customer, NOT NULL      | Customer          |
+| stageId     | Long          | FK → PipelineStage, NOT NULL | Pipeline stage    |
+| revenue     | Decimal(15,2) | DEFAULT 0                    | Expected revenue  |
+| probability | Integer       | DEFAULT 0                    | Win probability % |
+| closeDate   | Date          | NULL                         | Expected close    |
+| createdAt   | Timestamp     | NOT NULL                     | Creation time     |
+| updatedAt   | Timestamp     | NOT NULL                     | Last update       |
+
+---
+
+## PipelineStage (Planned — CRM)
+
+| Field     | Type        | Constraints        | Description   |
+| --------- | ----------- | ------------------ | ------------- |
+| id        | Long        | PK, Auto-increment | Primary key   |
+| name      | String(100) | NOT NULL           | Stage name    |
+| sequence  | Integer     | NOT NULL           | Display order |
+| createdAt | Timestamp   | NOT NULL           | Creation time |
+
+---
+
+## Ticket (Planned — Helpdesk)
+
+| Field       | Type        | Constraints        | Description                         |
+| ----------- | ----------- | ------------------ | ----------------------------------- |
+| id          | Long        | PK, Auto-increment | Primary key                         |
+| title       | String(255) | NOT NULL           | Ticket title                        |
+| description | Text        | NOT NULL           | Issue description                   |
+| customerId  | Long        | FK → Customer      | Customer                            |
+| assignedTo  | Long        | FK → User, NULL    | Assigned agent                      |
+| priority    | Enum        | DEFAULT MEDIUM     | LOW, MEDIUM, HIGH, CRITICAL         |
+| status      | Enum        | DEFAULT OPEN       | OPEN, IN_PROGRESS, RESOLVED, CLOSED |
+| createdAt   | Timestamp   | NOT NULL           | Creation time                       |
+| updatedAt   | Timestamp   | NOT NULL           | Last update                         |
+
+---
+
+## TicketComment (Planned — Helpdesk)
+
+| Field     | Type      | Constraints        | Description   |
+| --------- | --------- | ------------------ | ------------- |
+| id        | Long      | PK, Auto-increment | Primary key   |
+| ticketId  | Long      | FK → Ticket        | Ticket        |
+| message   | Text      | NOT NULL           | Comment body  |
+| authorId  | Long      | FK → User          | Author        |
+| createdAt | Timestamp | NOT NULL           | Creation time |
+
+---
+
 ## Enums
 
 ### OrderStatus
@@ -408,4 +529,28 @@ IN, OUT, ADJUSTMENT
 
 ```
 CASH, CARD, BANK_TRANSFER, CHEQUE
+```
+
+### ProjectState
+
+```
+PLANNING, ACTIVE, ON_HOLD, COMPLETED, CANCELLED
+```
+
+### LeadStatus
+
+```
+NEW, CONTACTED, QUALIFIED, CONVERTED, LOST
+```
+
+### TicketPriority
+
+```
+LOW, MEDIUM, HIGH, CRITICAL
+```
+
+### TicketStatus
+
+```
+OPEN, IN_PROGRESS, RESOLVED, CLOSED
 ```

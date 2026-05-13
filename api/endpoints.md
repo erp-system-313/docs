@@ -910,6 +910,267 @@ Get current user's leave balances.
 
 ---
 
+## Project Management Module
+
+### GET /projects
+
+Get all projects.
+
+**Query Parameters:**
+
+- `page`, `size`, `sort`
+- `state` (PLANNING, ACTIVE, ON_HOLD, COMPLETED, CANCELLED)
+- `search` (search by name)
+
+**Response:** `200 OK` - Paginated projects
+
+### GET /projects/{id}
+
+Get project details.
+
+**Response:** `200 OK`
+
+### POST /projects
+
+Create project.
+
+**Request:**
+
+```json
+{
+  "name": "New Website",
+  "customerId": 1,
+  "dateStart": "2026-04-01",
+  "dateEnd": "2026-06-30",
+  "budget": 50000.0
+}
+```
+
+**Response:** `201 Created`
+
+### PATCH /projects/{id}/state
+
+Update project state.
+
+**Request:**
+
+```json
+"ACTIVE"
+```
+
+**Response:** `200 OK`
+
+### DELETE /projects/{id}
+
+Delete project.
+
+**Response:** `204 No Content`
+
+### GET /projects/{id}/stages
+
+Get task stages for a project.
+
+**Response:** `200 OK` - List of stages
+
+### GET /projects/{id}/tasks
+
+Get tasks for a project.
+
+**Response:** `200 OK` - List of tasks
+
+### POST /projects/{id}/tasks
+
+Create task in project.
+
+**Request:**
+
+```json
+{
+  "name": "Design homepage",
+  "description": "Create wireframes and mockups",
+  "assignedTo": 1,
+  "stageId": 1,
+  "dueDate": "2026-04-15",
+  "estimatedHours": 20.0
+}
+```
+
+**Response:** `201 Created`
+
+### GET /projects/{id}/gantt
+
+Get Gantt chart data.
+
+**Response:** `200 OK` - List of tasks with stage/dates
+
+### PUT /tasks/{id}
+
+Update task.
+
+**Request:**
+
+```json
+{
+  "name": "Updated task name",
+  "stageId": 2,
+  "actualHours": 18.5
+}
+```
+
+**Response:** `200 OK`
+
+---
+
+## CRM Module (Planned)
+
+### GET /crm/dashboard
+
+Get CRM dashboard stats.
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "data": {
+    "totalLeads": 150,
+    "conversionRate": 0.25,
+    "pipelineValue": 500000,
+    "wonThisMonth": 75000
+  }
+}
+```
+
+### GET /crm/leads
+
+Get all leads.
+
+**Query Parameters:**
+
+- `page`, `size`, `sort`
+- `status` (NEW, CONTACTED, QUALIFIED, CONVERTED, LOST)
+- `search`
+
+**Response:** `200 OK` - Paginated leads
+
+### GET /crm/leads/{id}
+
+Get lead details.
+
+### POST /crm/leads
+
+Create lead.
+
+**Request:**
+
+```json
+{
+  "name": "John Smith",
+  "email": "john@example.com",
+  "phone": "+1234567890",
+  "company": "Acme Corp",
+  "source": "WEBSITE",
+  "assignedTo": 1,
+  "notes": "Interested in ERP software"
+}
+```
+
+**Response:** `201 Created`
+
+### PUT /crm/leads/{id}
+
+Update lead.
+
+### POST /crm/leads/{id}/convert
+
+Convert lead to customer.
+
+**Response:** `200 OK`
+
+### GET /crm/pipelines
+
+Get pipeline stages.
+
+**Response:** `200 OK` - List of stages with deal counts
+
+### PUT /crm/opportunities/{id}/stage
+
+Update opportunity stage.
+
+**Request:**
+
+```json
+{
+  "stageId": 2
+}
+```
+
+**Response:** `200 OK`
+
+---
+
+## Helpdesk Module (Planned)
+
+### GET /support/tickets
+
+Get all tickets.
+
+**Query Parameters:**
+
+- `page`, `size`, `sort`
+- `status` (OPEN, IN_PROGRESS, RESOLVED, CLOSED)
+- `priority` (LOW, MEDIUM, HIGH, CRITICAL)
+- `customerId`
+
+**Response:** `200 OK` - Paginated tickets
+
+### GET /support/tickets/{id}
+
+Get ticket with comments.
+
+### POST /support/tickets
+
+Create ticket.
+
+**Request:**
+
+```json
+{
+  "title": "Cannot login to system",
+  "description": "Getting error 500 when trying to login",
+  "customerId": 1,
+  "priority": "HIGH"
+}
+```
+
+**Response:** `201 Created`
+
+### PUT /support/tickets/{id}
+
+Update ticket (status, priority, assignee).
+
+### POST /support/tickets/{id}/comments
+
+Add comment to ticket.
+
+**Request:**
+
+```json
+{
+  "message": "We are working on this issue"
+}
+```
+
+**Response:** `200 OK`
+
+### GET /support/kb
+
+Get knowledge base articles (future).
+
+**Response:** `200 OK`
+
+---
+
 ## Settings Module
 
 ### GET /settings
