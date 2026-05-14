@@ -441,31 +441,35 @@ This document defines all database models with their fields, types, and constrai
 
 ---
 
-## Ticket (Planned — Helpdesk)
+## Ticket (Helpdesk)
 
-| Field       | Type        | Constraints        | Description                         |
-| ----------- | ----------- | ------------------ | ----------------------------------- |
-| id          | Long        | PK, Auto-increment | Primary key                         |
-| title       | String(255) | NOT NULL           | Ticket title                        |
-| description | Text        | NOT NULL           | Issue description                   |
-| customerId  | Long        | FK → Customer      | Customer                            |
-| assignedTo  | Long        | FK → User, NULL    | Assigned agent                      |
-| priority    | Enum        | DEFAULT MEDIUM     | LOW, MEDIUM, HIGH, CRITICAL         |
-| status      | Enum        | DEFAULT OPEN       | OPEN, IN_PROGRESS, RESOLVED, CLOSED |
-| createdAt   | Timestamp   | NOT NULL           | Creation time                       |
-| updatedAt   | Timestamp   | NOT NULL           | Last update                         |
+| Field            | Type               | Constraints         | Description                          |
+| ---------------- | ------------------ | ------------------- | ------------------------------------ |
+| id               | Long               | PK, Auto-increment  | Primary key                          |
+| title            | String(255)        | NOT NULL            | Ticket title                         |
+| description      | Text               | NULL                | Issue description                    |
+| customer         | Customer           | @ManyToOne(LAZY)    | FK customer_id → customers(id)       |
+| priority         | Enum               | NOT NULL            | LOW, MEDIUM, HIGH, URGENT            |
+| status           | Enum               | NOT NULL            | OPEN, IN_PROGRESS, RESOLVED, CLOSED  |
+| assignedTo       | Employee           | @ManyToOne(LAZY)    | FK assigned_to → employees(id), NULL |
+| ticketCommentSet | Set<TicketComment> | @OneToMany(CASCADE) | Comments on this ticket              |
+| createdAt        | Timestamp          | NOT NULL            | Creation time                        |
+| updatedAt        | Timestamp          | NULL                | Last update                          |
 
 ---
 
-## TicketComment (Planned — Helpdesk)
+## TicketComment (Helpdesk)
 
-| Field     | Type      | Constraints        | Description   |
-| --------- | --------- | ------------------ | ------------- |
-| id        | Long      | PK, Auto-increment | Primary key   |
-| ticketId  | Long      | FK → Ticket        | Ticket        |
-| message   | Text      | NOT NULL           | Comment body  |
-| authorId  | Long      | FK → User          | Author        |
-| createdAt | Timestamp | NOT NULL           | Creation time |
+| Field      | Type      | Constraints        | Description                          |
+| ---------- | --------- | ------------------ | ------------------------------------ |
+| id         | Long      | PK, Auto-increment | Primary key                          |
+| ticket     | Ticket    | @ManyToOne(LAZY)   | FK ticket_id → tickets(id), NOT NULL |
+| author     | User      | @ManyToOne(LAZY)   | FK author_id → users(id), NOT NULL   |
+| message    | Text      | NOT NULL           | Comment body                         |
+| isInternal | Boolean   | DEFAULT false      | Internal note                        |
+| createdAt  | Timestamp | NOT NULL           | Creation time                        |
+
+> **Note:** TicketComment entity + repository exist, but there is **no controller endpoint** to create comments yet. Comments are loaded via Ticket.@OneToMany.
 
 ---
 
@@ -546,7 +550,7 @@ NEW, CONTACTED, QUALIFIED, CONVERTED, LOST
 ### TicketPriority
 
 ```
-LOW, MEDIUM, HIGH, CRITICAL
+LOW, MEDIUM, HIGH, URGENT
 ```
 
 ### TicketStatus

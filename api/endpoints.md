@@ -1109,24 +1109,44 @@ Update opportunity stage.
 
 ---
 
-## Helpdesk Module (Planned)
+## Helpdesk Module
 
 ### GET /support/tickets
 
-Get all tickets.
+Get all tickets (paginated, filterable).
 
 **Query Parameters:**
 
-- `page`, `size`, `sort`
+- `page` (default: 0), `size` (default: 20)
 - `status` (OPEN, IN_PROGRESS, RESOLVED, CLOSED)
-- `priority` (LOW, MEDIUM, HIGH, CRITICAL)
+- `priority` (LOW, MEDIUM, HIGH, URGENT)
 - `customerId`
+- `assignedToId`
 
 **Response:** `200 OK` - Paginated tickets
 
 ### GET /support/tickets/{id}
 
-Get ticket with comments.
+Get ticket with details (includes comments list).
+
+**Response:** `200 OK`
+
+```json
+{
+  "id": 1,
+  "title": "Cannot login to system",
+  "description": "Getting error 500",
+  "customerId": 1,
+  "customerName": "Acme Corp",
+  "priority": "HIGH",
+  "status": "OPEN",
+  "assignedToId": null,
+  "assignedToName": null,
+  "createdAt": "2026-05-10T07:00:00",
+  "updatedAt": null,
+  "comments": []
+}
+```
 
 ### POST /support/tickets
 
@@ -1139,7 +1159,8 @@ Create ticket.
   "title": "Cannot login to system",
   "description": "Getting error 500 when trying to login",
   "customerId": 1,
-  "priority": "HIGH"
+  "priority": "HIGH",
+  "assignedTo": null
 }
 ```
 
@@ -1147,21 +1168,39 @@ Create ticket.
 
 ### PUT /support/tickets/{id}
 
-Update ticket (status, priority, assignee).
-
-### POST /support/tickets/{id}/comments
-
-Add comment to ticket.
+Update ticket (title, description, priority, status, assignedTo).
 
 **Request:**
 
 ```json
 {
-  "message": "We are working on this issue"
+  "status": "IN_PROGRESS",
+  "priority": "URGENT",
+  "assignedTo": 1
 }
 ```
 
 **Response:** `200 OK`
+
+Note: Set `assignedTo` to `0` to unassign a ticket.
+
+### DELETE /support/tickets/{id}
+
+Delete ticket (hard delete, cascade removes comments).
+
+**Response:** `204 No Content`
+
+---
+
+### POST /support/tickets/{id}/comments
+
+⚠️ **Not yet implemented** — entity and repository exist, but no controller endpoint.
+
+---
+
+### GET /support/kb
+
+⛔ **Broken** — endpoint mapped as `@GetMapping("/api/v1/support/kb")` under class-level `@RequestMapping("/api/v1/support/tickets")`, resulting in incorrect path `/api/v1/support/tickets/api/v1/support/kb`. Needs fix (tracked in GitHub issue).
 
 ### GET /support/kb
 

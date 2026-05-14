@@ -119,19 +119,19 @@ Common Components ←  DataTable, FormField, StatusBadge, etc.
 
 ### 4.1 Module Summary
 
-| #   | Module     | Status                 | BE Entities                                               | BE Endpoints | FE Pages | FE Routes       |
-| --- | ---------- | ---------------------- | --------------------------------------------------------- | ------------ | -------- | --------------- |
-| 1   | Auth       | ✅ Done                | User, Role                                                | 4            | 2        | `/login`        |
-| 2   | Dashboard  | ✅ Done                | -                                                         | 1            | 1        | `/dashboard`    |
-| 3   | Admin      | ✅ Done                | User, Role, AuditLog, Settings                            | 10           | 4        | `/admin/*`      |
-| 4   | HR         | ✅ Done                | Employee, Attendance, LeaveRequest, LeaveBalance          | 14           | 4        | `/hr/*`         |
-| 5   | Inventory  | ✅ Done                | Product, Category, StockMovement                          | 12           | 6        | `/inventory/*`  |
-| 6   | Sales      | ✅ Done                | SalesOrder, SalesOrderLine, Customer                      | 12           | 5        | `/sales/*`      |
-| 7   | Purchasing | ✅ Done                | PurchaseOrder, PurchaseOrderLine, Supplier                | 8            | 4        | `/purchasing/*` |
-| 8   | Finance    | ✅ Done                | Account, JournalEntry, JournalEntryLine, Invoice, Payment | 14           | 6        | `/finance/*`    |
-| 9   | Project    | ✅ BE done             | Project, Task, TaskStage                                  | 10           | 3        | `/projects/*`   |
-| 10  | CRM        | 🚧 FE done, BE missing | Lead, Opportunity, PipelineStage                          | 8            | 4        | `/crm/*`        |
-| 11  | Helpdesk   | ❌ Not started         | Ticket, TicketComment                                     | 6            | 3        | `/support/*`    |
+| #   | Module     | Status                 | BE Entities                                               | BE Endpoints  | FE Pages | FE Routes       |
+| --- | ---------- | ---------------------- | --------------------------------------------------------- | ------------- | -------- | --------------- |
+| 1   | Auth       | ✅ Done                | User, Role                                                | 4             | 2        | `/login`        |
+| 2   | Dashboard  | ✅ Done                | -                                                         | 1             | 1        | `/dashboard`    |
+| 3   | Admin      | ✅ Done                | User, Role, AuditLog, Settings                            | 10            | 4        | `/admin/*`      |
+| 4   | HR         | ✅ Done                | Employee, Attendance, LeaveRequest, LeaveBalance          | 14            | 4        | `/hr/*`         |
+| 5   | Inventory  | ✅ Done                | Product, Category, StockMovement                          | 12            | 6        | `/inventory/*`  |
+| 6   | Sales      | ✅ Done                | SalesOrder, SalesOrderLine, Customer                      | 12            | 5        | `/sales/*`      |
+| 7   | Purchasing | ✅ Done                | PurchaseOrder, PurchaseOrderLine, Supplier                | 8             | 4        | `/purchasing/*` |
+| 8   | Finance    | ✅ Done                | Account, JournalEntry, JournalEntryLine, Invoice, Payment | 14            | 6        | `/finance/*`    |
+| 9   | Project    | ✅ BE done             | Project, Task, TaskStage                                  | 10            | 3        | `/projects/*`   |
+| 10  | CRM        | 🚧 FE done, BE missing | Lead, Opportunity, PipelineStage                          | 8             | 4        | `/crm/*`        |
+| 11  | Helpdesk   | ✅ Done                | Ticket, TicketComment                                     | 5 (+1 broken) | 3        | `/support/*`    |
 
 **Total:** 11 modules planned, 8 fully implemented, 2 partially, 1 not started.
 
@@ -399,7 +399,7 @@ Common Components ←  DataTable, FormField, StatusBadge, etc.
 
 ---
 
-#### 4.2.11 Helpdesk Module (❌ Not started)
+#### 4.2.11 Helpdesk Module (✅ Done)
 
 **Purpose:** Ticket management, support workflow.
 
@@ -412,15 +412,29 @@ Common Components ←  DataTable, FormField, StatusBadge, etc.
 | `/api/v1/support/tickets/{id}/comments` | POST   | Add comment                      |
 | `/api/v1/support/kb`                    | GET    | Knowledge base articles (future) |
 
-**Entities (planned):** Ticket, TicketComment
+**Entities:** Ticket, TicketComment
 
-**Ticket Priorities:** LOW, MEDIUM, HIGH, CRITICAL
+**Ticket Priorities:** LOW, MEDIUM, HIGH, URGENT
 **Ticket Statuses:** OPEN, IN_PROGRESS, RESOLVED, CLOSED
 
 **Relationships:**
 
-- Ticket → Customer
-- TicketComment → Ticket
+- Ticket → Customer (@ManyToOne, FK: customer_id)
+- Ticket → Employee (@ManyToOne, FK: assigned_to)
+- Ticket → TicketComment (@OneToMany, CASCADE delete)
+- TicketComment → User (@ManyToOne, FK: author_id)
+
+**Actual Endpoints (5 working + 1 broken placeholder):**
+| Method | Endpoint | Status |
+|--------|----------|--------|
+| GET | `/api/v1/support/tickets` | ✅ List with filters |
+| GET | `/api/v1/support/tickets/{id}` | ✅ Get ticket |
+| POST | `/api/v1/support/tickets` | ✅ Create ticket |
+| PUT | `/api/v1/support/tickets/{id}` | ✅ Update ticket |
+| DELETE | `/api/v1/support/tickets/{id}` | ✅ Delete ticket (204) |
+| GET | `/api/v1/support/tickets/kb` | 🐛 Broken (path mapped incorrectly as `/api/v1/support/tickets/api/v1/support/kb`) |
+
+**Missing from PR #43:** Comment endpoint not implemented (entity + repo exist but no controller/service endpoint)
 
 **Frontend Pages (planned):** Tickets List (`/support/tickets`), Ticket Details (`/support/tickets/:id`), Create Ticket (`/support/tickets/new`)
 

@@ -79,4 +79,4 @@ docs/
 | Finance            | ✅      | ✅       | Complete                |
 | Project Management | ✅      | ❌       | BE done, FE not started |
 | CRM                | ❌      | ✅       | FE done, BE not started |
-| Helpdesk           | ❌      | ❌       | Not started             |
+| Helpdesk           | ✅      | ❌       | BE done, FE not started |

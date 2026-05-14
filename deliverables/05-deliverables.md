@@ -170,9 +170,9 @@ Same as Phase 3:
 
 ## Status
 
-| Module        | Phase | Status         |
-| ------------- | ----- | -------------- |
-| Core ERPs (7) | 01-04 | ✅ Implemented |
-| CRM           | 05    | 🚧 In Progress |
-| Helpdesk      | 05    | 🚧 In Progress |
-| Project       | 05    | 🚧 In Progress |
+| Module        | Phase | Status                    |
+| ------------- | ----- | ------------------------- |
+| Core ERPs (7) | 01-04 | ✅ Implemented            |
+| CRM           | 05    | 🚧 In Progress            |
+| Helpdesk      | 05    | ✅ Implemented (see note) |
+| Project       | 05    | 🚧 In Progress            |

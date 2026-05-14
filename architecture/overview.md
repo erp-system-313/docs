@@ -77,7 +77,7 @@ The system is organized into **11 modules**, each with frontend pages and backen
 | **Admin**      | ✅         | Users, settings       | User, Role, AuditLog                    | [Class Diagram](diagrams/class/auth.md)       |
 | **Project**    | 🚧 BE done | Projects, tasks       | Project, Task, TaskStage                | -                                             |
 | **CRM**        | 🚧 FE done | Leads, pipeline       | Lead, Opportunity, PipelineStage        | -                                             |
-| **Helpdesk**   | ❌         | Tickets               | Ticket, TicketComment                   | -                                             |
+| **Helpdesk**   | ✅         | Tickets               | Ticket, TicketComment                   | -                                             |
 
 ---
 
