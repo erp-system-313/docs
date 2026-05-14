@@ -19,7 +19,7 @@ modules/<module-name>/
 |--------|--------|------|-------------|
 | [finance-module](finance-module/) | ✅ Complete | — | Double-entry accounting, unified Move model, tax engine, reconciliation, audit trail |
 | [sales-module](sales-module/) | ✅ Complete | Pair A | Quotations, pricelists, sales teams, partner model, invoice-from-order |
-| [helpdesk-module](helpdesk-module/) | ⬜ Pending | Pair B | SLA, stages, teams, KB, email integration |
+| [helpdesk-module](helpdesk-module/) | ⬜ Pending (plan ready) | Pair B | SLA, stages, teams, KB, email integration |
 | [inventory-module](inventory-module/) | ⬜ Pending | — | Multi-warehouse, lot/serial tracking, valuation, routes |
 | [purchasing-module](purchasing-module/) | ⬜ Pending | — | RFQ, purchase agreements, auto-reorder |
 | [hr-module](hr-module/) | ⬜ Pending | — | Payroll, recruitment, expenses, timesheets |
