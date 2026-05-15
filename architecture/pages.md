@@ -96,13 +96,14 @@ This document outlines all pages/routes for the ERP system webapp, organized by 
 
 ---
 
-## Module I: Helpdesk / Support (3 pages)
+## Module I: Helpdesk / Support (4 pages)
 
-| #   | Page           | Route                  | Description                                          |
-| --- | -------------- | ---------------------- | ---------------------------------------------------- |
-| 37  | Tickets List   | `/support/tickets`     | List of support tickets with priority/status filters |
-| 38  | Ticket Details | `/support/tickets/:id` | Ticket view with comment thread                      |
-| 39  | Create Ticket  | `/support/tickets/new` | Form to submit new support ticket                    |
+| #   | Page           | Route                       | Description                                                                                        |
+| --- | -------------- | --------------------------- | -------------------------------------------------------------------------------------------------- |
+| 37  | Tickets List   | `/support/tickets`          | List of support tickets with priority/status filters and view toggle (My Tickets / Assigned / All) |
+| 38  | Ticket Details | `/support/tickets/:id`      | Reddit-style post layout with inline editable status/priority, comment thread                      |
+| 39  | Create Ticket  | `/support/tickets/new`      | Form to submit new support ticket with customer search and employee assignment                     |
+| 40  | Edit Ticket    | `/support/tickets/:id/edit` | Edit title, description, priority, and assigned employee                                           |
 
 ---
 
@@ -128,9 +129,9 @@ This document outlines all pages/routes for the ERP system webapp, organized by 
 | Human Resources        | 4            |
 | CRM                    | 4            |
 | Project Management     | 3            |
-| Helpdesk / Support     | 3            |
+| Helpdesk / Support     | 4            |
 | Administration         | 3            |
-| **Total**              | **40 pages** |
+| **Total**              | **41 pages** |
 
 ---
 

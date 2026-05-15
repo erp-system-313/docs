@@ -443,18 +443,28 @@ This document defines all database models with their fields, types, and constrai
 
 ## Ticket (Helpdesk)
 
-| Field            | Type               | Constraints         | Description                          |
-| ---------------- | ------------------ | ------------------- | ------------------------------------ |
-| id               | Long               | PK, Auto-increment  | Primary key                          |
-| title            | String(255)        | NOT NULL            | Ticket title                         |
-| description      | Text               | NULL                | Issue description                    |
-| customer         | Customer           | @ManyToOne(LAZY)    | FK customer_id → customers(id)       |
-| priority         | Enum               | NOT NULL            | LOW, MEDIUM, HIGH, URGENT            |
-| status           | Enum               | NOT NULL            | OPEN, IN_PROGRESS, RESOLVED, CLOSED  |
-| assignedTo       | Employee           | @ManyToOne(LAZY)    | FK assigned_to → employees(id), NULL |
-| ticketCommentSet | Set<TicketComment> | @OneToMany(CASCADE) | Comments on this ticket              |
-| createdAt        | Timestamp          | NOT NULL            | Creation time                        |
-| updatedAt        | Timestamp          | NULL                | Last update                          |
+| Field            | Type               | Constraints         | Description                                    |
+| ---------------- | ------------------ | ------------------- | ---------------------------------------------- |
+| id               | Long               | PK, Auto-increment  | Primary key                                    |
+| title            | String(255)        | NOT NULL            | Ticket title                                   |
+| description      | Text               | NULL                | Issue description                              |
+| customer         | Customer           | @ManyToOne(LAZY)    | FK customer_id → customers(id)                 |
+| priority         | Enum               | NOT NULL            | LOW, MEDIUM, HIGH, URGENT                      |
+| status           | Enum               | NOT NULL            | OPEN, IN_PROGRESS, RESOLVED, CLOSED            |
+| assignedTo       | Employee           | @ManyToOne(LAZY)    | FK assigned_to → employees(id), NULL           |
+| createdBy        | User               | @ManyToOne(LAZY)    | FK created_by → users(id), NULL                |
+| stage            | HelpdeskStage      | @ManyToOne(LAZY)    | FK stage_id → helpdesk_stages(id), NULL        |
+| team             | HelpdeskTeam       | @ManyToOne(LAZY)    | FK team_id → helpdesk_teams(id), NULL          |
+| category         | HelpdeskCategory   | @ManyToOne(LAZY)    | FK category_id → helpdesk_categories(id), NULL |
+| channel          | Enum               | NULL                | EMAIL, PHONE, CHAT, PORTAL                     |
+| slaDeadline      | Timestamp          | NULL                | SLA resolution deadline                        |
+| slaStatus        | Enum               | NULL                | OK, WARNING, BREACHED                          |
+| closedAt         | Timestamp          | NULL                | Time ticket was closed                         |
+| isArchived       | Boolean            | DEFAULT false       | Archived flag                                  |
+| tags             | Set<HelpdeskTag>   | @ManyToMany         | Ticket tags                                    |
+| ticketCommentSet | Set<TicketComment> | @OneToMany(CASCADE) | Comments on this ticket                        |
+| createdAt        | Timestamp          | NOT NULL            | Creation time                                  |
+| updatedAt        | Timestamp          | NULL                | Last update                                    |
 
 ---
 
@@ -469,7 +479,99 @@ This document defines all database models with their fields, types, and constrai
 | isInternal | Boolean   | DEFAULT false      | Internal note                        |
 | createdAt  | Timestamp | NOT NULL           | Creation time                        |
 
-> **Note:** TicketComment entity + repository exist, but there is **no controller endpoint** to create comments yet. Comments are loaded via Ticket.@OneToMany.
+> **Note:** Comments can be created via `POST /support/tickets/{id}/comments` and are also loaded via `Ticket.@OneToMany`.
+
+---
+
+## HelpdeskTeam
+
+| Field     | Type        | Constraints         | Description   |
+| --------- | ----------- | ------------------- | ------------- |
+| id        | Long        | PK, Auto-increment  | Primary key   |
+| name      | String(100) | NOT NULL            | Team name     |
+| leadId    | Long        | FK → Employee, NULL | Team lead     |
+| isActive  | Boolean     | DEFAULT true        | Active status |
+| createdAt | Timestamp   | NOT NULL            | Creation time |
+
+---
+
+## HelpdeskStage
+
+| Field     | Type        | Constraints        | Description   |
+| --------- | ----------- | ------------------ | ------------- |
+| id        | Long        | PK, Auto-increment | Primary key   |
+| name      | String(100) | NOT NULL           | Stage name    |
+| sequence  | Integer     | DEFAULT 0          | Display order |
+| isDefault | Boolean     | DEFAULT false      | Default stage |
+
+---
+
+## HelpdeskCategory
+
+| Field       | Type        | Constraints                 | Description     |
+| ----------- | ----------- | --------------------------- | --------------- |
+| id          | Long        | PK, Auto-increment          | Primary key     |
+| name        | String(100) | NOT NULL                    | Category name   |
+| description | Text        | NULL                        | Description     |
+| parentId    | Long        | FK → HelpdeskCategory, NULL | Parent category |
+| isActive    | Boolean     | DEFAULT true                | Active status   |
+| createdAt   | Timestamp   | NOT NULL                    | Creation time   |
+
+---
+
+## HelpdeskTag
+
+| Field | Type       | Constraints        | Description |
+| ----- | ---------- | ------------------ | ----------- |
+| id    | Long       | PK, Auto-increment | Primary key |
+| name  | String(50) | NOT NULL, UNIQUE   | Tag name    |
+| color | String(7)  | NULL               | Hex color   |
+
+---
+
+## SlaPolicy
+
+| Field          | Type        | Constraints        | Description                |
+| -------------- | ----------- | ------------------ | -------------------------- |
+| id             | Long        | PK, Auto-increment | Primary key                |
+| name           | String(100) | NOT NULL           | Policy name                |
+| priority       | Enum        | NOT NULL           | LOW, MEDIUM, HIGH, URGENT  |
+| responseTime   | Integer     | NOT NULL           | Response time in minutes   |
+| resolutionTime | Integer     | NOT NULL           | Resolution time in minutes |
+| isActive       | Boolean     | DEFAULT true       | Active status              |
+| createdAt      | Timestamp   | NOT NULL           | Creation time              |
+
+---
+
+## KbArticle
+
+| Field       | Type        | Constraints                 | Description     |
+| ----------- | ----------- | --------------------------- | --------------- |
+| id          | Long        | PK, Auto-increment          | Primary key     |
+| title       | String(255) | NOT NULL                    | Article title   |
+| content     | Text        | NOT NULL                    | Article body    |
+| categoryId  | Long        | FK → HelpdeskCategory, NULL | Category        |
+| tags        | String(500) | NULL                        | Comma-separated |
+| views       | Integer     | DEFAULT 0                   | View count      |
+| isPublished | Boolean     | DEFAULT false               | Published flag  |
+| createdBy   | Long        | FK → User                   | Author          |
+| createdAt   | Timestamp   | NOT NULL                    | Creation time   |
+| updatedAt   | Timestamp   | NULL                        | Last update     |
+
+---
+
+## TicketAttachment
+
+| Field      | Type        | Constraints        | Description   |
+| ---------- | ----------- | ------------------ | ------------- |
+| id         | Long        | PK, Auto-increment | Primary key   |
+| ticketId   | Long        | FK → Ticket        | Parent ticket |
+| fileName   | String(255) | NOT NULL           | Original name |
+| filePath   | String(500) | NOT NULL           | Storage path  |
+| mimeType   | String(100) | NULL               | MIME type     |
+| fileSize   | Long        | NULL               | Size in bytes |
+| uploadedBy | Long        | FK → User          | Uploader      |
+| createdAt  | Timestamp   | NOT NULL           | Creation time |
 
 ---
 
@@ -545,6 +647,18 @@ PLANNING, ACTIVE, ON_HOLD, COMPLETED, CANCELLED
 
 ```
 NEW, CONTACTED, QUALIFIED, CONVERTED, LOST
+```
+
+### TicketChannel
+
+```
+EMAIL, PHONE, CHAT, PORTAL
+```
+
+### SlaStatus
+
+```
+OK, WARNING, BREACHED
 ```
 
 ### TicketPriority

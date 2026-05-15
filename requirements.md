@@ -119,19 +119,19 @@ Common Components ←  DataTable, FormField, StatusBadge, etc.
 
 ### 4.1 Module Summary
 
-| #   | Module     | Status                 | BE Entities                                               | BE Endpoints  | FE Pages | FE Routes       |
-| --- | ---------- | ---------------------- | --------------------------------------------------------- | ------------- | -------- | --------------- |
-| 1   | Auth       | ✅ Done                | User, Role                                                | 4             | 2        | `/login`        |
-| 2   | Dashboard  | ✅ Done                | -                                                         | 1             | 1        | `/dashboard`    |
-| 3   | Admin      | ✅ Done                | User, Role, AuditLog, Settings                            | 10            | 4        | `/admin/*`      |
-| 4   | HR         | ✅ Done                | Employee, Attendance, LeaveRequest, LeaveBalance          | 14            | 4        | `/hr/*`         |
-| 5   | Inventory  | ✅ Done                | Product, Category, StockMovement                          | 12            | 6        | `/inventory/*`  |
-| 6   | Sales      | ✅ Done                | SalesOrder, SalesOrderLine, Customer                      | 12            | 5        | `/sales/*`      |
-| 7   | Purchasing | ✅ Done                | PurchaseOrder, PurchaseOrderLine, Supplier                | 8             | 4        | `/purchasing/*` |
-| 8   | Finance    | ✅ Done                | Account, JournalEntry, JournalEntryLine, Invoice, Payment | 14            | 6        | `/finance/*`    |
-| 9   | Project    | ✅ BE done             | Project, Task, TaskStage                                  | 10            | 3        | `/projects/*`   |
-| 10  | CRM        | 🚧 FE done, BE missing | Lead, Opportunity, PipelineStage                          | 8             | 4        | `/crm/*`        |
-| 11  | Helpdesk   | ✅ Done                | Ticket, TicketComment                                     | 5 (+1 broken) | 3        | `/support/*`    |
+| #   | Module     | Status                 | BE Entities                                                                                             | BE Endpoints | FE Pages | FE Routes       |
+| --- | ---------- | ---------------------- | ------------------------------------------------------------------------------------------------------- | ------------ | -------- | --------------- |
+| 1   | Auth       | ✅ Done                | User, Role                                                                                              | 4            | 2        | `/login`        |
+| 2   | Dashboard  | ✅ Done                | -                                                                                                       | 1            | 1        | `/dashboard`    |
+| 3   | Admin      | ✅ Done                | User, Role, AuditLog, Settings                                                                          | 10           | 4        | `/admin/*`      |
+| 4   | HR         | ✅ Done                | Employee, Attendance, LeaveRequest, LeaveBalance                                                        | 14           | 4        | `/hr/*`         |
+| 5   | Inventory  | ✅ Done                | Product, Category, StockMovement                                                                        | 12           | 6        | `/inventory/*`  |
+| 6   | Sales      | ✅ Done                | SalesOrder, SalesOrderLine, Customer                                                                    | 12           | 5        | `/sales/*`      |
+| 7   | Purchasing | ✅ Done                | PurchaseOrder, PurchaseOrderLine, Supplier                                                              | 8            | 4        | `/purchasing/*` |
+| 8   | Finance    | ✅ Done                | Account, JournalEntry, JournalEntryLine, Invoice, Payment                                               | 14           | 6        | `/finance/*`    |
+| 9   | Project    | ✅ BE done             | Project, Task, TaskStage                                                                                | 10           | 3        | `/projects/*`   |
+| 10  | CRM        | 🚧 FE done, BE missing | Lead, Opportunity, PipelineStage                                                                        | 8            | 4        | `/crm/*`        |
+| 11  | Helpdesk   | ✅ Done                | Ticket, TicketComment, HelpdeskStage, HelpdeskTeam, HelpdeskCategory, HelpdeskTag, SlaPolicy, KbArticle | 10           | 4        | `/support/*`    |
 
 **Total:** 11 modules planned, 8 fully implemented, 2 partially, 1 not started.
 
@@ -511,28 +511,29 @@ Common Components ←  DataTable, FormField, StatusBadge, etc.
 
 ### 6.1 Migrations (Flyway)
 
-| Version | Name                          | Content                                                            |
-| ------- | ----------------------------- | ------------------------------------------------------------------ |
-| V1      | admin_schema                  | users, roles, audit_logs, settings                                 |
-| V2      | hr_schema                     | employees, attendance, leave_requests, leave_balances              |
-| V3      | inventory                     | products, categories, stock_movements                              |
-| V4      | purchasing                    | suppliers, purchase_orders, purchase_order_lines                   |
-| V5      | sales                         | customers, sales_orders, sales_order_lines                         |
-| V6      | finance                       | accounts, journal_entries, journal_entry_lines, invoices, payments |
-| V7      | seed_data                     | default roles, admin user, settings                                |
-| V8      | test_users                    | test user accounts                                                 |
-| V9      | fix_attendance_schema         | attendance table fixes                                             |
-| V10     | fix_attendance_entity_match   | attendance column alignment                                        |
-| V11     | fix_leave_column_names        | leave column fixes                                                 |
-| V12     | fix_leave_columns             | more leave column fixes                                            |
-| V13     | fix_leave_balances_columns    | leave balances column fixes                                        |
-| V14     | seed_categories               | default product categories                                         |
-| V15     | seed_customers                | default customers                                                  |
-| V16     | fix_product_column_names      | rename current_stock→stock_quantity, reorder_level→reorder_point   |
-| V17     | (planned) CRM                 | leads, opportunities, pipeline_stages                              |
-| V18     | (planned) Helpdesk            | tickets, ticket_comments                                           |
-| V19     | project_schema                | projects, tasks, task_stages                                       |
-| V20     | fix_suppliers_purchase_orders | supplier code/tax_id, PO delivery_date                             |
+| Version | Name                          | Content                                                                                                                                                                                                        |
+| ------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| V1      | admin_schema                  | users, roles, audit_logs, settings                                                                                                                                                                             |
+| V2      | hr_schema                     | employees, attendance, leave_requests, leave_balances                                                                                                                                                          |
+| V3      | inventory                     | products, categories, stock_movements                                                                                                                                                                          |
+| V4      | purchasing                    | suppliers, purchase_orders, purchase_order_lines                                                                                                                                                               |
+| V5      | sales                         | customers, sales_orders, sales_order_lines                                                                                                                                                                     |
+| V6      | finance                       | accounts, journal_entries, journal_entry_lines, invoices, payments                                                                                                                                             |
+| V7      | seed_data                     | default roles, admin user, settings                                                                                                                                                                            |
+| V8      | test_users                    | test user accounts                                                                                                                                                                                             |
+| V9      | fix_attendance_schema         | attendance table fixes                                                                                                                                                                                         |
+| V10     | fix_attendance_entity_match   | attendance column alignment                                                                                                                                                                                    |
+| V11     | fix_leave_column_names        | leave column fixes                                                                                                                                                                                             |
+| V12     | fix_leave_columns             | more leave column fixes                                                                                                                                                                                        |
+| V13     | fix_leave_balances_columns    | leave balances column fixes                                                                                                                                                                                    |
+| V14     | seed_categories               | default product categories                                                                                                                                                                                     |
+| V15     | seed_customers                | default customers                                                                                                                                                                                              |
+| V16     | fix_product_column_names      | rename current_stock→stock_quantity, reorder_level→reorder_point                                                                                                                                               |
+| V17     | (planned) CRM                 | leads, opportunities, pipeline_stages                                                                                                                                                                          |
+| V18     | Helpdesk                      | tickets, ticket_comments                                                                                                                                                                                       |
+| V25     | Helpdesk Overhaul             | helpdesk_teams, helpdesk_team_members, helpdesk_stages, helpdesk_categories, helpdesk_tags, helpdesk_ticket_tags, helpdesk_sla_policies, helpdesk_kb_articles, helpdesk_attachments; enhanced helpdesk_tickets |
+| V19     | project_schema                | projects, tasks, task_stages                                                                                                                                                                                   |
+| V20     | fix_suppliers_purchase_orders | supplier code/tax_id, PO delivery_date                                                                                                                                                                         |
 
 ### 6.2 Entity Relationships (Summary)
 
@@ -834,10 +835,10 @@ Provides reproducible dev environment with: JDK 21, Maven 3.9+, Git
 | 7 Core BE modules     | ✅ Done                        | -                                                       |
 | Project Management BE | ✅ Done                        | -                                                       |
 | CRM BE                | ❌ Missing                     | Implement V17 migration + entities/services/controllers |
-| Helpdesk BE           | ❌ Missing                     | Implement V18 migration + entities/services/controllers |
+| Helpdesk BE           | ✅ Done                        | V22+V25 migrations + entities + services + controllers  |
 | CRM FE                | ✅ Done (no sidebar)           | Add CRM to sidebar navigation                           |
 | Project Management FE | ❌ Missing                     | Create pages, routes, sidebar entry                     |
-| Helpdesk FE           | ❌ Missing                     | Create pages, routes, sidebar entry                     |
+| Helpdesk FE           | ✅ Done                        | Tickets list, details, create, edit pages with sidebar  |
 | Flyway V10 checksum   | ⚠️ Issue #42                   | `flyway repair` if using old DB                         |
 | Docker daemon         | ⚠️ Not accessible without sudo | Use podman as alternative                               |
 | Frontend tests        | ❌ Missing                     | Setup Vitest + write tests                              |

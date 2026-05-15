@@ -1122,6 +1122,11 @@ Get all tickets (paginated, filterable).
 - `priority` (LOW, MEDIUM, HIGH, URGENT)
 - `customerId`
 - `assignedToId`
+- `createdById` — Filter by creator user ID
+- `stageId` — Filter by workflow stage
+- `teamId` — Filter by helpdesk team
+- `categoryId` — Filter by ticket category
+- `includeArchived` (boolean, default: false) — Include archived tickets
 
 **Response:** `200 OK` - Paginated tickets
 
@@ -1142,6 +1147,20 @@ Get ticket with details (includes comments list).
   "status": "OPEN",
   "assignedToId": null,
   "assignedToName": null,
+  "createdById": 1,
+  "createdByName": "John Doe",
+  "stageId": 1,
+  "stageName": "New",
+  "teamId": 1,
+  "teamName": "L1 Support",
+  "categoryId": 1,
+  "categoryName": "Login Issues",
+  "channel": "PORTAL",
+  "slaDeadline": "2026-05-12T07:00:00",
+  "slaStatus": "OK",
+  "closedAt": null,
+  "isArchived": false,
+  "tags": ["bug", "security"],
   "createdAt": "2026-05-10T07:00:00",
   "updatedAt": null,
   "comments": []
@@ -1160,7 +1179,11 @@ Create ticket.
   "description": "Getting error 500 when trying to login",
   "customerId": 1,
   "priority": "HIGH",
-  "assignedTo": null
+  "assignedTo": null,
+  "stageId": 1,
+  "teamId": 1,
+  "categoryId": 1,
+  "channel": "PORTAL"
 }
 ```
 
@@ -1168,15 +1191,20 @@ Create ticket.
 
 ### PUT /support/tickets/{id}
 
-Update ticket (title, description, priority, status, assignedTo).
+Update ticket.
 
 **Request:**
 
 ```json
 {
-  "status": "IN_PROGRESS",
+  "title": "Cannot login to system — resolved",
+  "description": "Updated description",
   "priority": "URGENT",
-  "assignedTo": 1
+  "status": "IN_PROGRESS",
+  "assignedTo": 1,
+  "stageId": 2,
+  "teamId": 1,
+  "categoryId": 1
 }
 ```
 
@@ -1194,19 +1222,83 @@ Delete ticket (hard delete, cascade removes comments).
 
 ### POST /support/tickets/{id}/comments
 
-⚠️ **Not yet implemented** — entity and repository exist, but no controller endpoint.
+Add a comment to a ticket.
 
----
+**Request:**
 
-### GET /support/kb
+```json
+{
+  "message": "Working on this now, will update soon.",
+  "isInternal": false
+}
+```
 
-⛔ **Broken** — endpoint mapped as `@GetMapping("/api/v1/support/kb")` under class-level `@RequestMapping("/api/v1/support/tickets")`, resulting in incorrect path `/api/v1/support/tickets/api/v1/support/kb`. Needs fix (tracked in GitHub issue).
+**Response:** `201 Created`
 
-### GET /support/kb
+### POST /support/tickets/{id}/close
 
-Get knowledge base articles (future).
+Close a resolved ticket.
 
 **Response:** `200 OK`
+
+```json
+{
+  "id": 1,
+  "status": "CLOSED",
+  "closedAt": "2026-05-15T10:00:00"
+}
+```
+
+### POST /support/tickets/{id}/assign
+
+Assign or reassign a ticket.
+
+**Request:**
+
+```json
+{
+  "assignedTo": 2
+}
+```
+
+**Response:** `200 OK`
+
+```json
+{
+  "id": 1,
+  "assignedToId": 2,
+  "assignedToName": "Jane Smith"
+}
+```
+
+### POST /support/tickets/{id}/stage
+
+Move a ticket to a different workflow stage.
+
+**Request:**
+
+```json
+{
+  "stageId": 3
+}
+```
+
+**Response:** `200 OK`
+
+### GET /support/stats
+
+Get helpdesk statistics.
+
+**Response:** `200 OK`
+
+```json
+{
+  "totalTickets": 150,
+  "openTickets": 30,
+  "overdueSla": 5,
+  "avgResolutionTime": "12h"
+}
+```
 
 ---
 

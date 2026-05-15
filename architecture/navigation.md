@@ -187,11 +187,12 @@ Each module has an overview page that serves as:
 
 ### Helpdesk / Support
 
-| Page           | Route                  |
-| -------------- | ---------------------- |
-| Tickets List   | `/support/tickets`     |
-| Ticket Details | `/support/tickets/:id` |
-| Create Ticket  | `/support/tickets/new` |
+| Page           | Route                       |
+| -------------- | --------------------------- |
+| Tickets List   | `/support/tickets`          |
+| Ticket Details | `/support/tickets/:id`      |
+| Create Ticket  | `/support/tickets/new`      |
+| Edit Ticket    | `/support/tickets/:id/edit` |
 
 ---
 
