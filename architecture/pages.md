@@ -15,16 +15,15 @@ This document outlines all pages/routes for the ERP system webapp, organized by 
 
 ---
 
-## Module B: Inventory Management (6 pages)
+## Module B: Inventory Management (5 pages)
 
-| #   | Page                | Route                          | Description                                                                             |
-| --- | ------------------- | ------------------------------ | --------------------------------------------------------------------------------------- |
-| 3   | Inventory Dashboard | `/inventory`                   | Stock levels, movements, reorder points                                                 |
-| 4   | Product List        | `/inventory/products`          | Searchable table with filters (category, supplier), actions: edit, delete, view details |
-| 5   | Product Details     | `/inventory/products/:id`      | Detailed view with tabs: basic info, pricing, stock history, suppliers                  |
-| 6   | Product Edit        | `/inventory/products/:id/edit` | Edit product form                                                                       |
-| 7   | Add New Product     | `/inventory/products/new`      | Form: name, SKU, category, unit, price, reorder level, image upload                     |
-| 8   | Categories          | `/inventory/categories`        | CRUD for product categories (list, add, edit, delete)                                   |
+| #   | Page            | Route                          | Description                                                                             |
+| --- | --------------- | ------------------------------ | --------------------------------------------------------------------------------------- |
+| 3   | Product List    | `/inventory/products`          | Searchable table with filters (category, supplier), actions: edit, delete, view details |
+| 4   | Product Details | `/inventory/products/:id`      | Detailed view with tabs: basic info, pricing, stock history, suppliers                  |
+| 5   | Product Edit    | `/inventory/products/:id/edit` | Edit product form                                                                       |
+| 6   | Add New Product | `/inventory/products/new`      | Form: name, SKU, category, unit, price, reorder level, image upload                     |
+| 7   | Categories      | `/inventory/categories`        | CRUD for product categories (list, add, edit, delete)                                   |
 
 ---
 
@@ -51,7 +50,7 @@ This document outlines all pages/routes for the ERP system webapp, organized by 
 
 ---
 
-## Module E: Finance & Accounting (6 pages)
+## Module E: Finance & Accounting (5 pages)
 
 | #   | Page              | Route                   | Description                                                          |
 | --- | ----------------- | ----------------------- | -------------------------------------------------------------------- |
@@ -60,7 +59,6 @@ This document outlines all pages/routes for the ERP system webapp, organized by 
 | 20  | Create Invoice    | `/finance/invoices/new` | Generate invoice from sales order or manual                          |
 | 21  | Chart of Accounts | `/finance/accounts`     | List of accounts (assets, liabilities, equity, income, expenses)     |
 | 22  | Journal Entries   | `/finance/journal`      | Record manual transactions (debit/credit)                            |
-| 23  | Financial Reports | `/finance/reports`      | Income statement, balance sheet, cash flow with date filters         |
 
 ---
 
@@ -79,10 +77,10 @@ This document outlines all pages/routes for the ERP system webapp, organized by 
 
 | #   | Page            | Route            | Description                                                                       |
 | --- | --------------- | ---------------- | --------------------------------------------------------------------------------- |
-| 30  | CRM Dashboard   | `/crm`           | Pipeline overview, KPIs (total leads, conversion rate, pipeline value)            |
-| 31  | Leads List      | `/crm/leads`     | Searchable table with status filters (NEW, CONTACTED, QUALIFIED, CONVERTED, LOST) |
-| 32  | Lead Details    | `/crm/leads/:id` | Full lead profile with convert-to-customer action                                 |
-| 33  | Pipeline Kanban | `/crm/pipeline`  | Drag-and-drop Kanban board with opportunity cards                                 |
+| 28  | CRM Dashboard   | `/crm`           | Pipeline overview, KPIs (total leads, conversion rate, pipeline value)            |
+| 29  | Leads List      | `/crm/leads`     | Searchable table with status filters (NEW, CONTACTED, QUALIFIED, CONVERTED, LOST) |
+| 30  | Lead Details    | `/crm/leads/:id` | Full lead profile with convert-to-customer action                                 |
+| 31  | Pipeline Kanban | `/crm/pipeline`  | Drag-and-drop Kanban board with opportunity cards                                 |
 
 ---
 
@@ -90,9 +88,9 @@ This document outlines all pages/routes for the ERP system webapp, organized by 
 
 | #   | Page            | Route                 | Description                                                                           |
 | --- | --------------- | --------------------- | ------------------------------------------------------------------------------------- |
-| 34  | Projects List   | `/projects`           | List of projects with state filters (PLANNING, ACTIVE, ON_HOLD, COMPLETED, CANCELLED) |
-| 35  | Project Details | `/projects/:id`       | Project info, tasks list by stage, team members                                       |
-| 36  | Gantt View      | `/projects/:id/gantt` | Timeline view of tasks with dependencies                                              |
+| 32  | Projects List   | `/projects`           | List of projects with state filters (PLANNING, ACTIVE, ON_HOLD, COMPLETED, CANCELLED) |
+| 33  | Project Details | `/projects/:id`       | Project info, tasks list by stage, team members                                       |
+| 34  | Gantt View      | `/projects/:id/gantt` | Timeline view of tasks with dependencies                                              |
 
 ---
 
@@ -100,10 +98,10 @@ This document outlines all pages/routes for the ERP system webapp, organized by 
 
 | #   | Page           | Route                       | Description                                                                                        |
 | --- | -------------- | --------------------------- | -------------------------------------------------------------------------------------------------- |
-| 37  | Tickets List   | `/support/tickets`          | List of support tickets with priority/status filters and view toggle (My Tickets / Assigned / All) |
-| 38  | Ticket Details | `/support/tickets/:id`      | Reddit-style post layout with inline editable status/priority, comment thread                      |
-| 39  | Create Ticket  | `/support/tickets/new`      | Form to submit new support ticket with customer search and employee assignment                     |
-| 40  | Edit Ticket    | `/support/tickets/:id/edit` | Edit title, description, priority, and assigned employee                                           |
+| 35  | Tickets List   | `/support/tickets`          | List of support tickets with priority/status filters and view toggle (My Tickets / Assigned / All) |
+| 36  | Ticket Details | `/support/tickets/:id`      | Reddit-style post layout with inline editable status/priority, comment thread                      |
+| 37  | Create Ticket  | `/support/tickets/new`      | Form to submit new support ticket with customer search and employee assignment                     |
+| 38  | Edit Ticket    | `/support/tickets/:id/edit` | Edit title, description, priority, and assigned employee                                           |
 
 ---
 
@@ -111,9 +109,9 @@ This document outlines all pages/routes for the ERP system webapp, organized by 
 
 | #   | Page             | Route               | Description                                                     |
 | --- | ---------------- | ------------------- | --------------------------------------------------------------- |
-| 40  | User Management  | `/admin/users`      | CRUD for system users, assign roles (admin, manager, staff)     |
-| 41  | Audit Logs       | `/admin/audit-logs` | Track system changes and user actions                           |
-| 42  | Company Settings | `/admin/settings`   | Configure company name, tax rates, fiscal year, email templates |
+| 41  | User Management  | `/admin/users`      | CRUD for system users, assign roles (admin, manager, staff)     |
+| 42  | Audit Logs       | `/admin/audit-logs` | Track system changes and user actions                           |
+| 43  | Company Settings | `/admin/settings`   | Configure company name, tax rates, fiscal year, email templates |
 
 ---
 
@@ -122,16 +120,16 @@ This document outlines all pages/routes for the ERP system webapp, organized by 
 | Module                 | Page Count   |
 | ---------------------- | ------------ |
 | Dashboard & Common     | 2            |
-| Inventory Management   | 6            |
+| Inventory Management   | 5            |
 | Sales & Customers      | 5            |
 | Purchasing & Suppliers | 4            |
-| Finance & Accounting   | 6            |
+| Finance & Accounting   | 5            |
 | Human Resources        | 4            |
 | CRM                    | 4            |
 | Project Management     | 3            |
 | Helpdesk / Support     | 4            |
 | Administration         | 3            |
-| **Total**              | **41 pages** |
+| **Total**              | **39 pages** |
 
 ---
 
@@ -141,14 +139,12 @@ This document outlines all pages/routes for the ERP system webapp, organized by 
 /dashboard
 /profile
 
-/inventory
 /inventory/products
 /inventory/products/new
 /inventory/products/:id
 /inventory/products/:id/edit
 /inventory/categories
 
-/sales
 /sales/orders
 /sales/orders/new
 /sales/orders/:id
@@ -156,7 +152,6 @@ This document outlines all pages/routes for the ERP system webapp, organized by 
 /sales/customers
 /sales/customers/:id
 
-/purchasing
 /purchasing/orders
 /purchasing/orders/new
 /purchasing/orders/:id
@@ -164,21 +159,17 @@ This document outlines all pages/routes for the ERP system webapp, organized by 
 /purchasing/suppliers
 /purchasing/suppliers/:id
 
-/finance
 /finance/invoices
 /finance/invoices/new
 /finance/invoices/:id
 /finance/accounts
 /finance/journal
-/finance/reports
 
-/hr
 /hr/employees
 /hr/employees/:id
 /hr/attendance
 /hr/leave
 
-/admin
 /admin/users
 /admin/settings
 /admin/audit-logs
@@ -195,6 +186,7 @@ This document outlines all pages/routes for the ERP system webapp, organized by 
 /support/tickets
 /support/tickets/new
 /support/tickets/:id
+/support/tickets/:id/edit
 ```
 
 ---
@@ -208,7 +200,6 @@ src/
 │   │   ├── Dashboard.tsx
 │   │   └── Profile.tsx
 │   ├── inventory/
-│   │   ├── InventoryDashboard.tsx
 │   │   ├── ProductList.tsx
 │   │   ├── ProductDetails.tsx
 │   │   ├── ProductForm.tsx (shared for new/edit)
@@ -228,8 +219,7 @@ src/
 │   │   ├── InvoiceDetails.tsx
 │   │   ├── InvoiceForm.tsx
 │   │   ├── ChartOfAccounts.tsx
-│   │   ├── JournalEntries.tsx
-│   │   └── FinancialReports.tsx
+│   │   └── JournalEntries.tsx
 │   ├── hr/
 │   │   ├── EmployeesList.tsx
 │   │   ├── EmployeeDetails.tsx
@@ -247,7 +237,8 @@ src/
 │   ├── support/
 │   │   ├── TicketsList.tsx
 │   │   ├── TicketDetails.tsx
-│   │   └── TicketForm.tsx
+│   │   ├── CreateTicket.tsx
+│   │   └── EditTicket.tsx
 │   ├── admin/
 │   │   ├── UserManagement.tsx
 │   │   ├── CompanySettings.tsx

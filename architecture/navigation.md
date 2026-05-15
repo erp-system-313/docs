@@ -7,40 +7,30 @@ The sidebar contains the following menu structure:
 | Menu Item      | Route                   | Type                 |
 | -------------- | ----------------------- | -------------------- |
 | Dashboard      | `/dashboard`            | Link                 |
+| Projects       | `/projects`             | Link                 |
 | **Inventory**  | Collapsible group       |                      |
-| - Overview     | `/inventory`            | Link                 |
 | - Products     | `/inventory/products`   | Link                 |
 | - Categories   | `/inventory/categories` | Link                 |
 | **Sales**      | Collapsible group       |                      |
-| - Overview     | `/sales`                | Link                 |
 | - Orders       | `/sales/orders`         | Link                 |
 | - Customers    | `/sales/customers`      | Link                 |
 | **Purchasing** | Collapsible group       |                      |
-| - Overview     | `/purchasing`           | Link                 |
-| - Orders       | `/purchasing/orders`    | Link                 |
 | - Suppliers    | `/purchasing/suppliers` | Link                 |
+| - Orders       | `/purchasing/orders`    | Link                 |
 | **Finance**    | Collapsible group       |                      |
-| - Overview     | `/finance`              | Link                 |
 | - Invoices     | `/finance/invoices`     | Link                 |
-| - Accounts     | `/finance/accounts`     | Link                 |
 | - Journal      | `/finance/journal`      | Link                 |
-| - Reports      | `/finance/reports`      | Link                 |
-| **CRM**        | Collapsible group       |                      |
-| - Overview     | `/crm`                  | Link                 |
-| - Leads        | `/crm/leads`            | Link                 |
-| - Pipeline     | `/crm/pipeline`         | Link                 |
+| - Accounts     | `/finance/accounts`     | Link                 |
+| **Support**    | Collapsible group       |                      |
+| - Tickets      | `/support/tickets`      | Link                 |
 | **HR**         | Collapsible group       |                      |
-| - Overview     | `/hr`                   | Link                 |
 | - Employees    | `/hr/employees`         | Link                 |
 | - Attendance   | `/hr/attendance`        | Link                 |
 | - Leave        | `/hr/leave`             | Link                 |
-| **Projects**   | Link                    | `/projects`          |
 | **Admin**      | Collapsible group       |                      |
-| - Overview     | `/admin`                | Link                 |
 | - Users        | `/admin/users`          | Link                 |
 | - Settings     | `/admin/settings`       | Link                 |
 | - Audit Logs   | `/admin/audit-logs`     | Link                 |
-| Support        | `/support`              | Link                 |
 | Profile        | `/profile`              | Link + Logout button |
 
 ## Navigation Principles
@@ -81,15 +71,9 @@ Each module has an overview page that serves as:
 - The default view when entering the module
 - A dashboard with module-specific metrics and quick actions
 
-| Module     | Route         | Overview Content                             |
-| ---------- | ------------- | -------------------------------------------- |
-| Dashboard  | `/dashboard`  | Key metrics, charts, recent activity         |
-| Inventory  | `/inventory`  | Stock levels, movements, alerts              |
-| Sales      | `/sales`      | Sales summary, pending orders, top customers |
-| Purchasing | `/purchasing` | PO status, supplier performance              |
-| Finance    | `/finance`    | Revenue, expenses, cash flow summary         |
-| HR         | `/hr`         | Headcount, attendance rates, pending leaves  |
-| Admin      | `/admin`      | System health, user activity                 |
+| Module    | Route        | Overview Content                     |
+| --------- | ------------ | ------------------------------------ |
+| Dashboard | `/dashboard` | Key metrics, charts, recent activity |
 
 ---
 
@@ -106,7 +90,6 @@ Each module has an overview page that serves as:
 
 | Page            | Route                          |
 | --------------- | ------------------------------ |
-| Overview        | `/inventory`                   |
 | Product List    | `/inventory/products`          |
 | Product Details | `/inventory/products/:id`      |
 | Product Edit    | `/inventory/products/:id/edit` |
@@ -117,7 +100,6 @@ Each module has an overview page that serves as:
 
 | Page             | Route                    |
 | ---------------- | ------------------------ |
-| Overview         | `/sales`                 |
 | Sales Orders     | `/sales/orders`          |
 | Create Order     | `/sales/orders/new`      |
 | Order Details    | `/sales/orders/:id`      |
@@ -129,7 +111,6 @@ Each module has an overview page that serves as:
 
 | Page             | Route                         |
 | ---------------- | ----------------------------- |
-| Overview         | `/purchasing`                 |
 | Purchase Orders  | `/purchasing/orders`          |
 | Create PO        | `/purchasing/orders/new`      |
 | PO Details       | `/purchasing/orders/:id`      |
@@ -141,19 +122,16 @@ Each module has an overview page that serves as:
 
 | Page              | Route                   |
 | ----------------- | ----------------------- |
-| Overview          | `/finance`              |
 | Invoices List     | `/finance/invoices`     |
 | Invoice Details   | `/finance/invoices/:id` |
 | Create Invoice    | `/finance/invoices/new` |
 | Chart of Accounts | `/finance/accounts`     |
 | Journal Entries   | `/finance/journal`      |
-| Financial Reports | `/finance/reports`      |
 
 ### Human Resources
 
 | Page             | Route               |
 | ---------------- | ------------------- |
-| Overview         | `/hr`               |
 | Employees List   | `/hr/employees`     |
 | Employee Details | `/hr/employees/:id` |
 | Attendance       | `/hr/attendance`    |
@@ -163,7 +141,6 @@ Each module has an overview page that serves as:
 
 | Page         | Route            |
 | ------------ | ---------------- |
-| Overview     | `/crm`           |
 | Leads List   | `/crm/leads`     |
 | Lead Details | `/crm/leads/:id` |
 | Pipeline     | `/crm/pipeline`  |
@@ -180,7 +157,6 @@ Each module has an overview page that serves as:
 
 | Page             | Route               |
 | ---------------- | ------------------- |
-| Overview         | `/admin`            |
 | User Management  | `/admin/users`      |
 | Company Settings | `/admin/settings`   |
 | Audit Logs       | `/admin/audit-logs` |

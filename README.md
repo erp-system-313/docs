@@ -54,7 +54,7 @@ docs/
 | [api/endpoints.md](./api/endpoints.md)                     | All REST API endpoints with request/response examples                                                           |
 | [api/data-models.md](./api/data-models.md)                 | All database entities, fields, types, constraints, and enums                                                    |
 | [architecture/overview.md](./architecture/overview.md)     | System architecture, tech stack, design patterns, security, NFRs                                                |
-| [architecture/pages.md](./architecture/pages.md)           | All 40 frontend pages across 10 modules                                                                         |
+| [architecture/pages.md](./architecture/pages.md)           | All 39 frontend pages across 10 modules                                                                         |
 | [architecture/navigation.md](./architecture/navigation.md) | Sidebar navigation structure and URL conventions                                                                |
 | [guidelines/backend.md](./guidelines/backend.md)           | Java/Spring Boot coding conventions and examples                                                                |
 | [guidelines/frontend.md](./guidelines/frontend.md)         | React/TypeScript coding conventions and examples                                                                |
@@ -67,16 +67,16 @@ docs/
 
 ## Current Status
 
-| Module             | Backend | Frontend | Status                  |
-| ------------------ | ------- | -------- | ----------------------- |
-| Auth               | ✅      | ✅       | Complete                |
-| Dashboard          | ✅      | ✅       | Complete                |
-| Admin              | ✅      | ✅       | Complete                |
-| HR                 | ✅      | ✅       | Complete                |
-| Inventory          | ✅      | ✅       | Complete                |
-| Sales              | ✅      | ✅       | Complete                |
-| Purchasing         | ✅      | ✅       | Complete                |
-| Finance            | ✅      | ✅       | Complete                |
-| Project Management | ✅      | ❌       | BE done, FE not started |
-| CRM                | ❌      | ✅       | FE done, BE not started |
-| Helpdesk           | ✅      | ✅       | Complete                |
+| Module             | Backend | Frontend | Status                               |
+| ------------------ | ------- | -------- | ------------------------------------ |
+| Auth               | ✅      | ✅       | Complete                             |
+| Dashboard          | ✅      | ✅       | Complete                             |
+| Admin              | ✅      | ✅       | Complete                             |
+| HR                 | ✅      | ✅       | Complete                             |
+| Inventory          | ✅      | ✅       | Complete                             |
+| Sales              | ✅      | ✅       | Complete                             |
+| Purchasing         | ✅      | ✅       | Complete                             |
+| Finance            | ✅      | ✅       | Complete                             |
+| Project Management | ✅      | ✅       | Complete                             |
+| CRM                | ❌      | ✅       | FE done (no sidebar), BE not started |
+| Helpdesk           | ✅      | ✅       | Complete                             |

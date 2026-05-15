@@ -125,11 +125,11 @@ Common Components ←  DataTable, FormField, StatusBadge, etc.
 | 2   | Dashboard  | ✅ Done                | -                                                                                                       | 1            | 1        | `/dashboard`    |
 | 3   | Admin      | ✅ Done                | User, Role, AuditLog, Settings                                                                          | 10           | 4        | `/admin/*`      |
 | 4   | HR         | ✅ Done                | Employee, Attendance, LeaveRequest, LeaveBalance                                                        | 14           | 4        | `/hr/*`         |
-| 5   | Inventory  | ✅ Done                | Product, Category, StockMovement                                                                        | 12           | 6        | `/inventory/*`  |
+| 5   | Inventory  | ✅ Done                | Product, Category, StockMovement                                                                        | 12           | 5        | `/inventory/*`  |
 | 6   | Sales      | ✅ Done                | SalesOrder, SalesOrderLine, Customer                                                                    | 12           | 5        | `/sales/*`      |
 | 7   | Purchasing | ✅ Done                | PurchaseOrder, PurchaseOrderLine, Supplier                                                              | 8            | 4        | `/purchasing/*` |
-| 8   | Finance    | ✅ Done                | Account, JournalEntry, JournalEntryLine, Invoice, Payment                                               | 14           | 6        | `/finance/*`    |
-| 9   | Project    | ✅ BE done             | Project, Task, TaskStage                                                                                | 10           | 3        | `/projects/*`   |
+| 8   | Finance    | ✅ Done                | Account, JournalEntry, JournalEntryLine, Invoice, Payment                                               | 14           | 5        | `/finance/*`    |
+| 9   | Project    | ✅ Done                | Project, Task, TaskStage                                                                                | 10           | 3        | `/projects/*`   |
 | 10  | CRM        | 🚧 FE done, BE missing | Lead, Opportunity, PipelineStage                                                                        | 8            | 4        | `/crm/*`        |
 | 11  | Helpdesk   | ✅ Done                | Ticket, TicketComment, HelpdeskStage, HelpdeskTeam, HelpdeskCategory, HelpdeskTag, SlaPolicy, KbArticle | 10           | 4        | `/support/*`    |
 
@@ -337,7 +337,7 @@ Common Components ←  DataTable, FormField, StatusBadge, etc.
 
 ---
 
-#### 4.2.9 Project Management Module (✅ BE implemented, ❌ FE not started)
+#### 4.2.9 Project Management Module (✅ Done)
 
 **Purpose:** Manage projects, tasks, and timelines.
 
@@ -367,7 +367,7 @@ Common Components ←  DataTable, FormField, StatusBadge, etc.
 - Task → TaskStage (FK: stage_id)
 - TaskStage → Project (FK: project_id)
 
-**Frontend Pages (planned):** Projects List (`/projects`), Project Details (`/projects/:id`), Gantt View (`/projects/:id/gantt`)
+**Frontend Pages (implemented):** Projects List (`/projects`), Project Details (`/projects/:id`), Gantt View (`/projects/:id/gantt`)
 
 ---
 
@@ -397,46 +397,47 @@ Common Components ←  DataTable, FormField, StatusBadge, etc.
 
 **Frontend Pages (existing):** CRM Dashboard (`/crm`), Leads List (`/crm/leads`), Lead Details (`/crm/leads/:id`), Pipeline Kanban (`/crm/pipeline`)
 
+> **Note:** CRM pages exist at their routes but have **no sidebar entry** — accessible only via direct URL.
+
 ---
 
 #### 4.2.11 Helpdesk Module (✅ Done)
 
 **Purpose:** Ticket management, support workflow.
 
-| Endpoint                                | Method | Description                      |
-| --------------------------------------- | ------ | -------------------------------- |
-| `/api/v1/support/tickets`               | GET    | List tickets                     |
-| `/api/v1/support/tickets`               | POST   | Create ticket                    |
-| `/api/v1/support/tickets/{id}`          | GET    | Get ticket                       |
-| `/api/v1/support/tickets/{id}`          | PUT    | Update ticket                    |
-| `/api/v1/support/tickets/{id}/comments` | POST   | Add comment                      |
-| `/api/v1/support/kb`                    | GET    | Knowledge base articles (future) |
+| Endpoint                                | Method | Description                          |
+| --------------------------------------- | ------ | ------------------------------------ |
+| `/api/v1/support/tickets`               | GET    | List tickets (paginated, filterable) |
+| `/api/v1/support/tickets`               | POST   | Create ticket                        |
+| `/api/v1/support/tickets/{id}`          | GET    | Get ticket with comments             |
+| `/api/v1/support/tickets/{id}`          | PUT    | Update ticket                        |
+| `/api/v1/support/tickets/{id}`          | DELETE | Delete ticket                        |
+| `/api/v1/support/tickets/{id}/comments` | POST   | Add comment                          |
+| `/api/v1/support/tickets/{id}/close`    | POST   | Close a resolved ticket              |
+| `/api/v1/support/tickets/{id}/assign`   | POST   | Assign/reassign ticket               |
+| `/api/v1/support/tickets/{id}/stage`    | POST   | Move to different workflow stage     |
+| `/api/v1/support/stats`                 | GET    | Helpdesk statistics                  |
 
-**Entities:** Ticket, TicketComment
+**Entities:** Ticket, TicketComment, HelpdeskStage, HelpdeskTeam, HelpdeskCategory, HelpdeskTag, SlaPolicy, KbArticle, TicketAttachment
 
 **Ticket Priorities:** LOW, MEDIUM, HIGH, URGENT
 **Ticket Statuses:** OPEN, IN_PROGRESS, RESOLVED, CLOSED
+**Ticket Channel:** EMAIL, PHONE, CHAT, PORTAL
+**SLA Status:** OK, WARNING, BREACHED
 
 **Relationships:**
 
 - Ticket → Customer (@ManyToOne, FK: customer_id)
 - Ticket → Employee (@ManyToOne, FK: assigned_to)
+- Ticket → User (@ManyToOne, FK: created_by)
+- Ticket → HelpdeskStage (@ManyToOne, FK: stage_id)
+- Ticket → HelpdeskTeam (@ManyToOne, FK: team_id)
+- Ticket → HelpdeskCategory (@ManyToOne, FK: category_id)
+- Ticket → HelpdeskTag (@ManyToMany)
 - Ticket → TicketComment (@OneToMany, CASCADE delete)
 - TicketComment → User (@ManyToOne, FK: author_id)
 
-**Actual Endpoints (5 working + 1 broken placeholder):**
-| Method | Endpoint | Status |
-|--------|----------|--------|
-| GET | `/api/v1/support/tickets` | ✅ List with filters |
-| GET | `/api/v1/support/tickets/{id}` | ✅ Get ticket |
-| POST | `/api/v1/support/tickets` | ✅ Create ticket |
-| PUT | `/api/v1/support/tickets/{id}` | ✅ Update ticket |
-| DELETE | `/api/v1/support/tickets/{id}` | ✅ Delete ticket (204) |
-| GET | `/api/v1/support/tickets/kb` | 🐛 Broken (path mapped incorrectly as `/api/v1/support/tickets/api/v1/support/kb`) |
-
-**Missing from PR #43:** Comment endpoint not implemented (entity + repo exist but no controller/service endpoint)
-
-**Frontend Pages (planned):** Tickets List (`/support/tickets`), Ticket Details (`/support/tickets/:id`), Create Ticket (`/support/tickets/new`)
+**Frontend Pages (implemented):** Tickets List (`/support/tickets`), Ticket Details (`/support/tickets/:id`), Create Ticket (`/support/tickets/new`), Edit Ticket (`/support/tickets/:id/edit`)
 
 ---
 
@@ -588,7 +589,6 @@ audit_logs ── polymorphic (entity_type + entity_id)
 /dashboard                      Dashboard
 /profile                        Profile
 
-/inventory                      Inventory Overview
 /inventory/products             Product List
 /inventory/products/new         Add Product
 /inventory/products/:id         Product Details
@@ -614,8 +614,6 @@ audit_logs ── polymorphic (entity_type + entity_id)
 /finance/invoices/:id           Invoice Details
 /finance/accounts               Chart of Accounts
 /finance/journal                Journal Entries
-/finance/journal/new            Create Entry
-/finance/reports                Financial Reports
 
 /hr/employees                   Employees
 /hr/employees/:id               Employee Details
@@ -638,6 +636,7 @@ audit_logs ── polymorphic (entity_type + entity_id)
 /support/tickets                Tickets List
 /support/tickets/:id            Ticket Details
 /support/tickets/new            Create Ticket
+/support/tickets/:id/edit       Edit Ticket
 ```
 
 ### 7.2 Navigation Structure
@@ -645,13 +644,13 @@ audit_logs ── polymorphic (entity_type + entity_id)
 Sidebar organization:
 
 1. Dashboard
-2. Inventory (Products, Categories)
-3. Sales (Orders, Customers)
-4. Purchasing (Suppliers, Orders)
-5. Finance (Invoices, Journal, Accounts)
-6. HR (Employees, Attendance, Leave)
-7. CRM (Leads, Pipeline)
-8. Projects
+2. Projects
+3. Inventory (Products, Categories)
+4. Sales (Orders, Customers)
+5. Purchasing (Suppliers, Orders)
+6. Finance (Invoices, Journal, Accounts)
+7. Support (Tickets)
+8. HR (Employees, Attendance, Leave)
 9. Admin (Users, Settings, Audit Logs)
 10. Profile + Logout (footer)
 
@@ -837,8 +836,8 @@ Provides reproducible dev environment with: JDK 21, Maven 3.9+, Git
 | CRM BE                | ❌ Missing                     | Implement V17 migration + entities/services/controllers |
 | Helpdesk BE           | ✅ Done                        | V22+V25 migrations + entities + services + controllers  |
 | CRM FE                | ✅ Done (no sidebar)           | Add CRM to sidebar navigation                           |
-| Project Management FE | ❌ Missing                     | Create pages, routes, sidebar entry                     |
-| Helpdesk FE           | ✅ Done                        | Tickets list, details, create, edit pages with sidebar  |
+| Project Management FE | ✅ Done                        | -                                                       |
+| Helpdesk FE           | ✅ Done                        | -                                                       |
 | Flyway V10 checksum   | ⚠️ Issue #42                   | `flyway repair` if using old DB                         |
 | Docker daemon         | ⚠️ Not accessible without sudo | Use podman as alternative                               |
 | Frontend tests        | ❌ Missing                     | Setup Vitest + write tests                              |
