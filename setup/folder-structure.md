@@ -4,13 +4,10 @@
 
 ```
 erp-system/
-├── frontend/                  # React application
-├── backend/                   # Spring Boot application
-├── docker-compose.yml         # Container orchestration
-├── .env.example               # Environment template
-├── .gitignore                 # Git ignore patterns
-├── README.md                  # Project documentation
-└── docs/                      # Documentation repository
+├── web/                       # React application (Vite)
+├── service/                   # Spring Boot application
+├── docs/                      # Documentation repository
+└── .github/                   # GitHub Actions CI/CD
 ```
 
 ---
@@ -18,148 +15,139 @@ erp-system/
 ## Frontend Structure
 
 ```
-frontend/
+web/
 ├── public/                    # Static public assets
 │   ├── index.html
 │   ├── manifest.json
 │   └── robots.txt
 ├── src/
+│   ├── api/                  # Type-safe API client (separate from services/)
+│   │   ├── client.ts         # Axios instance (baseURL: /api)
+│   │   ├── endpoints.ts      # Endpoint path constants
+│   │   └── index.ts
 │   ├── assets/               # Imported assets
-│   │   ├── images/
-│   │   └── icons/
+│   │   ├── hero.png
+│   │   ├── react.svg
+│   │   └── vite.svg
 │   ├── components/            # Reusable components
 │   │   ├── common/            # Generic components
-│   │   │   ├── Button/
-│   │   │   ├── Card/
+│   │   │   ├── Autocomplete/
 │   │   │   ├── DataTable/
-│   │   │   ├── Modal/
-│   │   │   ├── Loading/
-│   │   │   ├── StatusBadge/
-│   │   │   └── index.ts
-│   │   ├── forms/            # Form components
 │   │   │   ├── FormField/
-│   │   │   ├── Select/
-│   │   │   ├── DatePicker/
+│   │   │   ├── LineItemTable/
+│   │   │   ├── StatusBadge/
+│   │   │   ├── TabPanel/
 │   │   │   └── index.ts
-│   │   ├── layout/           # Layout components
+│   │   ├── Layout/           # Layout components
+│   │   │   ├── MainLayout/
 │   │   │   ├── Sidebar/
-│   │   │   ├── Header/
-│   │   │   ├── Footer/
-│   │   │   ├── Breadcrumb/
 │   │   │   └── index.ts
-│   │   └── charts/           # Chart components
-│   │       ├── BarChart/
-│   │       ├── LineChart/
-│   │       ├── PieChart/
-│   │       └── index.ts
-│   ├── pages/                # Page components (routes)
+│   │   └── index.ts
+│   ├── contexts/             # React contexts
+│   │   └── AuthContext.tsx
+│   ├── data/                 # Static/mock data
+│   │   └── mockEmployees.ts
+│   ├── hooks/                # Custom React hooks
+│   │   ├── useAccounts.ts
+│   │   ├── useAttendance.ts
+│   │   ├── useAuditLogs.ts
+│   │   ├── useCategories.ts
+│   │   ├── useCustomer.ts
+│   │   ├── useCustomers.ts
+│   │   ├── useDashboardStats.ts
+│   │   ├── useEmployee.ts
+│   │   ├── useEmployees.ts
+│   │   ├── useInvoice.ts
+│   │   ├── useInvoices.ts
+│   │   ├── useJournalEntries.ts
+│   │   ├── useJournalEntry.ts
+│   │   ├── useLeaveRequests.ts
+│   │   ├── useProducts.ts
+│   │   ├── usePurchaseOrders.ts
+│   │   ├── useSalesOrder.ts
+│   │   ├── useSalesOrders.ts
+│   │   ├── useSettings.ts
+│   │   ├── useSuppliers.ts
+│   │   ├── useUsers.ts
+│   │   └── index.ts
+│   ├── mocks/                # Mock data for development
+│   │   ├── accountsMockData.ts
+│   │   ├── invoicesMockData.ts
+│   │   ├── journalMockData.ts
+│   │   ├── productsMockData.ts
+│   │   └── salesMockData.ts
+│   ├── pages/                # Page components (route-level, organized by module)
+│   │   ├── admin/
+│   │   │   ├── AuditLogs/
+│   │   │   ├── Settings/
+│   │   │   └── Users/
+│   │   ├── auth/
+│   │   │   └── Login/
 │   │   ├── common/
 │   │   │   ├── Dashboard/
 │   │   │   └── Profile/
-│   │   ├── inventory/
-│   │   │   ├── InventoryDashboard/
-│   │   │   ├── ProductList/
-│   │   │   ├── ProductDetails/
-│   │   │   ├── ProductForm/
-│   │   │   └── Categories/
-│   │   ├── sales/
-│   │   │   ├── SalesDashboard/
-│   │   │   ├── SalesOrders/
-│   │   │   ├── SalesOrderForm/
-│   │   │   ├── CustomersList/
-│   │   │   └── CustomerDetails/
-│   │   ├── purchasing/
-│   │   │   ├── PurchasingDashboard/
-│   │   │   ├── PurchaseOrders/
-│   │   │   ├── PurchaseOrderForm/
-│   │   │   ├── SuppliersList/
-│   │   │   └── SupplierDetails/
 │   │   ├── finance/
-│   │   │   ├── FinanceDashboard/
-│   │   │   ├── Invoices/
+│   │   │   ├── ChartOfAccounts/
 │   │   │   ├── InvoiceDetails/
 │   │   │   ├── InvoiceForm/
-│   │   │   ├── ChartOfAccounts/
+│   │   │   ├── InvoicesList/
 │   │   │   ├── JournalEntries/
-│   │   │   └── FinancialReports/
+│   │   │   └── JournalEntryForm/
 │   │   ├── hr/
-│   │   │   ├── HRDashboard/
-│   │   │   ├── EmployeesList/
-│   │   │   ├── EmployeeDetails/
 │   │   │   ├── Attendance/
+│   │   │   ├── EmployeeDetails/
+│   │   │   ├── EmployeesList/
 │   │   │   └── LeaveRequests/
-│   │   ├── admin/
-│   │   │   ├── AdminDashboard/
-│   │   │   ├── UserManagement/
-│   │   │   ├── CompanySettings/
-│   │   │   └── AuditLogs/
-│   │   ├── auth/
-│   │   │   ├── Login/
-│   │   │   └── ForgotPassword/
-│   │   └── support/
-│   │       └── Support/
-│   ├── hooks/                # Custom React hooks
-│   │   ├── useAuth.ts
-│   │   ├── usePermissions.ts
-│   │   ├── useToast.ts
-│   │   └── index.ts
-│   ├── services/              # API services
-│   │   ├── apiClient.ts      # Axios instance
+│   │   ├── inventory/
+│   │   │   ├── CategoryListPage.tsx       # Flat files (no subdirectory)
+│   │   │   ├── CreateProductPage.tsx
+│   │   │   ├── EditProductPage.tsx
+│   │   │   ├── ProductDetailsPage.tsx
+│   │   │   └── ProductListPage.tsx
+│   │   ├── purchasing/
+│   │   │   ├── CreatePurchaseOrderPage.tsx
+│   │   │   ├── PurchaseOrderListPage.tsx
+│   │   │   ├── SupplierDetailsPage.tsx
+│   │   │   └── SupplierListPage.tsx
+│   │   └── sales/
+│   │       ├── CustomerDetails/
+│   │       ├── CustomersList/
+│   │       ├── SalesOrderDetails/
+│   │       ├── SalesOrderForm/
+│   │       └── SalesOrdersList/
+│   ├── services/              # API service modules (baseURL: /api/v1)
+│   │   ├── apiClient.ts      # Axios instance for /api/v1
+│   │   ├── auditLogsService.ts
 │   │   ├── authService.ts
-│   │   ├── productService.ts
-│   │   ├── customerService.ts
-│   │   ├── orderService.ts
-│   │   ├── invoiceService.ts
-│   │   ├── employeeService.ts
-│   │   └── index.ts
-│   ├── store/                # State management
-│   │   ├── slices/
-│   │   │   ├── authSlice.ts
-│   │   │   ├── uiSlice.ts
-│   │   │   └── index.ts
-│   │   ├── store.ts
-│   │   └── hooks.ts
-│   ├── contexts/             # React contexts
-│   │   ├── AuthContext.tsx
-│   │   ├── ThemeContext.tsx
-│   │   └── ToastContext.tsx
+│   │   ├── dashboardService.ts
+│   │   ├── financeService.ts
+│   │   ├── hrService.ts
+│   │   ├── inventoryService.ts
+│   │   ├── purchasingService.ts
+│   │   ├── salesService.ts
+│   │   ├── settingsService.ts
+│   │   └── usersService.ts
 │   ├── types/                # TypeScript types
-│   │   ├── api/
-│   │   │   ├── requests.ts
-│   │   │   ├── responses.ts
-│   │   │   └── index.ts
+│   │   ├── category.types.ts
+│   │   ├── finance.ts
+│   │   ├── hr.ts
+│   │   ├── index.ts
 │   │   ├── models/
-│   │   │   ├── user.ts
-│   │   │   ├── product.ts
-│   │   │   ├── order.ts
-│   │   │   └── index.ts
-│   │   └── index.ts
-│   ├── utils/                # Utility functions
-│   │   ├── formatters/
-│   │   │   ├── formatCurrency.ts
-│   │   │   ├── formatDate.ts
-│   │   │   └── index.ts
-│   │   ├── validators/
-│   │   │   ├── emailValidator.ts
-│   │   │   └── index.ts
-│   │   ├── constants.ts
-│   │   └── index.ts
-│   ├── styles/               # Global styles
-│   │   ├── _variables.scss
-│   │   ├── _mixins.scss
-│   │   ├── _reset.scss
-│   │   ├── _typography.scss
-│   │   └── main.scss
+│   │   │   └── employee.ts
+│   │   ├── product.types.ts
+│   │   ├── purchaseOrder.types.ts
+│   │   ├── sales.ts
+│   │   └── supplier.types.ts
 │   ├── App.tsx               # Root component
 │   ├── AppRoutes.tsx         # Route definitions
-│   └── index.tsx             # Entry point
-├── tests/                    # Test files
-│   ├── unit/
-│   ├── integration/
-│   └── setup.ts
+│   ├── App.css
+│   ├── index.css
+│   └── main.tsx              # Entry point
 ├── .eslintrc.js
 ├── .prettierrc
+├── index.html
 ├── tsconfig.json
+├── vite.config.ts
 ├── package.json
 └── Dockerfile
 ```
@@ -169,21 +157,22 @@ frontend/
 ## Backend Structure
 
 ```
-backend/
+service/
+├── docker-compose.yml           # Container orchestration (PostgreSQL + Redis)
 ├── src/
 │   ├── main/
 │   │   ├── java/
 │   │   │   └── com/
 │   │   │       └── erp/
 │   │   │           ├── ErpApplication.java
-│   │   │           ├── common/              # Shared utilities
-│   │   │           │   ├── config/
-│   │   │           │   │   ├── SecurityConfig.java
-│   │   │           │   │   ├── WebConfig.java
-│   │   │           │   │   └── CorsConfig.java
+│   │   │           ├── config/
+│   │   │           │   ├── SecurityConfig.java
+│   │   │           │   └── WebConfig.java
+│   │   │           ├── common/
+│   │   │           │   ├── annotation/
+│   │   │           │   │   └── Auditable.java
 │   │   │           │   ├── dto/
 │   │   │           │   │   ├── ApiResponse.java
-│   │   │           │   │   ├── PageRequest.java
 │   │   │           │   │   └── PageResponse.java
 │   │   │           │   ├── exception/
 │   │   │           │   │   ├── GlobalExceptionHandler.java
@@ -192,82 +181,212 @@ backend/
 │   │   │           │   └── util/
 │   │   │           │       ├── DateUtils.java
 │   │   │           │       └── StringUtils.java
-│   │   │           ├── inventory/           # Inventory module
+│   │   │           ├── auth/
 │   │   │           │   ├── controller/
-│   │   │           │   │   ├── ProductController.java
-│   │   │           │   │   └── CategoryController.java
-│   │   │           │   ├── service/
-│   │   │           │   │   ├── ProductService.java
-│   │   │           │   │   └── CategoryService.java
-│   │   │           │   ├── repository/
-│   │   │           │   │   ├── ProductRepository.java
-│   │   │           │   │   └── CategoryRepository.java
-│   │   │           │   ├── entity/
-│   │   │           │   │   ├── Product.java
-│   │   │           │   │   └── Category.java
+│   │   │           │   │   └── AuthController.java
 │   │   │           │   ├── dto/
-│   │   │           │   │   ├── ProductDto.java
-│   │   │           │   │   ├── CreateProductRequest.java
-│   │   │           │   │   └── UpdateProductRequest.java
-│   │   │           │   └── mapper/
-│   │   │           │       └── ProductMapper.java
-│   │   │           ├── sales/               # Sales module
-│   │   │           │   ├── controller/
-│   │   │           │   │   ├── SalesOrderController.java
-│   │   │           │   │   └── CustomerController.java
-│   │   │           │   ├── service/
-│   │   │           │   ├── repository/
-│   │   │           │   ├── entity/
-│   │   │           │   ├── dto/
-│   │   │           │   └── mapper/
-│   │   │           ├── purchasing/          # Purchasing module
-│   │   │           ├── finance/             # Finance module
-│   │   │           ├── hr/                  # HR module
-│   │   │           ├── admin/               # Admin module
+│   │   │           │   │   ├── LoginRequest.java
+│   │   │           │   │   ├── LoginResponse.java
+│   │   │           │   │   ├── RegisterRequest.java
+│   │   │           │   │   ├── RefreshTokenRequest.java
+│   │   │           │   │   ├── ResetPasswordRequest.java
+│   │   │           │   │   ├── ForgotPasswordRequest.java
+│   │   │           │   │   └── TokenResponse.java
+│   │   │           │   ├── security/
+│   │   │           │   │   ├── JwtTokenProvider.java
+│   │   │           │   │   ├── JwtAuthenticationFilter.java
+│   │   │           │   │   ├── CurrentUserUtil.java
+│   │   │           │   │   ├── UserDetailsServiceImpl.java
+│   │   │           │   │   └── UserPrincipal.java
+│   │   │           │   └── service/
+│   │   │           │       └── AuthService.java
+│   │   │           ├── admin/
+│   │   │           │   ├── aspect/
+│   │   │           │   │   └── AuditAspect.java
 │   │   │           │   ├── controller/
 │   │   │           │   │   ├── UserController.java
-│   │   │           │   │   └── SettingsController.java
-│   │   │           │   ├── service/
-│   │   │           │   ├── repository/
+│   │   │           │   │   ├── SettingsController.java
+│   │   │           │   │   ├── AuditLogController.java
+│   │   │           │   │   └── DashboardController.java
+│   │   │           │   ├── dto/
+│   │   │           │   │   ├── UserDto.java
+│   │   │           │   │   ├── CreateUserRequest.java
+│   │   │           │   │   ├── UpdateUserRequest.java
+│   │   │           │   │   ├── AuditLogDto.java
+│   │   │           │   │   ├── SettingsDto.java
+│   │   │           │   │   ├── DashboardStatsDto.java
+│   │   │           │   │   └── UpdateSettingsRequest.java
 │   │   │           │   ├── entity/
 │   │   │           │   │   ├── User.java
 │   │   │           │   │   ├── Role.java
-│   │   │           │   │   └── AuditLog.java
+│   │   │           │   │   ├── AuditLog.java
+│   │   │           │   │   └── Settings.java
+│   │   │           │   ├── repository/
+│   │   │           │   │   ├── UserRepository.java
+│   │   │           │   │   ├── RoleRepository.java
+│   │   │           │   │   ├── AuditLogRepository.java
+│   │   │           │   │   └── SettingsRepository.java
+│   │   │           │   └── service/
+│   │   │           │       ├── UserService.java
+│   │   │           │       ├── SettingsService.java
+│   │   │           │       ├── AuditLogService.java
+│   │   │           │       └── DashboardService.java
+│   │   │           ├── inventory/
+│   │   │           │   ├── controller/
+│   │   │           │   │   ├── ProductController.java
+│   │   │           │   │   └── CategoryController.java
 │   │   │           │   ├── dto/
-│   │   │           │   └── security/
-│   │   │           │       ├── JwtTokenProvider.java
-│   │   │           │       ├── JwtAuthenticationFilter.java
-│   │   │           │       └── UserPrincipal.java
-│   │   │           └── auth/                # Authentication module
+│   │   │           │   │   ├── ProductDto.java
+│   │   │           │   │   ├── CategoryDto.java
+│   │   │           │   │   ├── CreateProductRequest.java
+│   │   │           │   │   ├── UpdateProductRequest.java
+│   │   │           │   │   ├── CreateCategoryRequest.java
+│   │   │           │   │   └── UpdateCategoryRequest.java
+│   │   │           │   ├── entity/
+│   │   │           │   │   ├── Product.java
+│   │   │           │   │   └── Category.java
+│   │   │           │   ├── repository/
+│   │   │           │   │   ├── ProductRepository.java
+│   │   │           │   │   └── CategoryRepository.java
+│   │   │           │   └── service/
+│   │   │           │       ├── ProductService.java
+│   │   │           │       └── CategoryService.java
+│   │   │           ├── sales/
+│   │   │           │   ├── controller/
+│   │   │           │   │   ├── SalesOrderController.java
+│   │   │           │   │   └── CustomerController.java
+│   │   │           │   ├── dto/
+│   │   │           │   │   ├── CreateSalesOrderRequest.java
+│   │   │           │   │   ├── CreateCustomerRequest.java
+│   │   │           │   │   ├── UpdateCustomerRequest.java
+│   │   │           │   │   ├── CustomerDto.java
+│   │   │           │   │   └── SalesOrderDto.java
+│   │   │           │   ├── entity/
+│   │   │           │   │   ├── SalesOrder.java
+│   │   │           │   │   ├── SalesOrderLine.java
+│   │   │           │   │   └── Customer.java
+│   │   │           │   ├── repository/
+│   │   │           │   │   ├── SalesOrderRepository.java
+│   │   │           │   │   └── CustomerRepository.java
+│   │   │           │   └── service/
+│   │   │           │       ├── SalesOrderService.java
+│   │   │           │       ├── CustomerService.java
+│   │   │           │       └── ProductClientStub.java
+│   │   │           ├── purchasing/
+│   │   │           │   ├── controller/
+│   │   │           │   │   ├── PurchaseOrderController.java
+│   │   │           │   │   ├── SupplierController.java
+│   │   │           │   │   └── StockMovementController.java
+│   │   │           │   ├── dto/
+│   │   │           │   │   ├── CreateSupplierRequest.java
+│   │   │           │   │   ├── SupplierDto.java
+│   │   │           │   │   └── PurchaseOrderDto.java
+│   │   │           │   ├── entity/
+│   │   │           │   │   ├── PurchaseOrder.java
+│   │   │           │   │   ├── PurchaseOrderLine.java
+│   │   │           │   │   ├── Supplier.java
+│   │   │           │   │   └── StockMovement.java
+│   │   │           │   ├── repository/
+│   │   │           │   │   ├── PurchaseOrderRepository.java
+│   │   │           │   │   ├── SupplierRepository.java
+│   │   │           │   │   └── StockMovementRepository.java
+│   │   │           │   └── service/
+│   │   │           │       ├── PurchaseOrderService.java
+│   │   │           │       └── SupplierService.java
+│   │   │           ├── finance/
+│   │   │           │   ├── controller/
+│   │   │           │   │   ├── InvoiceController.java
+│   │   │           │   │   ├── AccountController.java
+│   │   │           │   │   └── JournalEntryController.java
+│   │   │           │   ├── dto/
+│   │   │           │   │   ├── InvoiceDto.java
+│   │   │           │   │   ├── InvoiceLineDto.java
+│   │   │           │   │   ├── PaymentDto.java
+│   │   │           │   │   ├── AccountDto.java
+│   │   │           │   │   ├── CreateAccountRequest.java
+│   │   │           │   │   ├── UpdateAccountRequest.java
+│   │   │           │   │   ├── CreateInvoiceRequest.java
+│   │   │           │   │   ├── CreatePaymentRequest.java
+│   │   │           │   │   ├── JournalEntryDto.java
+│   │   │           │   │   ├── JournalEntryLineDto.java
+│   │   │           │   │   └── CreateJournalEntryRequest.java
+│   │   │           │   ├── entity/
+│   │   │           │   │   ├── Invoice.java
+│   │   │           │   │   ├── InvoiceLine.java
+│   │   │           │   │   ├── Payment.java
+│   │   │           │   │   ├── Account.java
+│   │   │           │   │   ├── JournalEntry.java
+│   │   │           │   │   └── JournalEntryLine.java
+│   │   │           │   ├── repository/
+│   │   │           │   │   ├── InvoiceRepository.java
+│   │   │           │   │   ├── PaymentRepository.java
+│   │   │           │   │   ├── AccountRepository.java
+│   │   │           │   │   ├── JournalEntryRepository.java
+│   │   │           │   │   └── JournalEntryLineRepository.java
+│   │   │           │   └── service/
+│   │   │           │       ├── InvoiceService.java
+│   │   │           │       ├── AccountService.java
+│   │   │           │       └── JournalEntryService.java
+│   │   │           └── hr/
 │   │   │               ├── controller/
-│   │   │               │   └── AuthController.java
-│   │   │               ├── service/
-│   │   │               │   └── AuthService.java
-│   │   │               └── dto/
-│   │   │                   ├── LoginRequest.java
-│   │   │                   ├── LoginResponse.java
-│   │   │                   └── RegisterRequest.java
+│   │   │               │   ├── EmployeeController.java
+│   │   │               │   ├── AttendanceController.java
+│   │   │               │   ├── LeaveController.java
+│   │   │               │   └── LeaveBalanceController.java
+│   │   │               ├── dto/
+│   │   │               │   ├── CreateEmployeeRequest.java
+│   │   │               │   ├── EmployeeDto.java
+│   │   │               │   ├── AttendanceDto.java
+│   │   │               │   ├── LeaveRequestDto.java
+│   │   │               │   └── LeaveBalanceDto.java
+│   │   │               ├── entity/
+│   │   │               │   ├── Employee.java
+│   │   │               │   ├── Attendance.java
+│   │   │               │   ├── LeaveRequest.java
+│   │   │               │   └── LeaveBalance.java
+│   │   │               ├── repository/
+│   │   │               │   ├── EmployeeRepository.java
+│   │   │               │   ├── AttendanceRepository.java
+│   │   │               │   ├── LeaveRequestRepository.java
+│   │   │               │   └── LeaveBalanceRepository.java
+│   │   │               └── service/
+│   │   │                   ├── EmployeeService.java
+│   │   │                   └── AttendanceService.java
 │   │   └── resources/
 │   │       ├── application.yml
 │   │       ├── application-dev.yml
 │   │       ├── application-prod.yml
+│   │       ├── application-test.yml       (in src/test/resources/)
 │   │       ├── db/
 │   │       │   └── migration/
-│   │       │       ├── V1__initial_schema.sql
-│   │       │       ├── V2__add_users.sql
-│   │       │       └── V3__add_inventory.sql
+│   │       │       ├── V1__admin_schema.sql
+│   │       │       ├── V2__hr_schema.sql
+│   │       │       ├── V3__inventory.sql
+│   │       │       ├── V4__purchasing.sql
+│   │       │       ├── V5__sales.sql
+│   │       │       ├── V6__finance.sql
+│   │       │       ├── V7__seed_data.sql
+│   │       │       ├── V8__test_users.sql
+│   │       │       ├── V9__fix_attendance_schema.sql
+│   │       │       └── ...
 │   │       └── logback-spring.xml
-│   └── test/
-│       └── java/
-│           └── com/
-│               └── erp/
-│                   ├── controller/
-│                   ├── service/
-│                   └── repository/
+│   ├── test/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── erp/
+│   │   │           ├── admin/
+│   │   │           ├── auth/
+│   │   │           ├── finance/
+│   │   │           ├── hr/
+│   │   │           ├── inventory/
+│   │   │           ├── purchasing/
+│   │   │           └── sales/
+│   │   └── resources/
+│   │       └── application-test.yml
 ├── pom.xml
-├── Dockerfile
+├── flake.nix
+├── .env.example
 └── .mvn/
-    └── wrapper/
 ```
 
 ---
@@ -279,11 +398,8 @@ docs/
 ├── README.md
 ├── project-overview.md
 ├── api/
-│   ├── overview.md
 │   ├── data-models.md
-│   ├── endpoints.md
-│   ├── authentication.md
-│   └── error-handling.md
+│   └── endpoints.md
 ├── architecture/
 │   ├── overview.md
 │   ├── pages.md
@@ -300,49 +416,38 @@ docs/
 │   ├── git.md
 │   ├── frontend.md
 │   ├── backend.md
-│   ├── linting.md
-│   └── testing.md
-├── setup/
-│   ├── installation.md
-│   ├── docker.md
-│   ├── environment.md
-│   ├── ci-cd.md
-│   └── deployment.md
-└── team/
-    ├── members.md
-    └── roles.md
+│   └── linting.md
+└── setup/
+    └── folder-structure.md
 ```
 
 ---
 
 ## Component File Structure
 
-Each component follows this pattern:
+Most components follow this pattern:
 
 ```
 ComponentName/
 ├── ComponentName.tsx        # Main component
-├── ComponentName.styles.ts  # Styled components or CSS modules
-├── ComponentName.types.ts   # Props interface
-├── ComponentName.test.tsx   # Unit tests
+├── ComponentName.module.css # CSS Module styles (or plain .css)
 └── index.ts                 # Barrel export
 ```
 
-Example:
+Some modules use flat file naming instead of subdirectories:
 
 ```
-ProductList/
-├── ProductList.tsx
-├── ProductList.styles.ts
-├── ProductList.types.ts
-├── ProductList.test.tsx
-├── ProductListItem.tsx
-└── index.ts
+pages/inventory/
+├── ProductListPage.tsx      # No subdirectory
+├── ProductDetailsPage.tsx
+├── CreateProductPage.tsx
+├── EditProductPage.tsx
+└── CategoryListPage.tsx
 ```
 
 ---
 
-## Module Structure Pattern
+## Module Structure Pattern (Backend)
 
 Each backend module follows:
 
@@ -352,10 +457,10 @@ module/
 ├── service/      # Business logic
 ├── repository/   # Data access
 ├── entity/       # JPA entities
-├── dto/          # Request/Response DTOs
-├── mapper/       # Entity-DTO mapping
-└── exception/    # Module-specific exceptions
+└── dto/          # Request/Response DTOs
 ```
+
+**Note**: There is no separate `mapper/` package. Entity-to-DTO conversion is done via static methods on DTOs or private methods in services. There is no `exception/` per module — exceptions are shared in `common/exception/`.
 
 ---
 
@@ -363,6 +468,6 @@ module/
 
 1. **Flat over nested** - Keep directory depth reasonable
 2. **Barrel exports** - Use `index.ts` for clean imports
-3. **Colocation** - Keep related files together (test next to source)
+3. **Colocation** - Keep related files together (CSS module next to component)
 4. **Shared vs Local** - Extract truly reusable code to `common/`
 5. **Convention over configuration** - Follow the patterns above
