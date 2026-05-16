@@ -1,0 +1,18 @@
+graph TD
+    DW[DashboardWidget]
+    DW --> StatsRow[StatsRow]
+    DW --> ChartsRow[ChartsRow]
+    DW --> ActivityRow[ActivityRow]
+
+    StatsRow --> KPICard1[RevenueCard]
+    StatsRow --> KPICard2[InventoryCard]
+    StatsRow --> KPICard3[PendingApprovalsCard]
+
+    ChartsRow --> RevenueChart[RevenueLineChart]
+    ChartsRow --> InventoryChart[InventoryBarChart]
+
+    ActivityRow --> ActivityFeed[RecentActivityList]
+    ActivityRow --> QuickActions[QuickActionsPanel]
+
+    QuickActions --> NewOrderBtn[NewOrderButton]
+    QuickActions --> AddEmployeeBtn[AddEmployeeButton]

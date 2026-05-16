@@ -1,382 +1,676 @@
 # Data Models
 
-> **⚠️ This document is partially outdated.** See the comprehensive [requirements.html](../requirements.html) for the complete, source-accurate data models across all modules.
+# Data Models
 
-## Authentication
+## Overview
 
-### User
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | Auto-generated |
-| email | String | Unique, not null |
-| passwordHash | String | BCrypt encoded |
-| firstName | String | Nullable |
-| lastName | String | Nullable |
-| role | Role | Many-to-one (entity ref, not enum) |
-| employee | Employee | Optional, one-to-one |
-| isActive | Boolean | Default true |
-| lastLoginAt | LocalDateTime | Nullable |
-| resetToken | String | Nullable, for password reset |
-| resetTokenExpiresAt | LocalDateTime | Nullable |
-| createdAt | LocalDateTime | Auto-set via @CreationTimestamp |
-| updatedAt | LocalDateTime | Auto-set via @UpdateTimestamp |
+This document defines all database models with their fields, types, and constraints.
 
-UserDto adds `fullName` (computed), `roleName`, `roleId`, `employeeId` fields.
-
-### Role
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | Auto-generated |
-| name | String | Unique |
-| description | String | |
-| permissions | String (JSONB) | Stored as JSON |
-| isActive | Boolean | |
-| createdAt | LocalDateTime | |
-| updatedAt | LocalDateTime | |
-
-### AuditLog
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| user | User | Many-to-one |
-| action | String | e.g. CREATE, UPDATE, DELETE |
-| entityType | String | e.g. Product, Invoice |
-| entityId | Long | |
-| changes | String (JSONB) | Before/after values |
-| ipAddress | String | |
-| details | String | |
-| createdAt | LocalDateTime | |
-
-### Settings
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| settingKey | String | Unique |
-| settingValue | String | Nullable |
-| settingType | String | STRING (default), TEXT, NUMBER, BOOLEAN, JSON |
-| description | String | Nullable |
-| createdAt | LocalDateTime | Auto-set |
+| Convention | Value                  |
+| ---------- | ---------------------- |
+| ID Type    | Auto-increment Integer |
+| Timestamps | ISO 8601               |
 
 ---
 
-## Inventory
+## User
 
-### Product
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| sku | String | Unique |
-| name | String | |
-| description | String | |
-| category | Category | Many-to-one |
-| supplier | Supplier | Many-to-one, nullable |
-| unitPrice | BigDecimal | |
-| costPrice | BigDecimal | |
-| reorderLevel | Integer | |
-| reorderQuantity | Integer | |
-| unitOfMeasure | String | e.g. pcs, kg, L |
-| currentStock | Integer | Not null, default 0 |
-| imageUrl | String | Nullable |
-| isActive | Boolean | Default true |
-| createdAt | LocalDateTime | |
-| updatedAt | LocalDateTime | |
-
-### Category
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| name | String | |
-| description | String | |
-| parentId | Long | Self-referencing, nullable |
-| sortOrder | Integer | |
-| isActive | Boolean | Default true |
-| productCount | Long | Count of active products in category |
-| createdAt | LocalDateTime | |
-| updatedAt | LocalDateTime | |
+| Field        | Type        | Constraints             | Description      |
+| ------------ | ----------- | ----------------------- | ---------------- |
+| id           | Long        | PK, Auto-increment      | Primary key      |
+| email        | String(255) | NOT NULL, UNIQUE, Email | User email       |
+| passwordHash | String(255) | NOT NULL                | BCrypt hash      |
+| roleId       | Long        | FK → Role               | User role        |
+| employeeId   | Long        | FK → Employee, NULL     | Link to employee |
+| isActive     | Boolean     | DEFAULT true            | Account status   |
+| createdAt    | Timestamp   | NOT NULL                | Creation time    |
+| updatedAt    | Timestamp   | NOT NULL                | Last update      |
 
 ---
 
-## Sales
+## Role
 
-### Customer
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| name | String | |
-| email | String | |
-| phone | String | |
-| address | String | |
-| creditLimit | BigDecimal | |
-| paymentTerms | String | NET_30, NET_60, IMMEDIATE |
-| isActive | Boolean | Default true |
-| createdAt | LocalDateTime | |
-| updatedAt | LocalDateTime | |
+| Field       | Type       | Constraints        | Description      |
+| ----------- | ---------- | ------------------ | ---------------- |
+| id          | Long       | PK, Auto-increment | Primary key      |
+| name        | String(50) | NOT NULL, UNIQUE   | Role name        |
+| permissions | JSON       | NOT NULL           | Permission array |
 
-### SalesOrder
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| orderNumber | String | Unique |
-| customer | Customer | Many-to-one |
-| orderDate | LocalDateTime | |
-| status | OrderStatus | DRAFT, CONFIRMED, SHIPPED, INVOICED, CANCELLED |
-| subtotal | BigDecimal | |
-| taxAmount | BigDecimal | |
-| totalAmount | BigDecimal | |
-| notes | String | Nullable |
-| createdBy | User | Many-to-one |
-| lines | List&lt;SalesOrderLine&gt; | One-to-many |
-| createdAt | LocalDateTime | |
-| updatedAt | LocalDateTime | |
+**Permissions Structure:**
 
-### SalesOrderLine
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| order | SalesOrder | Many-to-one |
-| product | Product | Many-to-one |
-| quantity | Integer | |
-| unitPrice | BigDecimal | |
-| lineTotal | BigDecimal | |
-| description | String | Nullable |
+```json
+["USER_READ", "USER_CREATE", "USER_UPDATE", "USER_DELETE", ...]
+```
 
 ---
 
-## Purchasing
+## Employee
 
-### Supplier
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| code | String | Unique |
-| name | String | |
-| contactPerson | String | |
-| email | String | |
-| phone | String | |
-| address | String | |
-| taxId | String | Nullable |
-| paymentTerms | Integer | Days (e.g. 30, 60) |
-| totalPurchased | BigDecimal | |
-| isActive | Boolean | Default true |
-| createdAt | LocalDateTime | |
-| updatedAt | LocalDateTime | |
-
-### PurchaseOrder
-| Field | Type | Column | Notes |
-|-------|------|--------|-------|
-| id | Long | id | |
-| poNumber | String | po_number | Unique |
-| supplier | Supplier | supplier_id | Many-to-one |
-| orderDate | LocalDateTime | order_date | |
-| status | Status | status | DRAFT, SENT, RECEIVED, PARTIAL, CANCELLED |
-| subtotal | BigDecimal | subtotal | |
-| taxAmount | BigDecimal | tax_amount | |
-| totalAmount | BigDecimal | total_amount | |
-| shippingCost | BigDecimal | shipping_cost | |
-| expectedDate | LocalDate | expected_date | |
-| receivedDate | LocalDate | received_date | Nullable |
-| notes | String | notes | |
-| createdBy | User | created_by | Many-to-one |
-| lines | List&lt;PurchaseOrderLine&gt; | | One-to-many |
-| createdAt | LocalDateTime | created_at | |
-| updatedAt | LocalDateTime | updated_at | |
-
-### PurchaseOrderLine
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| purchaseOrder | PurchaseOrder | Many-to-one |
-| product | Product | Many-to-one |
-| quantity | Integer | |
-| unitPrice | BigDecimal | |
-| discount | BigDecimal | |
-| lineTotal | BigDecimal | |
-| receivedQty | Integer | |
-| notes | String | Nullable |
-
-### StockMovement
-| Field | Type | Column | Notes |
-|-------|------|--------|-------|
-| id | Long | id | |
-| product | Product | product_id | Many-to-one |
-| type | MovementType | movement_type | IN, OUT, ADJUSTMENT |
-| quantity | Integer | quantity | |
-| previousStock | Integer | previous_stock | |
-| newStock | Integer | new_stock | |
-| referenceType | String | reference_type | PO, SO, ADJUSTMENT |
-| referenceId | Long | reference_id | |
-| date | LocalDate | movement_date | |
-| notes | String | notes | |
-| createdBy | User | created_by | Many-to-one |
-| createdAt | LocalDateTime | created_at | |
+| Field      | Type             | Constraints        | Description                  |
+| ---------- | ---------------- | ------------------ | ---------------------------- |
+| id         | Long             | PK, Auto-increment | Primary key                  |
+| userId     | Long             | FK → User, NULL    | Link to user account         |
+| firstName  | String(100)      | NOT NULL           | First name                   |
+| lastName   | String(100)      | NOT NULL           | Last name                    |
+| email      | String(255)      | NOT NULL, UNIQUE   | Email                        |
+| phone      | String(20)       | NULL               | Phone number                 |
+| department | String(100)      | NULL               | Department                   |
+| position   | String(100)      | NULL               | Job position                 |
+| hireDate   | Date             | NOT NULL           | Hire date                    |
+| salary     | BigDecimal(15,2) | NULL               | Salary                       |
+| status     | Enum             | DEFAULT ACTIVE     | ACTIVE, INACTIVE, TERMINATED |
+| createdAt  | Timestamp        | NOT NULL           | Creation time                |
+| updatedAt  | Timestamp        | NOT NULL           | Last update                  |
 
 ---
 
-## Finance
+## Category
 
-### Invoice
-| Field | Type | Column | Notes |
-|-------|------|--------|-------|
-| id | Long | id | |
-| invoiceNumber | String | invoice_number | Unique |
-| customer | Customer | customer_id | Many-to-one |
-| invoiceDate | LocalDateTime | issue_date | |
-| dueDate | LocalDateTime | due_date | |
-| dueAt | LocalDateTime | due_at | Nullable |
-| status | InvoiceStatus | status | DRAFT, SENT, PAID, OVERDUE, CANCELLED |
-| subtotal | BigDecimal | subtotal | |
-| taxAmount | BigDecimal | tax_amount | |
-| total | BigDecimal | total_amount | |
-| paidAmount | BigDecimal | paid_amount | |
-| balance | BigDecimal | (computed) | total - paidAmount |
-| salesOrder | SalesOrder | sales_order_id | Many-to-one, nullable |
-| payments | List&lt;Payment&gt; | | One-to-many |
-| lines | List&lt;InvoiceLine&gt; | | One-to-many |
-| sentAt | LocalDateTime | sent_at | Nullable |
-| createdAt | LocalDateTime | created_at | |
-| updatedAt | LocalDateTime | updated_at | |
-
-### InvoiceLine
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| invoice | Invoice | Many-to-one |
-| product | Product | Many-to-one, nullable |
-| description | String | Nullable |
-| quantity | Integer | Not null |
-| unitPrice | BigDecimal | Not null |
-| lineTotal | BigDecimal | Not null |
-| glAccountId | Long | Nullable |
-| taxCode | String | Nullable |
-| taxRate | BigDecimal | Nullable |
-
-### Payment
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| invoice | Invoice | Many-to-one |
-| amount | BigDecimal | |
-| paymentDate | LocalDateTime | |
-| method | PaymentMethod | CASH, CARD, BANK_TRANSFER, CHEQUE |
-| reference | String | Nullable |
-| notes | String | Nullable |
-| createdAt | LocalDateTime | |
-
-### Account
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| code | String | Unique |
-| name | String | |
-| type | AccountType | ASSET, LIABILITY, EQUITY, INCOME, EXPENSE |
-| parent | Account | Self-referencing, nullable |
-| balance | BigDecimal | |
-| isActive | Boolean | Default true |
-| createdAt | LocalDateTime | |
-| updatedAt | LocalDateTime | |
-
-### JournalEntry
-| Field | Type | Column | Notes |
-|-------|------|--------|-------|
-| id | Long | id | |
-| entryNumber | String | entry_number | Unique |
-| date | LocalDate | entry_date | |
-| journalType | String | journal_type | MISC (default), SALES, PURCHASES, etc. |
-| description | String | description | |
-| reference | String | reference | Nullable |
-| status | JournalEntryStatus | status | DRAFT, POSTED |
-| createdBy | User | created_by | Many-to-one |
-| lines | List&lt;JournalEntryLine&gt; | | One-to-many |
-| postedAt | LocalDateTime | posted_at | Nullable |
-| createdAt | LocalDateTime | created_at | |
-
-### JournalEntryLine
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| entry | JournalEntry | Many-to-one |
-| account | Account | Many-to-one |
-| debit | BigDecimal | |
-| credit | BigDecimal | |
-| description | String | Nullable |
+| Field       | Type        | Constraints         | Description     |
+| ----------- | ----------- | ------------------- | --------------- |
+| id          | Long        | PK, Auto-increment  | Primary key     |
+| name        | String(100) | NOT NULL            | Category name   |
+| description | Text        | NULL                | Description     |
+| parentId    | Long        | FK → Category, NULL | Parent category |
+| createdAt   | Timestamp   | NOT NULL            | Creation time   |
+| updatedAt   | Timestamp   | NOT NULL            | Last update     |
 
 ---
 
-## HR
+## Product
 
-### Employee
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| user | User | One-to-one, nullable |
-| employeeCode | String | Unique |
-| firstName | String | |
-| lastName | String | |
-| email | String | Unique |
-| phone | String | |
-| department | String | |
-| position | String | |
-| hireDate | LocalDate | |
-| terminationDate | LocalDate | Nullable |
-| salary | BigDecimal | |
-| status | EmployeeStatus | ACTIVE, INACTIVE, TERMINATED |
-| address | String | |
-| emergencyContact | String | |
-| emergencyPhone | String | |
-| createdAt | LocalDateTime | |
-| updatedAt | LocalDateTime | |
-
-### Attendance
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| employee | Employee | Many-to-one |
-| date | LocalDate | |
-| checkIn | LocalDateTime | |
-| checkOut | LocalDateTime | Nullable |
-| status | AttendanceStatus | PRESENT, ABSENT, LATE, LEAVE |
-| notes | String | Nullable |
-| createdAt | LocalDateTime | |
-
-### LeaveRequest
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| employee | Employee | Many-to-one |
-| startDate | LocalDate | |
-| endDate | LocalDate | |
-| type | LeaveType | ANNUAL, SICK, PERSONAL, UNPAID |
-| status | LeaveStatus | PENDING, APPROVED, REJECTED, CANCELLED |
-| reason | String | |
-| rejectionReason | String | Nullable |
-| approvedBy | User | Many-to-one, nullable |
-| approvedAt | LocalDateTime | Nullable |
-| createdAt | LocalDateTime | |
-| updatedAt | LocalDateTime | |
-
-### LeaveBalance
-| Field | Type | Notes |
-|-------|------|-------|
-| id | Long | |
-| employee | Employee | Many-to-one |
-| type | LeaveType | ANNUAL, SICK, PERSONAL, UNPAID |
-| totalDays | int | |
-| usedDays | int | |
-| year | int | |
-| createdAt | LocalDateTime | |
-| updatedAt | LocalDateTime | |
+| Field        | Type          | Constraints         | Description        |
+| ------------ | ------------- | ------------------- | ------------------ |
+| id           | Long          | PK, Auto-increment  | Primary key        |
+| sku          | String(50)    | NOT NULL, UNIQUE    | Stock keeping unit |
+| name         | String(255)   | NOT NULL            | Product name       |
+| description  | Text          | NULL                | Description        |
+| categoryId   | Long          | FK → Category       | Category           |
+| supplierId   | Long          | FK → Supplier, NULL | Primary supplier   |
+| unitPrice    | Decimal(15,2) | NOT NULL            | Selling price      |
+| costPrice    | Decimal(15,2) | NULL                | Cost price         |
+| reorderLevel | Integer       | DEFAULT 10          | Reorder threshold  |
+| currentStock | Integer       | DEFAULT 0           | Current quantity   |
+| imageUrl     | String(500)   | NULL                | Product image      |
+| isActive     | Boolean       | DEFAULT true        | Active status      |
+| createdAt    | Timestamp     | NOT NULL            | Creation time      |
+| updatedAt    | Timestamp     | NOT NULL            | Last update        |
 
 ---
-*Last audited: 2026-05-10*
 
-### Changelog (2026-05-10)
-| # | Change | Detail |
-|---|--------|--------|
-| 1 | Fixed PurchaseOrder.expectedDate | Column name corrected from `delivery_date` to `expected_date` to match V4 migration |
-| 2 | Fixed JournalEntry.date | Column name corrected from `date` to `entry_date` to match V6 migration |
-| 3 | Fixed StockMovement.date | Column name corrected from `date` to `movement_date` to match V4 migration |
-| 4 | Fixed Attendance.date | Column name corrected from `date` to `attendance_date` to match V2 migration |
-| 5 | Added missing fields to PurchaseOrder | Added `shippingCost`, `receivedDate` with their DB columns |
-| 6 | Added missing fields to Invoice | Added `balance` (computed), confirmed `sentAt`, `dueAt` columns |
-| 7 | Added missing fields to StockMovement | Added `previousStock`, `newStock`, `referenceType`, `referenceId` |
-| 8 | Added Supplier fields | `code`, `taxId`, `totalPurchased` documented (added via V18 migration) |
+## Supplier
+
+| Field         | Type        | Constraints        | Description   |
+| ------------- | ----------- | ------------------ | ------------- |
+| id            | Long        | PK, Auto-increment | Primary key   |
+| name          | String(255) | NOT NULL           | Supplier name |
+| contactPerson | String(100) | NULL               | Contact name  |
+| email         | String(255) | NULL               | Email         |
+| phone         | String(20)  | NULL               | Phone         |
+| address       | Text        | NULL               | Address       |
+| isActive      | Boolean     | DEFAULT true       | Active status |
+| createdAt     | Timestamp   | NOT NULL           | Creation time |
+| updatedAt     | Timestamp   | NOT NULL           | Last update   |
+
+---
+
+## StockMovement
+
+| Field         | Type       | Constraints        | Description         |
+| ------------- | ---------- | ------------------ | ------------------- |
+| id            | Long       | PK, Auto-increment | Primary key         |
+| productId     | Long       | FK → Product       | Product             |
+| type          | Enum       | NOT NULL           | IN, OUT, ADJUSTMENT |
+| quantity      | Integer    | NOT NULL           | Movement quantity   |
+| referenceType | String(50) | NULL               | Reference type      |
+| referenceId   | Long       | NULL               | Reference ID        |
+| notes         | Text       | NULL               | Notes               |
+| createdAt     | Timestamp  | NOT NULL           | Creation time       |
+
+---
+
+## Customer
+
+| Field        | Type          | Constraints        | Description               |
+| ------------ | ------------- | ------------------ | ------------------------- |
+| id           | Long          | PK, Auto-increment | Primary key               |
+| name         | String(255)   | NOT NULL           | Customer name             |
+| email        | String(255)   | NULL               | Email                     |
+| phone        | String(20)    | NULL               | Phone                     |
+| address      | Text          | NULL               | Address                   |
+| creditLimit  | Decimal(15,2) | DEFAULT 0          | Credit limit              |
+| paymentTerms | String(20)    | DEFAULT NET_30     | NET_30, NET_60, IMMEDIATE |
+| isActive     | Boolean       | DEFAULT true       | Active status             |
+| createdAt    | Timestamp     | NOT NULL           | Creation time             |
+| updatedAt    | Timestamp     | NOT NULL           | Last update               |
+
+---
+
+## SalesOrder
+
+| Field       | Type          | Constraints        | Description                                    |
+| ----------- | ------------- | ------------------ | ---------------------------------------------- |
+| id          | Long          | PK, Auto-increment | Primary key                                    |
+| orderNumber | String(50)    | NOT NULL, UNIQUE   | Order number                                   |
+| customerId  | Long          | FK → Customer      | Customer                                       |
+| orderDate   | Timestamp     | NOT NULL           | Order date                                     |
+| status      | Enum          | DEFAULT DRAFT      | DRAFT, CONFIRMED, SHIPPED, INVOICED, CANCELLED |
+| subtotal    | Decimal(15,2) | NOT NULL           | Subtotal                                       |
+| taxAmount   | Decimal(15,2) | DEFAULT 0          | Tax amount                                     |
+| totalAmount | Decimal(15,2) | NOT NULL           | Total                                          |
+| notes       | Text          | NULL               | Notes                                          |
+| createdBy   | Long          | FK → User          | Creator                                        |
+| createdAt   | Timestamp     | NOT NULL           | Creation time                                  |
+| updatedAt   | Timestamp     | NOT NULL           | Last update                                    |
+
+---
+
+## SalesOrderLine
+
+| Field     | Type          | Constraints        | Description |
+| --------- | ------------- | ------------------ | ----------- |
+| id        | Long          | PK, Auto-increment | Primary key |
+| orderId   | Long          | FK → SalesOrder    | Order       |
+| productId | Long          | FK → Product       | Product     |
+| quantity  | Integer       | NOT NULL           | Quantity    |
+| unitPrice | Decimal(15,2) | NOT NULL           | Unit price  |
+| lineTotal | Decimal(15,2) | NOT NULL           | Line total  |
+
+---
+
+## Invoice
+
+| Field         | Type          | Constraints           | Description                           |
+| ------------- | ------------- | --------------------- | ------------------------------------- |
+| id            | Long          | PK, Auto-increment    | Primary key                           |
+| invoiceNumber | String(50)    | NOT NULL, UNIQUE      | Invoice number                        |
+| salesOrderId  | Long          | FK → SalesOrder, NULL | Source order                          |
+| customerId    | Long          | FK → Customer         | Customer                              |
+| invoiceDate   | Timestamp     | NOT NULL              | Invoice date                          |
+| dueDate       | Timestamp     | NOT NULL              | Due date                              |
+| status        | Enum          | DEFAULT DRAFT         | DRAFT, SENT, PAID, OVERDUE, CANCELLED |
+| subtotal      | Decimal(15,2) | NOT NULL              | Subtotal                              |
+| taxAmount     | Decimal(15,2) | DEFAULT 0             | Tax                                   |
+| total         | Decimal(15,2) | NOT NULL              | Total                                 |
+| paidAmount    | Decimal(15,2) | DEFAULT 0             | Paid amount                           |
+| createdAt     | Timestamp     | NOT NULL              | Creation time                         |
+| updatedAt     | Timestamp     | NOT NULL              | Last update                           |
+
+---
+
+## Payment
+
+| Field       | Type          | Constraints        | Description                       |
+| ----------- | ------------- | ------------------ | --------------------------------- |
+| id          | Long          | PK, Auto-increment | Primary key                       |
+| invoiceId   | Long          | FK → Invoice       | Invoice                           |
+| amount      | Decimal(15,2) | NOT NULL           | Payment amount                    |
+| paymentDate | Timestamp     | NOT NULL           | Payment date                      |
+| method      | Enum          | NOT NULL           | CASH, CARD, BANK_TRANSFER, CHEQUE |
+| reference   | String(100)   | NULL               | Reference number                  |
+| notes       | Text          | NULL               | Notes                             |
+| createdAt   | Timestamp     | NOT NULL           | Creation time                     |
+
+---
+
+## PurchaseOrder
+
+| Field        | Type          | Constraints        | Description                               |
+| ------------ | ------------- | ------------------ | ----------------------------------------- |
+| id           | Long          | PK, Auto-increment | Primary key                               |
+| poNumber     | String(50)    | NOT NULL, UNIQUE   | PO number                                 |
+| supplierId   | Long          | FK → Supplier      | Supplier                                  |
+| orderDate    | Timestamp     | NOT NULL           | Order date                                |
+| expectedDate | Date          | NULL               | Expected delivery                         |
+| status       | Enum          | DEFAULT DRAFT      | DRAFT, SENT, RECEIVED, PARTIAL, CANCELLED |
+| subtotal     | Decimal(15,2) | NOT NULL           | Subtotal                                  |
+| totalAmount  | Decimal(15,2) | NOT NULL           | Total                                     |
+| notes        | Text          | NULL               | Notes                                     |
+| createdBy    | Long          | FK → User          | Creator                                   |
+| createdAt    | Timestamp     | NOT NULL           | Creation time                             |
+| updatedAt    | Timestamp     | NOT NULL           | Last update                               |
+
+---
+
+## PurchaseOrderLine
+
+| Field       | Type          | Constraints        | Description  |
+| ----------- | ------------- | ------------------ | ------------ |
+| id          | Long          | PK, Auto-increment | Primary key  |
+| orderId     | Long          | FK → PurchaseOrder | Order        |
+| productId   | Long          | FK → Product       | Product      |
+| quantity    | Integer       | NOT NULL           | Ordered qty  |
+| receivedQty | Integer       | DEFAULT 0          | Received qty |
+| unitPrice   | Decimal(15,2) | NOT NULL           | Unit price   |
+| lineTotal   | Decimal(15,2) | NOT NULL           | Line total   |
+
+---
+
+## Account
+
+| Field     | Type          | Constraints        | Description                               |
+| --------- | ------------- | ------------------ | ----------------------------------------- |
+| id        | Long          | PK, Auto-increment | Primary key                               |
+| code      | String(50)    | NOT NULL, UNIQUE   | Account code                              |
+| name      | String(255)   | NOT NULL           | Account name                              |
+| type      | Enum          | NOT NULL           | ASSET, LIABILITY, EQUITY, INCOME, EXPENSE |
+| parentId  | Long          | FK → Account, NULL | Parent account                            |
+| balance   | Decimal(15,2) | DEFAULT 0          | Current balance                           |
+| isActive  | Boolean       | DEFAULT true       | Active status                             |
+| createdAt | Timestamp     | NOT NULL           | Creation time                             |
+| updatedAt | Timestamp     | NOT NULL           | Last update                               |
+
+---
+
+## JournalEntry
+
+| Field       | Type        | Constraints        | Description   |
+| ----------- | ----------- | ------------------ | ------------- |
+| id          | Long        | PK, Auto-increment | Primary key   |
+| entryNumber | String(50)  | NOT NULL, UNIQUE   | Entry number  |
+| date        | Date        | NOT NULL           | Entry date    |
+| description | String(500) | NOT NULL           | Description   |
+| reference   | String(100) | NULL               | Reference     |
+| status      | Enum        | DEFAULT DRAFT      | DRAFT, POSTED |
+| createdBy   | Long        | FK → User          | Creator       |
+| createdAt   | Timestamp   | NOT NULL           | Creation time |
+| postedAt    | Timestamp   | NULL               | Posted time   |
+
+---
+
+## JournalEntryLine
+
+| Field       | Type          | Constraints        | Description      |
+| ----------- | ------------- | ------------------ | ---------------- |
+| id          | Long          | PK, Auto-increment | Primary key      |
+| entryId     | Long          | FK → JournalEntry  | Entry            |
+| accountId   | Long          | FK → Account       | Account          |
+| debit       | Decimal(15,2) | DEFAULT 0          | Debit amount     |
+| credit      | Decimal(15,2) | DEFAULT 0          | Credit amount    |
+| description | String(255)   | NULL               | Line description |
+
+---
+
+## Attendance
+
+| Field      | Type      | Constraints        | Description                  |
+| ---------- | --------- | ------------------ | ---------------------------- |
+| id         | Long      | PK, Auto-increment | Primary key                  |
+| employeeId | Long      | FK → Employee      | Employee                     |
+| date       | Date      | NOT NULL           | Attendance date              |
+| checkIn    | Timestamp | NULL               | Clock in time                |
+| checkOut   | Timestamp | NULL               | Clock out time               |
+| status     | Enum      | DEFAULT PRESENT    | PRESENT, ABSENT, LATE, LEAVE |
+| notes      | Text      | NULL               | Notes                        |
+
+---
+
+## LeaveRequest
+
+| Field      | Type            | Constraints        | Description                            |
+| ---------- | --------------- | ------------------ | -------------------------------------- |
+| id         | Long            | PK, Auto-increment | Primary key                            |
+| employeeId | Long            | FK → Employee      | Employee                               |
+| startDate  | Date            | NOT NULL           | Start date                             |
+| endDate    | Date            | NOT NULL           | End date                               |
+| type       | Enum            | NOT NULL           | ANNUAL, SICK, PERSONAL, UNPAID         |
+| status     | Enum            | DEFAULT PENDING    | PENDING, APPROVED, REJECTED, CANCELLED |
+| reason     | Text            | NOT NULL           | Reason                                 |
+| approvedBy | Long            | FK → User, NULL    | Approver                               |
+| approvedAt | Timestamp, NULL | NULL               | Approval time                          |
+| createdAt  | Timestamp       | NOT NULL           | Creation time                          |
+| updatedAt  | Timestamp       | NOT NULL           | Last update                            |
+
+---
+
+## LeaveBalance
+
+| Field      | Type    | Constraints        | Description            |
+| ---------- | ------- | ------------------ | ---------------------- |
+| id         | Long    | PK, Auto-increment | Primary key            |
+| employeeId | Long    | FK → Employee      | Employee               |
+| type       | Enum    | NOT NULL           | ANNUAL, SICK, PERSONAL |
+| totalDays  | Integer | NOT NULL           | Total days             |
+| usedDays   | Integer | DEFAULT 0          | Used days              |
+
+---
+
+## AuditLog
+
+| Field      | Type        | Constraints        | Description    |
+| ---------- | ----------- | ------------------ | -------------- |
+| id         | Long        | PK, Auto-increment | Primary key    |
+| userId     | Long        | FK → User          | User           |
+| action     | String(100) | NOT NULL           | Action         |
+| entityType | String(100) | NOT NULL           | Entity type    |
+| entityId   | Long        | NOT NULL           | Entity ID      |
+| changes    | JSON        | NULL               | Changed fields |
+| ipAddress  | String(45)  | NULL               | IP address     |
+| createdAt  | Timestamp   | NOT NULL           | Creation time  |
+
+---
+
+---
+
+## Project
+
+| Field      | Type          | Constraints         | Description                                     |
+| ---------- | ------------- | ------------------- | ----------------------------------------------- |
+| id         | Long          | PK, Auto-increment  | Primary key                                     |
+| name       | String(255)   | NOT NULL            | Project name                                    |
+| customerId | Long          | FK → Customer, NULL | Customer                                        |
+| dateStart  | Date          | NULL                | Start date                                      |
+| dateEnd    | Date          | NULL                | End date                                        |
+| budget     | Decimal(15,2) | NULL                | Budget                                          |
+| state      | Enum          | DEFAULT PLANNING    | PLANNING, ACTIVE, ON_HOLD, COMPLETED, CANCELLED |
+| createdAt  | Timestamp     | NOT NULL            | Creation time                                   |
+| updatedAt  | Timestamp     | NULL                | Last update                                     |
+
+---
+
+## Task
+
+| Field          | Type         | Constraints            | Description     |
+| -------------- | ------------ | ---------------------- | --------------- |
+| id             | Long         | PK, Auto-increment     | Primary key     |
+| projectId      | Long         | FK → Project, NOT NULL | Project         |
+| name           | String(255)  | NOT NULL               | Task name       |
+| description    | Text         | NULL                   | Description     |
+| assignedTo     | Long         | FK → Employee, NULL    | Assignee        |
+| stageId        | Long         | FK → TaskStage, NULL   | Stage           |
+| dueDate        | Date         | NULL                   | Due date        |
+| estimatedHours | Decimal(8,2) | NULL                   | Estimated hours |
+| actualHours    | Decimal(8,2) | NULL                   | Actual hours    |
+| createdAt      | Timestamp    | NOT NULL               | Creation time   |
+| updatedAt      | Timestamp    | NULL                   | Last update     |
+
+---
+
+## TaskStage
+
+| Field     | Type        | Constraints            | Description   |
+| --------- | ----------- | ---------------------- | ------------- |
+| id        | Long        | PK, Auto-increment     | Primary key   |
+| projectId | Long        | FK → Project, NOT NULL | Project       |
+| name      | String(100) | NOT NULL               | Stage name    |
+| sequence  | Integer     | DEFAULT 0              | Display order |
+| isDefault | Boolean     | DEFAULT false          | Default stage |
+
+---
+
+## Lead (Planned — CRM)
+
+| Field      | Type        | Constraints        | Description                                |
+| ---------- | ----------- | ------------------ | ------------------------------------------ |
+| id         | Long        | PK, Auto-increment | Primary key                                |
+| name       | String(255) | NOT NULL           | Contact name                               |
+| email      | String(255) | NULL               | Email                                      |
+| phone      | String(20)  | NULL               | Phone                                      |
+| company    | String(255) | NULL               | Company name                               |
+| source     | String(50)  | NULL               | WEBSITE, REFERRAL, COLD_CALL, etc          |
+| status     | Enum        | DEFAULT NEW        | NEW, CONTACTED, QUALIFIED, CONVERTED, LOST |
+| assignedTo | Long        | FK → User, NULL    | Assigned user                              |
+| notes      | Text        | NULL               | Notes                                      |
+| createdAt  | Timestamp   | NOT NULL           | Creation time                              |
+| updatedAt  | Timestamp   | NOT NULL           | Last update                                |
+
+---
+
+## Opportunity (Planned — CRM)
+
+| Field       | Type          | Constraints                  | Description       |
+| ----------- | ------------- | ---------------------------- | ----------------- |
+| id          | Long          | PK, Auto-increment           | Primary key       |
+| leadId      | Long          | FK → Lead, NULL              | Source lead       |
+| customerId  | Long          | FK → Customer, NOT NULL      | Customer          |
+| stageId     | Long          | FK → PipelineStage, NOT NULL | Pipeline stage    |
+| revenue     | Decimal(15,2) | DEFAULT 0                    | Expected revenue  |
+| probability | Integer       | DEFAULT 0                    | Win probability % |
+| closeDate   | Date          | NULL                         | Expected close    |
+| createdAt   | Timestamp     | NOT NULL                     | Creation time     |
+| updatedAt   | Timestamp     | NOT NULL                     | Last update       |
+
+---
+
+## PipelineStage (Planned — CRM)
+
+| Field     | Type        | Constraints        | Description   |
+| --------- | ----------- | ------------------ | ------------- |
+| id        | Long        | PK, Auto-increment | Primary key   |
+| name      | String(100) | NOT NULL           | Stage name    |
+| sequence  | Integer     | NOT NULL           | Display order |
+| createdAt | Timestamp   | NOT NULL           | Creation time |
+
+---
+
+## Ticket (Helpdesk)
+
+| Field            | Type               | Constraints         | Description                                    |
+| ---------------- | ------------------ | ------------------- | ---------------------------------------------- |
+| id               | Long               | PK, Auto-increment  | Primary key                                    |
+| title            | String(255)        | NOT NULL            | Ticket title                                   |
+| description      | Text               | NULL                | Issue description                              |
+| customer         | Customer           | @ManyToOne(LAZY)    | FK customer_id → customers(id)                 |
+| priority         | Enum               | NOT NULL            | LOW, MEDIUM, HIGH, URGENT                      |
+| status           | Enum               | NOT NULL            | OPEN, IN_PROGRESS, RESOLVED, CLOSED            |
+| assignedTo       | Employee           | @ManyToOne(LAZY)    | FK assigned_to → employees(id), NULL           |
+| createdBy        | User               | @ManyToOne(LAZY)    | FK created_by → users(id), NULL                |
+| stage            | HelpdeskStage      | @ManyToOne(LAZY)    | FK stage_id → helpdesk_stages(id), NULL        |
+| team             | HelpdeskTeam       | @ManyToOne(LAZY)    | FK team_id → helpdesk_teams(id), NULL          |
+| category         | HelpdeskCategory   | @ManyToOne(LAZY)    | FK category_id → helpdesk_categories(id), NULL |
+| channel          | Enum               | NULL                | EMAIL, PHONE, CHAT, PORTAL                     |
+| slaDeadline      | Timestamp          | NULL                | SLA resolution deadline                        |
+| slaStatus        | Enum               | NULL                | OK, WARNING, BREACHED                          |
+| closedAt         | Timestamp          | NULL                | Time ticket was closed                         |
+| isArchived       | Boolean            | DEFAULT false       | Archived flag                                  |
+| tags             | Set<HelpdeskTag>   | @ManyToMany         | Ticket tags                                    |
+| ticketCommentSet | Set<TicketComment> | @OneToMany(CASCADE) | Comments on this ticket                        |
+| createdAt        | Timestamp          | NOT NULL            | Creation time                                  |
+| updatedAt        | Timestamp          | NULL                | Last update                                    |
+
+---
+
+## TicketComment (Helpdesk)
+
+| Field      | Type      | Constraints        | Description                          |
+| ---------- | --------- | ------------------ | ------------------------------------ |
+| id         | Long      | PK, Auto-increment | Primary key                          |
+| ticket     | Ticket    | @ManyToOne(LAZY)   | FK ticket_id → tickets(id), NOT NULL |
+| author     | User      | @ManyToOne(LAZY)   | FK author_id → users(id), NOT NULL   |
+| message    | Text      | NOT NULL           | Comment body                         |
+| isInternal | Boolean   | DEFAULT false      | Internal note                        |
+| createdAt  | Timestamp | NOT NULL           | Creation time                        |
+
+> **Note:** Comments can be created via `POST /support/tickets/{id}/comments` and are also loaded via `Ticket.@OneToMany`.
+
+---
+
+## HelpdeskTeam
+
+| Field     | Type        | Constraints         | Description   |
+| --------- | ----------- | ------------------- | ------------- |
+| id        | Long        | PK, Auto-increment  | Primary key   |
+| name      | String(100) | NOT NULL            | Team name     |
+| leadId    | Long        | FK → Employee, NULL | Team lead     |
+| isActive  | Boolean     | DEFAULT true        | Active status |
+| createdAt | Timestamp   | NOT NULL            | Creation time |
+
+---
+
+## HelpdeskStage
+
+| Field     | Type        | Constraints        | Description   |
+| --------- | ----------- | ------------------ | ------------- |
+| id        | Long        | PK, Auto-increment | Primary key   |
+| name      | String(100) | NOT NULL           | Stage name    |
+| sequence  | Integer     | DEFAULT 0          | Display order |
+| isDefault | Boolean     | DEFAULT false      | Default stage |
+
+---
+
+## HelpdeskCategory
+
+| Field       | Type        | Constraints                 | Description     |
+| ----------- | ----------- | --------------------------- | --------------- |
+| id          | Long        | PK, Auto-increment          | Primary key     |
+| name        | String(100) | NOT NULL                    | Category name   |
+| description | Text        | NULL                        | Description     |
+| parentId    | Long        | FK → HelpdeskCategory, NULL | Parent category |
+| isActive    | Boolean     | DEFAULT true                | Active status   |
+| createdAt   | Timestamp   | NOT NULL                    | Creation time   |
+
+---
+
+## HelpdeskTag
+
+| Field | Type       | Constraints        | Description |
+| ----- | ---------- | ------------------ | ----------- |
+| id    | Long       | PK, Auto-increment | Primary key |
+| name  | String(50) | NOT NULL, UNIQUE   | Tag name    |
+| color | String(7)  | NULL               | Hex color   |
+
+---
+
+## SlaPolicy
+
+| Field          | Type        | Constraints        | Description                |
+| -------------- | ----------- | ------------------ | -------------------------- |
+| id             | Long        | PK, Auto-increment | Primary key                |
+| name           | String(100) | NOT NULL           | Policy name                |
+| priority       | Enum        | NOT NULL           | LOW, MEDIUM, HIGH, URGENT  |
+| responseTime   | Integer     | NOT NULL           | Response time in minutes   |
+| resolutionTime | Integer     | NOT NULL           | Resolution time in minutes |
+| isActive       | Boolean     | DEFAULT true       | Active status              |
+| createdAt      | Timestamp   | NOT NULL           | Creation time              |
+
+---
+
+## KbArticle
+
+| Field       | Type        | Constraints                 | Description     |
+| ----------- | ----------- | --------------------------- | --------------- |
+| id          | Long        | PK, Auto-increment          | Primary key     |
+| title       | String(255) | NOT NULL                    | Article title   |
+| content     | Text        | NOT NULL                    | Article body    |
+| categoryId  | Long        | FK → HelpdeskCategory, NULL | Category        |
+| tags        | String(500) | NULL                        | Comma-separated |
+| views       | Integer     | DEFAULT 0                   | View count      |
+| isPublished | Boolean     | DEFAULT false               | Published flag  |
+| createdBy   | Long        | FK → User                   | Author          |
+| createdAt   | Timestamp   | NOT NULL                    | Creation time   |
+| updatedAt   | Timestamp   | NULL                        | Last update     |
+
+---
+
+## TicketAttachment
+
+| Field      | Type        | Constraints        | Description   |
+| ---------- | ----------- | ------------------ | ------------- |
+| id         | Long        | PK, Auto-increment | Primary key   |
+| ticketId   | Long        | FK → Ticket        | Parent ticket |
+| fileName   | String(255) | NOT NULL           | Original name |
+| filePath   | String(500) | NOT NULL           | Storage path  |
+| mimeType   | String(100) | NULL               | MIME type     |
+| fileSize   | Long        | NULL               | Size in bytes |
+| uploadedBy | Long        | FK → User          | Uploader      |
+| createdAt  | Timestamp   | NOT NULL           | Creation time |
+
+---
+
+## Enums
+
+### OrderStatus
+
+```
+DRAFT, CONFIRMED, SHIPPED, INVOICED, CANCELLED
+```
+
+### InvoiceStatus
+
+```
+DRAFT, SENT, PAID, OVERDUE, CANCELLED
+```
+
+### PurchaseOrderStatus
+
+```
+DRAFT, SENT, RECEIVED, PARTIAL, CANCELLED
+```
+
+### AccountType
+
+```
+ASSET, LIABILITY, EQUITY, INCOME, EXPENSE
+```
+
+### EmployeeStatus
+
+```
+ACTIVE, INACTIVE, TERMINATED
+```
+
+### LeaveType
+
+```
+ANNUAL, SICK, PERSONAL, UNPAID
+```
+
+### LeaveStatus
+
+```
+PENDING, APPROVED, REJECTED, CANCELLED
+```
+
+### AttendanceStatus
+
+```
+PRESENT, ABSENT, LATE, LEAVE
+```
+
+### StockMovementType
+
+```
+IN, OUT, ADJUSTMENT
+```
+
+### PaymentMethod
+
+```
+CASH, CARD, BANK_TRANSFER, CHEQUE
+```
+
+### ProjectState
+
+```
+PLANNING, ACTIVE, ON_HOLD, COMPLETED, CANCELLED
+```
+
+### LeadStatus
+
+```
+NEW, CONTACTED, QUALIFIED, CONVERTED, LOST
+```
+
+### TicketChannel
+
+```
+EMAIL, PHONE, CHAT, PORTAL
+```
+
+### SlaStatus
+
+```
+OK, WARNING, BREACHED
+```
+
+### TicketPriority
+
+```
+LOW, MEDIUM, HIGH, URGENT
+```
+
+### TicketStatus
+
+```
+OPEN, IN_PROGRESS, RESOLVED, CLOSED
+```

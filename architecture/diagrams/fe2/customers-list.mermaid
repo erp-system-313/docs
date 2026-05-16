@@ -1,0 +1,21 @@
+graph TD
+    CL[CustomersList]
+    CL --> SearchBar[GlobalSearch]
+    CL --> Filters[AdvancedFiltersPanel]
+    CL --> DataGrid[CustomerDataGrid]
+    CL --> Toolbar[ActionToolbar]
+
+    Filters --> StatusFilter[StatusDropdown]
+    Filters --> CreditFilter[CreditRangeFilter]
+    Filters --> DateFilter[CreationDateRange]
+
+    DataGrid --> Columns[ConfigurableColumns]
+    DataGrid --> Pagination[PaginationControls]
+    DataGrid --> RowActions[RowActionMenu]
+
+    RowActions --> ViewAction[ViewDetails]
+    RowActions --> EditAction[EditInline]
+    RowActions --> DeleteAction[Delete]
+
+    Toolbar --> AddBtn[AddCustomerButton]
+    Toolbar --> BulkActions[BulkOperationsMenu]

@@ -1,0 +1,50 @@
+graph TB
+    %% Actors
+    Actor1["Inventory Manager"]
+    Actor2["Sales Staff"]
+    
+    %% Use Cases
+    UC1("Add Product")
+    UC2("Edit Product")
+    UC3("Delete Product")
+    UC4("View Product")
+    UC5("Search Products")
+    UC6("Check Stock Level")
+    UC7("View Stock Movements")
+    UC8("Adjust Stock")
+    UC9("Receive Stock")
+    UC10("Transfer Stock")
+    UC11("Manage Categories")
+    UC12("Set Reorder Point")
+    UC13("Receive Low Stock Alert")
+    
+    UC14("Validate Product Data")
+    UC15("Update Stock Quantity")
+    UC16("Create Movement Record")
+    UC17("Check No Open Orders")
+    
+    %% Relationships
+    Actor1 --> UC1
+    Actor1 --> UC2
+    Actor1 --> UC3
+    Actor1 --> UC11
+    Actor1 --> UC8
+    Actor1 --> UC10
+    Actor1 --> UC12
+    Actor1 --> UC9
+    Actor1 --> UC7
+    
+    Actor2 --> UC4
+    Actor2 --> UC6
+    Actor2 --> UC5
+    
+    %% Includes
+    UC1 -.-> UC14
+    UC2 -.-> UC14
+    UC9 -.-> UC15
+    UC10 -.-> UC15
+    UC8 -.-> UC16
+    UC9 -.-> UC16
+    
+    %% Extends
+    UC3 -.-> UC17

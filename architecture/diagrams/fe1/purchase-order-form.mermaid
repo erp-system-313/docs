@@ -1,0 +1,48 @@
+graph TB
+    subgraph PurchaseOrderForm
+        A[PurchaseOrderForm]
+        
+        B[Header]
+        C[SupplierSection]
+        D[OrderDetailsSection]
+        E[OrderLinesSection]
+        F[SummarySection]
+        G[FormActions]
+        
+        B --> H[Title]
+        B --> I[StatusBadge]
+        B --> J[SaveDraftButton]
+        
+        C --> K[SupplierSelect]
+        C --> L[SupplierInfoCard]
+        C --> M[PaymentTermsInput]
+        
+        D --> N[OrderDatePicker]
+        D --> O[DeliveryDatePicker]
+        D --> P[NotesInput]
+        
+        E --> Q[OrderLinesTable]
+        E --> R[AddProductButton]
+        
+        Q --> S[ProductColumn]
+        Q --> T[QuantityColumn]
+        Q --> U[PriceColumn]
+        Q --> V[TotalColumn]
+        Q --> W[RemoveButton]
+        
+        F --> X[Subtotal]
+        F --> Y[TaxAmount]
+        F --> Z[ShippingCost]
+        F --> AA[TotalAmount]
+        
+        G --> AB[CancelButton]
+        G --> AC[SaveButton]
+        G --> AD[SubmitButton]
+        
+        A --> B
+        A --> C
+        A --> D
+        A --> E
+        A --> F
+        A --> G
+    end

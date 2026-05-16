@@ -1,0 +1,34 @@
+flowchart LR
+    %% Actors (Circles)
+    subgraph Actors [ ]
+        direction TB
+        style Actors fill:none,stroke:none
+        SalesRep((Sales Rep))
+        Customer((Customer))
+        Warehouse((Warehouse))
+        Finance((Finance))
+    end
+
+    %% System Boundary (The Box)
+    subgraph OMS [Order Management System]
+        direction TB
+        style OMS fill:#333,stroke:#666,color:#fff
+        
+        UC_Create([Create Order])
+        UC_Confirm([Confirm Order])
+        UC_Ship([Ship Order])
+        UC_Invoice([Invoice Order])
+        UC_Cancel([Cancel Order])
+    end
+
+    %% Connections
+    SalesRep --> UC_Create
+    SalesRep --> UC_Confirm
+    SalesRep --> UC_Cancel
+    Warehouse --> UC_Ship
+    Finance --> UC_Invoice
+
+    %% Relationships between actions (Dashed lines)
+    UC_Confirm -.-> UC_Create
+    UC_Ship -.-> UC_Confirm
+    UC_Invoice -.-> UC_Ship

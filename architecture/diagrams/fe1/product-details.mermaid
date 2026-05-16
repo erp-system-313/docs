@@ -1,0 +1,41 @@
+graph TB
+    subgraph ProductDetails
+        A[ProductDetails]
+        
+        B[Header]
+        C[ProductImage]
+        D[InfoCard]
+        E[StockCard]
+        F[PriceCard]
+        G[TabContainer]
+        
+        B --> H[BackButton]
+        B --> I[EditButton]
+        B --> J[DeleteButton]
+        
+        E --> K[CurrentStock]
+        E --> L[ReorderStatus]
+        E --> M[AdjustStockButton]
+        
+        G --> N[SpecificationsTab]
+        G --> O[StockMovementsTab]
+        G --> P[PurchaseOrdersTab]
+        G --> Q[SalesOrdersTab]
+        
+        N --> R[AttributesList]
+        N --> S[AddAttributeButton]
+        
+        O --> T[MovementTimeline]
+        O --> U[MovementTable]
+        
+        P --> V[PurchaseOrderList]
+        
+        Q --> W[SalesOrderList]
+        
+        A --> B
+        A --> C
+        A --> D
+        A --> E
+        A --> F
+        A --> G
+    end

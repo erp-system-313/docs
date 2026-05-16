@@ -1,0 +1,26 @@
+graph TD
+    CS[CompanySettings]
+    CS --> Tabs[SettingsTabs]
+
+    Tabs --> GeneralTab[GeneralTab]
+    Tabs --> DepartmentsTab[DepartmentsTab]
+    Tabs --> NotificationsTab[NotificationsTab]
+
+    GeneralTab --> LogoUpload[LogoUpload]
+    GeneralTab --> CompanyName[CompanyNameInput]
+    GeneralTab --> TaxId[TaxIdInput]
+    GeneralTab --> Address[AddressFields]
+    GeneralTab --> SaveBtn[SaveButton]
+
+    DepartmentsTab --> DeptList[DepartmentList]
+    DeptList --> DeptItem[DepartmentItem]
+    DeptItem --> DeptName[DepartmentName]
+    DeptItem --> DeptCode[DepartmentCode]
+    DeptItem --> DeptActions[DeptActions]
+
+    DeptActions --> EditDept[EditButton]
+    DeptActions --> DeleteDept[DeleteButton]
+
+    NotificationsTab --> EmailConfig[EmailConfig]
+    NotificationsTab --> SmsConfig[SmsConfig]
+    NotificationsTab --> TemplateList[TemplateList]

@@ -1,0 +1,28 @@
+graph TD
+    Actor_Clerk[Accounting Clerk]
+    Actor_Customer[Customer]
+    Actor_Manager[Finance Manager]
+
+    UC_CreateInvoice[Create Invoice]
+    UC_EditInvoice[Edit Invoice]
+    UC_ApproveInvoice[Approve Invoice]
+    UC_SendInvoice[Send Invoice to Customer]
+    UC_RecordPayment[Record Payment]
+    UC_ApplyCreditNote[Apply Credit Note]
+    UC_ViewInvoiceStatus[View Invoice Status]
+    UC_GenerateAgingReport[Generate Aging Report]
+    UC_ReverseJournal[Reverse Journal Entry]
+
+    Actor_Clerk --> UC_CreateInvoice
+    Actor_Clerk --> UC_EditInvoice
+    Actor_Clerk --> UC_SendInvoice
+    Actor_Clerk --> UC_RecordPayment
+    Actor_Clerk --> UC_ApplyCreditNote
+    Actor_Clerk --> UC_ViewInvoiceStatus
+    Actor_Clerk --> UC_GenerateAgingReport
+
+    Actor_Manager --> UC_ApproveInvoice
+    Actor_Manager --> UC_ReverseJournal
+
+    Actor_Customer --> UC_ViewInvoiceStatus
+    Actor_Customer --> UC_RecordPayment

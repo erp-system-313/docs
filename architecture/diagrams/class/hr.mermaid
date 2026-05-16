@@ -1,0 +1,88 @@
+classDiagram
+    class Employee {
+        +UUID id
+        +String employeeCode
+        +UUID userId
+        +String department
+        +String position
+        +String jobTitle
+        +Date hireDate
+        +Date contractStartDate
+        +Date contractEndDate
+        +String employmentType
+        +String workLocation
+        +String managerId
+        +BigDecimal baseSalary
+        +String bankAccountNumber
+        +String taxId
+        +String emergencyContactName
+        +String emergencyContactPhone
+        +Boolean isActive
+        +DateTime createdAt
+        +DateTime updatedAt
+        --
+        +getFullName() String
+        +getYearsOfService() Integer
+        +getRemainingLeaveDays() Integer
+        +submitLeaveRequest(requestData) LeaveRequest
+        +getAttendanceForMonth(month, year) List~Attendance~
+        +isOnLeave(date) Boolean
+        +promote(newPosition, newSalary) void
+        +terminate(terminationDate, reason) void
+    }
+
+    class Attendance {
+        +UUID id
+        +UUID employeeId
+        +Date date
+        +DateTime checkInTime
+        +DateTime checkOutTime
+        +String checkInMethod
+        +String checkOutMethod
+        +String status
+        +String notes
+        +BigDecimal totalHours
+        +BigDecimal overtimeHours
+        +Boolean isApproved
+        +UUID approvedBy
+        +DateTime createdAt
+        +DateTime updatedAt
+        --
+        +calculateTotalHours() BigDecimal
+        +calculateOvertime() BigDecimal
+        +isLate() Boolean
+        +isEarlyDeparture() Boolean
+        +approve(approverId) void
+        +reject(reason) void
+        +requestCorrection(correctionData) void
+    }
+
+    class LeaveRequest {
+        +UUID id
+        +UUID employeeId
+        +String leaveType
+        +Date startDate
+        +Date endDate
+        +BigDecimal totalDays
+        +String reason
+        +String status
+        +String attachmentUrl
+        +UUID approvedBy
+        +DateTime approvedAt
+        +String rejectionReason
+        +DateTime createdAt
+        +DateTime updatedAt
+        --
+        +calculateTotalDays() BigDecimal
+        +submit() void
+        +approve(approverId, comments) void
+        +reject(approverId, reason) void
+        +cancel() void
+        +withdraw() void
+        +getLeaveBalance(employeeId, leaveType) BigDecimal
+        +checkConflicts() Boolean
+    }
+
+    Employee "1" -- "0..*" Attendance : has
+    Employee "1" -- "0..*" LeaveRequest : submits
+    Employee "1" -- "0..1" Employee : reports to

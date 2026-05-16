@@ -1,0 +1,21 @@
+graph TD
+    IL[InvoiceList]
+    IL --> FilterBar[QuickFilters]
+    IL --> DataGrid[InvoiceDataGrid]
+    IL --> BulkActions[BulkActionBar]
+
+    FilterBar --> StatusFilter[StatusChips]
+    FilterBar --> DateRange[DateRangePicker]
+    FilterBar --> CustomerGroup[CustomerGroupFilter]
+
+    DataGrid --> InvoiceColumns[Columns: Number, Date, Due, Customer, Amount, Balance, Status]
+    DataGrid --> RowActions[RowActionButtons]
+
+    RowActions --> ViewPDF[ViewPDF]
+    RowActions --> EditInvoice[Edit]
+    RowActions --> CreditNote[CreateCreditNote]
+    RowActions --> RecordPayment[RecordPaymentModal]
+
+    BulkActions --> SendEmails[SendEmailBatch]
+    BulkActions --> ExportCSV[ExportToCSV]
+    BulkActions --> MarkPaid[MarkAsPaid]

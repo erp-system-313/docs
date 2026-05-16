@@ -1,0 +1,49 @@
+graph TB
+    subgraph SupplierDetails
+        A[SupplierDetails]
+        
+        B[Header]
+        C[InfoCards]
+        D[TabContainer]
+        
+        B --> E[BackButton]
+        B --> F[SupplierName]
+        B --> G[EditButton]
+        B --> H[DeleteButton]
+        B --> I[CreatePOButton]
+        
+        C --> J[ContactCard]
+        C --> K[AddressCard]
+        C --> L[PaymentTermsCard]
+        C --> M[PerformanceCard]
+        
+        J --> N[ContactPerson]
+        J --> O[Email]
+        J --> P[Phone]
+        
+        M --> Q[Rating]
+        M --> R[TotalOrders]
+        M --> S[OnTimeDelivery]
+        
+        D --> T[PurchaseOrdersTab]
+        D --> U[ProductsTab]
+        D --> V[AnalyticsTab]
+        
+        T --> W[POFilter]
+        T --> X[POTable]
+        
+        X --> Y[PONumber]
+        X --> Z[Date]
+        X --> AA[Status]
+        X --> AB[Total]
+        X --> AC[ViewButton]
+        
+        U --> AD[ProductList]
+        
+        V --> AE[DeliveryChart]
+        V --> AF[OrderVolumeChart]
+        
+        A --> B
+        A --> C
+        A --> D
+    end

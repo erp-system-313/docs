@@ -1,0 +1,46 @@
+graph TB
+    subgraph SupplierList
+        A[SupplierList]
+        
+        B[Header]
+        C[SearchBar]
+        D[FilterBar]
+        E[ViewToggle]
+        F[SupplierGrid]
+        G[SupplierTable]
+        H[Pagination]
+        
+        B --> I[Title]
+        B --> J[AddSupplierButton]
+        
+        D --> K[ActiveFilter]
+        D --> L[CityFilter]
+        D --> M[RatingFilter]
+        
+        E --> N[GridView]
+        E --> O[ListView]
+        
+        F --> P[SupplierCard]
+        
+        P --> Q[Name]
+        P --> R[Rating]
+        P --> S[ContactPerson]
+        P --> T[Phone]
+        P --> U[Email]
+        P --> V[Actions]
+        
+        V --> W[ViewButton]
+        V --> X[EditButton]
+        V --> Y[CreatePOButton]
+        
+        G --> Z[TableHeader]
+        G --> AA[TableRow]
+        
+        A --> B
+        A --> C
+        A --> D
+        A --> E
+        A --> F
+        A --> G
+        A --> H
+    end

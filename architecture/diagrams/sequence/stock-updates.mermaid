@@ -1,0 +1,80 @@
+sequenceDiagram
+    participant User as Warehouse Staff
+    participant UI as React Frontend
+    participant API as REST API
+    participant Auth as Security Filter
+    participant Service as StockService
+    participant ProductRepo as ProductRepository
+    participant MovementRepo as StockMovementRepository
+    participant DB as PostgreSQL
+    participant Cache as Redis
+
+    alt Receive Inventory
+        User->>UI: Enter received goods
+        UI->>UI: Validate form data
+        UI->>API: POST /api/stock/receive
+        API->>Auth: Validate JWT token
+        Auth-->>API: Token valid
+        API->>Service: receiveStock(dto)
+        
+        Service->>ProductRepo: findById(productId)
+        ProductRepo->>DB: SELECT * FROM products
+        DB-->>ProductRepo: product data
+        ProductRepo-->>Service: Product entity
+        
+        Service->>Service: Calculate new quantity = current + received
+        
+        Service->>ProductRepo: save(product)
+        ProductRepo->>DB: UPDATE products SET stock_quantity = ?
+        DB-->>ProductRepo: updated
+        ProductRepo-->>Service: updated product
+        
+        Service->>MovementRepo: create stock movement
+        MovementRepo->>DB: INSERT INTO stock_movements (type, quantity, reference)
+        DB-->>MovementRepo: movement record
+        MovementRepo-->>Service: movement entity
+        
+        Service->>Cache: invalidate product cache
+        Service-->>API: return updated product
+        API-->>UI: 200 OK with product data
+        UI->>User: Display success + new stock level
+    end
+
+    alt Deduct Stock (Sales Order)
+        User->>UI: Process sale
+        UI->>UI: Validate order items
+        UI->>API: POST /api/stock/deduct
+        API->>Auth: Validate JWT token
+        Auth-->>API: Token valid
+        API->>Service: deductStock(dto)
+        
+        Service->>ProductRepo: findByIdWithLock(productId)
+        ProductRepo->>DB: SELECT * FROM products FOR UPDATE
+        DB-->>ProductRepo: product data
+        ProductRepo-->>Service: Product entity
+        
+        Service->>Service: Check stock availability
+        
+        alt Insufficient Stock
+            Service-->>API: throw InsufficientStockException
+            API-->>UI: 409 Conflict with error
+            UI->>User: Show "Insufficient stock" error
+        else Sufficient Stock
+            Service->>Service: Calculate new quantity = current - deducted
+            
+            Service->>ProductRepo: save(product)
+            ProductRepo->>DB: UPDATE products SET stock_quantity = ?
+            DB-->>ProductRepo: updated
+            ProductRepo-->>Service: updated product
+            
+            Service->>MovementRepo: create stock movement
+            MovementRepo->>DB: INSERT INTO stock_movements (type, quantity, reference)
+            DB-->>MovementRepo: movement record
+            MovementRepo-->>Service: movement entity
+            
+            Service->>Cache: invalidate product cache
+            Service-->>API: return updated product
+            API-->>UI: 200 OK
+            UI->>User: Display success + new stock level
+        end
+    end

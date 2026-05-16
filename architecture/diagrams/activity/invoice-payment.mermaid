@@ -1,0 +1,11 @@
+flowchart TD
+    Start([Start]) --> A[Receive Payment]
+    A --> B[Validate Amount]
+    B --> C{Valid?}
+    
+    C -->|Yes| D[Update Invoice]
+    D --> E[Record Transaction]
+    E --> End1([End])
+    
+    C -->|No - Invalid?| F[Reject Payment]
+    F --> End2([End])

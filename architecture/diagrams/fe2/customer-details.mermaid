@@ -1,0 +1,21 @@
+graph TD
+    CD[CustomerDetails]
+    CD --> Header[CustomerHeader]
+    CD --> Tabs[DetailTabs]
+    Tabs --> GeneralTab[GeneralInfo]
+    Tabs --> ContactsTab[ContactsList]
+    Tabs --> SalesTab[SalesHistoryGrid]
+    Tabs --> ActivityTab[ActivityTimeline]
+    Tabs --> AttachmentsTab[AttachmentList]
+
+    GeneralTab --> FormFields[EditableFields]
+    GeneralTab --> SaveCancel[SaveCancelButtons]
+
+    ContactsTab --> ContactGrid[ContactsDataGrid]
+    ContactGrid --> AddContact[AddContactButton]
+
+    SalesTab --> OrderLinks[LinkedSalesOrders]
+    SalesTab --> InvoiceLinks[LinkedInvoices]
+
+    ActivityTab --> TimelineEntries[TimelineItems]
+    AttachmentsTab --> Uploader[FileUpload]

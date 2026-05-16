@@ -1,0 +1,70 @@
+---
+config:
+  layout: elk
+title: ERP System Master Use Case Diagram
+---
+flowchart LR
+ subgraph Auth["Authentication"]
+    direction TB
+        A1("Login")
+        A2("Logout")
+        A3("Reset Password")
+  end
+ subgraph Dashboard["Dashboard"]
+    direction TB
+        D1("View Dashboard")
+  end
+ subgraph Inventory["Inventory"]
+    direction TB
+        I1("Manage Products")
+        I2("Manage Categories")
+        I3("View Stock")
+  end
+ subgraph Sales["Sales"]
+    direction TB
+        S1("Manage Orders")
+        S2("Manage Customers")
+        S3("Manage Invoices")
+  end
+ subgraph Purchasing["Purchasing"]
+    direction TB
+        P1("Manage Purchase Orders")
+        P2("Manage Suppliers")
+  end
+ subgraph Finance["Finance"]
+    direction TB
+        F1("View Accounts")
+        F2("Manage Journal")
+        F3("Generate Reports")
+  end
+ subgraph HR["Human Resources"]
+    direction TB
+        H1("Manage Employees")
+        H2("Track Attendance")
+        H3("Request Leave")
+        H4("Approve Leave")
+  end
+ subgraph AdminMod["System Admin"]
+    direction TB
+        AD1("Manage Users")
+        AD2("Configure Settings")
+        AD3("View Audit Logs")
+  end
+
+  subgraph Support [Support]
+        direction TB
+        SU1(Create Ticket)
+    end
+    guest(["Guest"]) --> A1 & A3
+    staff(["Staff"]) --> A1 & A2 & A3 & D1 & I3 & S1 & S2 & S3 & P1 & P2 & F1 & H3 & H2 & SU1("Create Ticket")
+    manager(["Manager"]) --> A1 & A2 & A3 & D1 & I1 & I2 & I3 & S1 & S2 & S3 & P1 & P2 & F1 & F2 & F3 & H1 & H2 & H3 & H4 & SU1
+    admin(["Admin"]) --> A1 & A2 & A3 & D1 & I1 & I2 & I3 & H1 & H2 & F1 & F2 & F3 & AD1 & AD2 & AD3
+
+     guest:::guestStyle
+     staff:::staffStyle
+     manager:::managerStyle
+     admin:::adminStyle
+    classDef guestStyle fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:white
+    classDef staffStyle fill:#2196F3,stroke:#0D47A1,stroke-width:2px,color:white
+    classDef managerStyle fill:#FF9800,stroke:#E65100,stroke-width:2px,color:white
+    classDef adminStyle fill:#9C27B0,stroke:#4A148C,stroke-width:2px,color:white

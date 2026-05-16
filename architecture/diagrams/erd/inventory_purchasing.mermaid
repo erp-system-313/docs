@@ -1,0 +1,141 @@
+flowchart TD
+    classDef entity fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000
+    classDef attr fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,color:#000
+    classDef rel fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px,color:#000
+
+    %% ===== ENTITIES =====
+    eProduct[PRODUCT]:::entity
+    eCategory[CATEGORY]:::entity
+    eSupplier[SUPPLIER]:::entity
+    eStockMovement[STOCK MOVEMENT]:::entity
+    ePurchaseOrder[PURCHASE ORDER]:::entity
+    ePurchaseOrderLine[PURCHASE ORDER LINE]:::entity
+
+    %% ===== RELATIONSHIPS (Diamonds) =====
+    rBelongsTo{belongs to}:::rel
+    rSuppliedBy{supplied by}:::rel
+    rTracks{tracks}:::rel
+    rHasLines{has lines}:::rel
+    rIncludesProduct{includes}:::rel
+
+    %% ===== ATTRIBUTES (Ovals) =====
+    %% Product Attributes
+    aProId([id]):::attr
+    aProSku([sku]):::attr
+    aProName([name]):::attr
+    aProCatId([category_id]):::attr
+    aProSupId([supplier_id]):::attr
+    aProUnitPrice([unit_price]):::attr
+    aProCostPrice([cost_price]):::attr
+    aProReorderLvl([reorder_level]):::attr
+    aProImageUrl([image_url]):::attr
+    aProIsActive([is_active]):::attr
+
+    %% Category Attributes
+    aCatId([id]):::attr
+    aCatName([name]):::attr
+    aCatDesc([description]):::attr
+    aCatParentId([parent_id]):::attr
+
+    %% Supplier Attributes
+    aSupId([id]):::attr
+    aSupName([name]):::attr
+    aSupContact([contact_person]):::attr
+    aSupEmail([email]):::attr
+    aSupPhone([phone]):::attr
+    aSupAddress([address]):::attr
+    aSupIsActive([is_active]):::attr
+
+    %% Stock Movement Attributes
+    aSMId([id]):::attr
+    aSMProdId([product_id]):::attr
+    aSMType([type]):::attr
+    aSMQty([quantity]):::attr
+    aSMRefType([reference_type]):::attr
+    aSMRefId([reference_id]):::attr
+    aSMDate([date]):::attr
+    aSMNotes([notes]):::attr
+
+    %% Purchase Order Attributes
+    aPOId([id]):::attr
+    aPOPoNum([po_number]):::attr
+    aPOSupId([supplier_id]):::attr
+    aPODate([date]):::attr
+    aPOStatus([status]):::attr
+    aPOTotal([total_amount]):::attr
+    aPOExpDate([expected_date]):::attr
+
+    %% Purchase Order Line Attributes
+    aPOLId([id]):::attr
+    aPOLOrderId([order_id]):::attr
+    aPOLProdId([product_id]):::attr
+    aPOLQty([quantity]):::attr
+    aPOLUnitPrice([unit_price]):::attr
+    aPOLLineTotal([line_total]):::attr
+    aPOLRecQty([received_qty]):::attr
+
+    %% ===== ATTRIBUTE CONNECTIONS =====
+    eProduct --- aProId
+    eProduct --- aProSku
+    eProduct --- aProName
+    eProduct --- aProCatId
+    eProduct --- aProSupId
+    eProduct --- aProUnitPrice
+    eProduct --- aProCostPrice
+    eProduct --- aProReorderLvl
+    eProduct --- aProImageUrl
+    eProduct --- aProIsActive
+
+    eCategory --- aCatId
+    eCategory --- aCatName
+    eCategory --- aCatDesc
+    eCategory --- aCatParentId
+
+    eSupplier --- aSupId
+    eSupplier --- aSupName
+    eSupplier --- aSupContact
+    eSupplier --- aSupEmail
+    eSupplier --- aSupPhone
+    eSupplier --- aSupAddress
+    eSupplier --- aSupIsActive
+
+    eStockMovement --- aSMId
+    eStockMovement --- aSMProdId
+    eStockMovement --- aSMType
+    eStockMovement --- aSMQty
+    eStockMovement --- aSMRefType
+    eStockMovement --- aSMRefId
+    eStockMovement --- aSMDate
+    eStockMovement --- aSMNotes
+
+    ePurchaseOrder --- aPOId
+    ePurchaseOrder --- aPOPoNum
+    ePurchaseOrder --- aPOSupId
+    ePurchaseOrder --- aPODate
+    ePurchaseOrder --- aPOStatus
+    ePurchaseOrder --- aPOTotal
+    ePurchaseOrder --- aPOExpDate
+
+    ePurchaseOrderLine --- aPOLId
+    ePurchaseOrderLine --- aPOLOrderId
+    ePurchaseOrderLine --- aPOLProdId
+    ePurchaseOrderLine --- aPOLQty
+    ePurchaseOrderLine --- aPOLUnitPrice
+    ePurchaseOrderLine --- aPOLLineTotal
+    ePurchaseOrderLine --- aPOLRecQty
+
+    %% ===== ORTHOGONAL RELATIONSHIP CONNECTIONS =====
+    eCategory -->|1| rBelongsTo
+    rBelongsTo -->|N| eProduct
+
+    eSupplier -->|1| rSuppliedBy
+    rSuppliedBy -->|N| eProduct
+
+    eProduct -->|1| rTracks
+    rTracks -->|N| eStockMovement
+
+    ePurchaseOrder -->|1| rHasLines
+    rHasLines -->|N| ePurchaseOrderLine
+
+    ePurchaseOrderLine -->|N| rIncludesProduct
+    rIncludesProduct -->|1| eProduct

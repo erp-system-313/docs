@@ -1,0 +1,32 @@
+graph TB
+    subgraph ProductList
+        A[ProductList]
+        
+        B[SearchBar]
+        C[FilterPanel]
+        D[ProductTable]
+        E[Pagination]
+        F[AddProductButton]
+        
+        C --> G[CategoryFilter]
+        C --> H[StockStatusFilter]
+        C --> I[PriceRangeFilter]
+        
+        D --> J[TableHeader]
+        D --> K[TableRow]
+        
+        K --> L[ProductInfo]
+        K --> M[StockInfo]
+        K --> N[PriceInfo]
+        K --> O[Actions]
+        
+        O --> P[EditButton]
+        O --> Q[DeleteButton]
+        O --> R[ViewButton]
+        
+        A --> B
+        A --> C
+        A --> D
+        A --> E
+        A --> F
+    end

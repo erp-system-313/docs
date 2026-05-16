@@ -1,0 +1,30 @@
+graph TD
+    LR[LeaveRequest]
+    LR --> Header[FormHeader]
+    LR --> Form[LeaveForm]
+
+    Header --> Title[FormTitle]
+    Header --> BalanceCard[LeaveBalanceCard]
+
+    BalanceCard --> AnnualLeave[AnnualLeaveBalance]
+    BalanceCard --> SickLeave[SickLeaveBalance]
+    BalanceCard --> CasualLeave[CasualLeaveBalance]
+
+    Form --> DateRange[DateRangePicker]
+    Form --> LeaveType[LeaveTypeDropdown]
+    Form --> Reason[ReasonTextArea]
+    Form --> Attachment[AttachmentUpload]
+    Form --> Actions[FormActions]
+
+    DateRange --> StartDate[StartDate]
+    DateRange --> EndDate[EndDate]
+    DateRange --> Duration[DurationCalculation]
+
+    LeaveType --> AnnualOpt[AnnualLeave]
+    LeaveType --> SickOpt[SickLeave]
+    LeaveType --> CasualOpt[CasualLeave]
+    LeaveType --> UnpaidOpt[UnpaidLeave]
+
+    Actions --> SubmitBtn[SubmitButton]
+    Actions --> CancelBtn[CancelButton]
+    Actions --> DraftBtn[SaveDraftButton]

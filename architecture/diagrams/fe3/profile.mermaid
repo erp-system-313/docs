@@ -1,0 +1,27 @@
+graph TD
+    PV[ProfileView]
+    PV --> ProfileCard[ProfileCard]
+    PV --> SecurityCard[SecurityCard]
+
+    ProfileCard --> AvatarSection[AvatarSection]
+    ProfileCard --> InfoSection[PersonalInfo]
+
+    AvatarSection --> AvatarImg[ProfileImage]
+    AvatarSection --> ChangeAvatarBtn[ChangePhotoButton]
+
+    InfoSection --> NameField[FullNameInput]
+    InfoSection --> EmailField[EmailInput]
+    InfoSection --> PhoneField[PhoneInput]
+    InfoSection --> UpdateBtn[UpdateButton]
+
+    SecurityCard --> PasswordSection[PasswordSection]
+    SecurityCard --> TwoFASection[TwoFASection]
+    SecurityCard --> SessionsSection[ActiveSessions]
+
+    PasswordSection --> CurrentPwd[CurrentPassword]
+    PasswordSection --> NewPwd[NewPassword]
+    PasswordSection --> ConfirmPwd[ConfirmPassword]
+    PasswordSection --> ChangePwdBtn[ChangePasswordButton]
+
+    TwoFASection --> TwoFAStatus[StatusBadge]
+    TwoFASection --> Toggle2FA[EnableDisableButton]

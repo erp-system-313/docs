@@ -1,0 +1,59 @@
+graph TB
+    %% Actors
+    Actor1["Purchasing Manager"]
+    Actor2["Warehouse Staff"]
+    Actor3["Supplier"]
+    
+    %% Use Cases
+    UC1("Create Purchase Order")
+    UC2("Edit Purchase Order")
+    UC3("Submit Purchase Order")
+    UC4("Approve Purchase Order")
+    UC5("Cancel Purchase Order")
+    UC6("View Purchase Order")
+    UC7("Search Purchase Orders")
+    UC8("Receive Goods")
+    UC9("Create Receipt Note")
+    UC10("Reject Goods")
+    UC11("Return Goods")
+    UC12("Manage Suppliers")
+    UC13("View Supplier History")
+    
+    UC14("Select Supplier")
+    UC15("Select Products")
+    UC16("Validate PO")
+    UC17("Verify Against PO")
+    UC18("Update Inventory")
+    UC19("Check Budget")
+    UC20("Check PO Status")
+    UC21("Notify Supplier")
+    
+    %% Relationships
+    Actor1 --> UC1
+    Actor1 --> UC2
+    Actor1 --> UC3
+    Actor1 --> UC4
+    Actor1 --> UC5
+    Actor1 --> UC12
+    Actor1 --> UC13
+    
+    Actor2 --> UC8
+    Actor2 --> UC9
+    Actor2 --> UC10
+    Actor2 --> UC11
+    Actor2 --> UC6
+    Actor2 --> UC7
+    
+    Actor3 --> UC6
+    
+    %% Includes
+    UC1 -.-> UC14
+    UC1 -.-> UC15
+    UC3 -.-> UC16
+    UC8 -.-> UC17
+    UC9 -.-> UC18
+    
+    %% Extends
+    UC4 -.-> UC19
+    UC5 -.-> UC20
+    UC11 -.-> UC21

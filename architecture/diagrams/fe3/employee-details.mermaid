@@ -1,0 +1,32 @@
+graph TD
+    ED[EmployeeDetails]
+    ED --> Header[EmployeeHeader]
+    ED --> Tabs[DetailTabs]
+
+    Header --> EmpAvatar[LargeAvatar]
+    Header --> EmpSummary[EmployeeSummary]
+    EmpSummary --> EmpName[EmployeeName]
+    EmpSummary --> EmpId[EmployeeId]
+    EmpSummary --> EmpStatus[EmploymentStatusBadge]
+
+    Tabs --> PersonalTab[PersonalTab]
+    Tabs --> EmploymentTab[EmploymentTab]
+    Tabs --> DocumentsTab[DocumentsTab]
+    Tabs --> PayrollTab[PayrollTab]
+
+    PersonalTab --> ContactInfo[ContactInfo]
+    PersonalTab --> EmergencyContact[EmergencyContact]
+
+    EmploymentTab --> PositionInfo[PositionInfo]
+    EmploymentTab --> ManagerInfo[ReportingLine]
+    EmploymentTab --> HireDate[HireDate]
+
+    DocumentsTab --> DocList[DocumentList]
+    DocList --> DocItem[DocumentItem]
+    DocItem --> DocName[DocumentName]
+    DocItem --> DocType[DocumentType]
+    DocItem --> DocDate[UploadDate]
+    DocItem --> DocActions[DownloadDelete]
+
+    PayrollTab --> SalaryInfo[SalaryInfo]
+    PayrollTab --> BankDetails[BankDetails]

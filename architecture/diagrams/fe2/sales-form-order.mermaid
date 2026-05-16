@@ -1,0 +1,29 @@
+graph TD
+    SOF[SalesOrderForm]
+    SOF --> Header[OrderHeader]
+    SOF --> LineGrid[LineItemsGrid]
+    SOF --> Totals[TotalsPanel]
+    SOF --> Footer[FooterActions]
+    SOF --> Tabs[AdditionalDetailsTabs]
+
+    Header --> CustomerPicker[CustomerLookup]
+    Header --> DatePickers[OrderDate, RequiredDate]
+    Header --> StatusBadge[OrderStatus]
+
+    LineGrid --> ProductSearch[ProductAutocomplete]
+    LineGrid --> QuantityInput[QuantitySpinner]
+    LineGrid --> PriceDisplay[PriceEditor]
+    LineGrid --> LineActions[Add/RemoveRow]
+
+    Totals --> Subtotal[SubtotalDisplay]
+    Totals --> TaxBreakdown[TaxSummary]
+    Totals --> GrandTotal[GrandTotal]
+
+    Footer --> SaveDraft[SaveDraftButton]
+    Footer --> Submit[SubmitForApproval]
+    Footer --> CreateInvoice[CreateInvoiceButton]
+
+    Tabs --> Shipping[ShippingTab]
+    Tabs --> Terms[PaymentTermsTab]
+    Tabs --> Notes[NotesTab]
+    Tabs --> Attachments[AttachmentsTab]
