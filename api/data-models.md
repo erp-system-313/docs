@@ -1,5 +1,7 @@
 # Data Models
 
+# Data Models
+
 ## Overview
 
 This document defines all database models with their fields, types, and constraints.

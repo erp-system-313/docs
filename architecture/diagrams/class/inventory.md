@@ -1,17 +1,18 @@
 ```mermaid
 classDiagram
     class Product {
-        +UUID id
+        +Long id
         +String sku
         +String name
         +String description
         +BigDecimal unitPrice
+        +BigDecimal costPrice
         +Integer currentStock
         +Integer reorderLevel
         +Integer reorderQuantity
         +String unitOfMeasure
         +String imageUrl
-        +Boolean active
+        +Boolean isActive
         +LocalDateTime createdAt
         +LocalDateTime updatedAt
         +create()
@@ -21,28 +22,29 @@ classDiagram
     }
     
     class Category {
-        +UUID id
+        +Long id
         +String name
         +String description
-        +UUID parentId
+        +Long parentId
         +Integer sortOrder
-        +Boolean active
+        +Boolean isActive
+        +Long productCount
         +addSubCategory()
         +getFullPath()
     }
     
     class StockMovement {
-        +UUID id
-        +UUID productId
+        +Long id
+        +Long productId
         +Integer quantity
         +MovementType type
         +String referenceType
-        +UUID referenceId
+        +Long referenceId
         +Integer previousStock
         +Integer newStock
         +String notes
         +LocalDateTime createdAt
-        +UUID createdBy
+        +Long createdBy
         +calculateStockChange()
     }
     

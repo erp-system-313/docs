@@ -3,7 +3,7 @@
 ## Project Structure
 
 ```
-backend/
+service/
 ├── src/
 │   └── main/
 │       └── java/
@@ -12,20 +12,62 @@ backend/
 │                   ├── config/          # Configuration classes
 │                   │   ├── SecurityConfig.java
 │                   │   └── WebConfig.java
-│                   ├── controller/      # REST Controllers
-│                   ├── service/         # Business logic
-│                   ├── repository/      # Data access (JPA)
-│                   ├── entity/           # JPA Entities
-│                   ├── dto/              # Data Transfer Objects
-│                   ├── mapper/          # Entity-DTO mappers
-│                   ├── exception/       # Custom exceptions
-│                   └── util/            # Utility classes
-├── src/
-│   └── test/                    # Unit tests
+│                   ├── common/           # Shared utilities
+│                   │   ├── annotation/   # Custom annotations (Auditable)
+│                   │   ├── dto/          # ApiResponse, PageResponse
+│                   │   ├── exception/    # GlobalExceptionHandler, ResourceNotFoundException, BusinessException
+│                   │   └── util/         # DateUtils, StringUtils
+│                   ├── auth/            # Authentication module
+│                   │   ├── controller/   # AuthController
+│                   │   ├── dto/          # LoginRequest, LoginResponse, RegisterRequest, etc.
+│                   │   ├── security/     # JwtTokenProvider, JwtAuthenticationFilter, CurrentUserUtil, UserPrincipal
+│                   │   └── service/      # AuthService
+│                   ├── admin/           # Admin module
+│                   │   ├── aspect/      # AuditAspect
+│                   │   ├── controller/  # UserController, SettingsController, AuditLogController, DashboardController
+│                   │   ├── dto/         # UserDto, CreateUserRequest, UpdateUserRequest, etc.
+│                   │   ├── entity/      # User, Role, AuditLog, Settings
+│                   │   ├── repository/  # UserRepository, RoleRepository, etc.
+│                   │   └── service/     # UserService, SettingsService, AuditLogService, DashboardService
+│                   ├── inventory/       # Inventory module
+│                   │   ├── controller/  # ProductController, CategoryController
+│                   │   ├── dto/         # ProductDto, CreateProductRequest, etc.
+│                   │   ├── entity/      # Product, Category
+│                   │   ├── repository/  # ProductRepository, CategoryRepository
+│                   │   └── service/     # ProductService, CategoryService
+│                   ├── sales/           # Sales module
+│                   │   ├── controller/  # SalesOrderController, CustomerController
+│                   │   ├── dto/         # CreateSalesOrderRequest, CreateCustomerRequest, etc.
+│                   │   ├── entity/      # SalesOrder, SalesOrderLine, Customer
+│                   │   ├── repository/  # SalesOrderRepository, CustomerRepository
+│                   │   └── service/     # SalesOrderService, CustomerService, ProductClientStub
+│                   ├── purchasing/      # Purchasing module
+│                   │   ├── controller/  # PurchaseOrderController, SupplierController, StockMovementController
+│                   │   ├── dto/         # CreateSupplierRequest, SupplierDto, etc.
+│                   │   ├── entity/      # PurchaseOrder, PurchaseOrderLine, Supplier, StockMovement
+│                   │   ├── repository/  # PurchaseOrderRepository, SupplierRepository
+│                   │   └── service/     # PurchaseOrderService, SupplierService
+│                   ├── finance/         # Finance module
+│                   │   ├── controller/  # InvoiceController, AccountController, JournalEntryController
+│                   │   ├── dto/         # InvoiceDto, InvoiceLineDto, PaymentDto, AccountDto, JournalEntryDto, etc.
+│                   │   ├── entity/      # Invoice, InvoiceLine, Payment, Account, JournalEntry, JournalEntryLine
+│                   │   ├── repository/  # InvoiceRepository, AccountRepository, JournalEntryRepository, PaymentRepository
+│                   │   └── service/     # InvoiceService, AccountService, JournalEntryService
+│                   └── hr/             # HR module
+│                       ├── controller/ # EmployeeController, AttendanceController, LeaveController, LeaveBalanceController
+│                       ├── dto/        # CreateEmployeeRequest, etc.
+│                       ├── entity/     # Employee, Attendance, LeaveRequest, LeaveBalance
+│                       ├── repository/ # EmployeeRepository, AttendanceRepository, LeaveRequestRepository, LeaveBalanceRepository
+│                       └── service/    # EmployeeService, AttendanceService
+├── src/test/                    # Unit tests
 ├── resources/
 │   ├── application.yml          # Application config
+│   ├── application-dev.yml
+│   ├── application-prod.yml
 │   └── db/migration/            # Flyway migrations
 ├── pom.xml                      # Maven dependencies
+├── flake.nix                    # Nix flake
+├── .env.example
 └── Dockerfile
 ```
 
@@ -38,6 +80,11 @@ com.erp.inventory.*
 com.erp.sales.*
 com.erp.hr.*
 com.erp.admin.*
+com.erp.finance.*
+com.erp.purchasing.*
+com.erp.auth.*
+com.erp.common.*
+com.erp.config.*
 ```
 
 ## Naming Conventions
@@ -51,7 +98,7 @@ com.erp.admin.*
 | Tables | snake_case (plural) | `sales_orders` |
 | Columns | snake_case | `created_at` |
 | Packages | lowercase | `com.erp.controller` |
-| REST Endpoints | kebab-case, plural nouns | `/users`, `/sales-orders` |
+| REST Endpoints | kebab-case, plural nouns | `/api/v1/users`, `/api/v1/sales-orders` |
 
 ## Layer Structure
 
@@ -59,53 +106,69 @@ com.erp.admin.*
 
 ```java
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
-    
+
     private final UserService userService;
-    
+    private final CurrentUserUtil currentUserUtil;
+
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<UserDto>>> getAllUsers(
+    public ResponseEntity<ApiResponse<PageResponse<UserDto>>> getAll(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
-        
-        log.info("Fetching all users - page: {}, size: {}", page, size);
-        Page<UserDto> users = userService.findAll(page, size);
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String roleName,
+            @RequestParam(required = false) Boolean isActive) {
+
+        log.info("Fetching users - page: {}, size: {}", page, size);
+        PageResponse<UserDto> users = userService.findAll(page, size, search, roleName, isActive);
         return ResponseEntity.ok(ApiResponse.success(users));
     }
-    
+
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserDto>> getUserById(@PathVariable Long id) {
-        return userService.findById(id)
-                .map(user -> ResponseEntity.ok(ApiResponse.success(user)))
-                .orElseThrow(() -> new ResourceNotFoundException("User", id));
+    public ResponseEntity<ApiResponse<UserDto>> getById(@PathVariable Long id) {
+        UserDto user = userService.findById(id);
+        return ResponseEntity.ok(ApiResponse.success(user));
     }
-    
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<ApiResponse<UserDto>> getByEmail(@PathVariable String email) {
+        UserDto user = userService.findByEmail(email);
+        return ResponseEntity.ok(ApiResponse.success(user));
+    }
+
     @PostMapping
-    public ResponseEntity<ApiResponse<UserDto>> createUser(
-            @Valid @RequestBody CreateUserRequest request) {
-        
-        log.info("Creating new user with email: {}", request.getEmail());
-        UserDto created = userService.create(request);
+    public ResponseEntity<ApiResponse<UserDto>> create(
+            @Valid @RequestBody CreateUserRequest request,
+            HttpServletRequest httpRequest) {
+        Long currentUserId = currentUserUtil.getCurrentUserId();
+        String ipAddress = httpRequest.getRemoteAddr();
+        UserDto created = userService.create(request, currentUserId, ipAddress);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(created));
+                .body(ApiResponse.success(created, "User created successfully"));
     }
-    
+
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserDto>> updateUser(
+    public ResponseEntity<ApiResponse<UserDto>> update(
             @PathVariable Long id,
-            @Valid @RequestBody UpdateUserRequest request) {
-        
-        UserDto updated = userService.update(id, request);
-        return ResponseEntity.ok(ApiResponse.success(updated));
+            @Valid @RequestBody UpdateUserRequest request,
+            HttpServletRequest httpRequest) {
+        Long currentUserId = currentUserUtil.getCurrentUserId();
+        String ipAddress = httpRequest.getRemoteAddr();
+        UserDto updated = userService.update(id, request, currentUserId, ipAddress);
+        return ResponseEntity.ok(ApiResponse.success(updated, "User updated successfully"));
     }
-    
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @PathVariable Long id,
+            HttpServletRequest httpRequest) {
+        Long currentUserId = currentUserUtil.getCurrentUserId();
+        String ipAddress = httpRequest.getRemoteAddr();
+        userService.delete(id, currentUserId, ipAddress);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
 ```
@@ -118,47 +181,75 @@ public class UserController {
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
-    
+
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    
-    public Page<UserDto> findAll(int page, int size) {
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuditLogService auditLogService;
+    private final CurrentUserUtil currentUserUtil;
+
+    public PageResponse<UserDto> findAll(int page, int size, String search, String roleName, Boolean isActive) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return userRepository.findAll(pageable).map(userMapper::toDto);
+
+        Page<User> users;
+        if (search != null && !search.isEmpty()) {
+            users = userRepository.search(search, pageable);
+        } else {
+            users = userRepository.findAll(pageable);
+        }
+
+        return PageResponse.from(users.map(this::toDto));
     }
-    
-    public Optional<UserDto> findById(Long id) {
-        return userRepository.findById(id).map(userMapper::toDto);
+
+    public UserDto findById(Long id) {
+        User user = userRepository.findByIdWithRole(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User", id));
+        return toDto(user);
     }
-    
-    public UserDto create(CreateUserRequest request) {
+
+    @Transactional
+    public UserDto create(CreateUserRequest request, Long currentUserId, String ipAddress) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new BusinessException("USER_001", "Email already exists");
         }
-        
-        User user = userMapper.toEntity(request);
+
+        User user = User.builder()
+                .email(request.getEmail())
+                .passwordHash(passwordEncoder.encode(request.getPassword()))
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .isActive(true)
+                .build();
+
+        if (request.getRoleId() != null) {
+            Role role = roleRepository.findById(request.getRoleId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Role", request.getRoleId()));
+            user.setRole(role);
+        }
+
         user = userRepository.save(user);
         log.info("Created user with id: {}", user.getId());
-        
-        return userMapper.toDto(user);
+
+        auditLogService.log(currentUserId, "CREATE", "User", user.getId(), null, ipAddress, "User created");
+
+        return toDto(user);
     }
-    
-    public UserDto update(Long id, UpdateUserRequest request) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User", id));
-        
-        userMapper.updateFromRequest(user, request);
-        user = userRepository.save(user);
-        
-        return userMapper.toDto(user);
-    }
-    
-    public void delete(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new ResourceNotFoundException("User", id);
-        }
-        userRepository.deleteById(id);
-        log.info("Deleted user with id: {}", id);
+
+    // DTO conversion is done via private method, not a separate mapper class
+    private UserDto toDto(User user) {
+        return UserDto.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .fullName(user.getFullName())
+                .roleId(user.getRole() != null ? user.getRole().getId() : null)
+                .roleName(user.getRole() != null ? user.getRole().getName() : null)
+                .employeeId(user.getEmployee() != null ? user.getEmployee().getId() : null)
+                .isActive(user.getIsActive())
+                .lastLoginAt(user.getLastLoginAt())
+                .createdAt(user.getCreatedAt())
+                .build();
     }
 }
 ```
@@ -168,16 +259,30 @@ public class UserService {
 ```java
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    
+
     Optional<User> findByEmail(String email);
-    
+
     boolean existsByEmail(String email);
-    
-    @Query("SELECT u FROM User u WHERE u.isActive = true AND u.role = :role")
-    List<User> findActiveUsersByRole(@Param("role") Role role);
-    
-    @Query("SELECT COUNT(u) FROM User u WHERE u.createdAt >= :date")
-    long countUsersCreatedAfter(@Param("date") LocalDateTime date);
+
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.role WHERE u.id = :id")
+    Optional<User> findByIdWithRole(@Param("id") Long id);
+
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.role WHERE u.email = :email")
+    Optional<User> findByEmailWithRole(@Param("email") String email);
+
+    @Query("SELECT u FROM User u WHERE u.isActive = true")
+    List<User> findAllActive();
+
+    @Query("SELECT u FROM User u WHERE u.isActive = true")
+    Page<User> findAllActive(Pageable pageable);
+
+    @Query("SELECT u FROM User u WHERE u.role.name = :roleName")
+    Page<User> findByRoleName(@Param("roleName") String roleName, Pageable pageable);
+
+    @Query("SELECT u FROM User u WHERE LOWER(u.firstName) LIKE LOWER(CONCAT('%', :search, '%')) " +
+           "OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :search, '%')) " +
+           "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%'))")
+    Page<User> search(@Param("search") String search, Pageable pageable);
 }
 ```
 
@@ -192,48 +297,61 @@ public interface UserRepository extends JpaRepository<User, Long> {
 @AllArgsConstructor
 @Builder
 public class User {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Column(nullable = false, length = 100)
-    private String name;
-    
-    @Column(nullable = false, unique = true)
+
+    @Column(nullable = false, unique = true, length = 255)
     private String email;
-    
-    @Column(nullable = false)
+
+    @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
-    
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UserRole role;
-    
+
+    @Column(name = "first_name", length = 100)
+    private String firstName;
+
+    @Column(name = "last_name", length = 100)
+    private String lastName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id")
+    private Role role;                          // Entity reference, not enum
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
     @Column(name = "is_active", nullable = false)
     @Builder.Default
-    private boolean isActive = true;
-    
+    private Boolean isActive = true;
+
+    @Column(name = "last_login_at")
+    private LocalDateTime lastLoginAt;
+
+    @Column(name = "reset_token")
+    private String resetToken;
+
+    @Column(name = "reset_token_expires_at")
+    private LocalDateTime resetTokenExpiresAt;
+
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
-    
+
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-    
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 }
 ```
 
 ## DTO Pattern
+
+**Note**: There are no separate `*Mapper` classes. Entity-to-DTO conversion is done via static `fromEntity()` methods on DTOs or private `toDto()` methods in service classes.
 
 ### Request DTO
 
@@ -244,38 +362,45 @@ public class User {
 @AllArgsConstructor
 @Builder
 public class CreateUserRequest {
-    
-    @NotBlank(message = "Name is required")
+
+    @NotBlank(message = "First name is required")
     @Size(min = 2, max = 100)
-    private String name;
-    
+    private String firstName;
+
+    @NotBlank(message = "Last name is required")
+    @Size(min = 2, max = 100)
+    private String lastName;
+
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
     private String email;
-    
+
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
-    
-    @NotNull(message = "Role is required")
-    private UserRole role;
+
+    private Long roleId;
 }
 ```
 
 ### Response DTO
 
 ```java
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class UserDto {
     private Long id;
-    private String name;
     private String email;
-    private UserRole role;
+    private String firstName;
+    private String lastName;
+    private String fullName;
+    private String roleName;
+    private Long roleId;
+    private Long employeeId;
     private boolean isActive;
+    private LocalDateTime lastLoginAt;
     private LocalDateTime createdAt;
 }
 ```
@@ -285,25 +410,24 @@ public class UserDto {
 ### Standard Response Wrapper
 
 ```java
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ApiResponse<T> {
-    
+
     private boolean success;
     private String message;
     private T data;
     private ErrorInfo error;
-    
+
     public static <T> ApiResponse<T> success(T data) {
         return ApiResponse.<T>builder()
                 .success(true)
                 .data(data)
                 .build();
     }
-    
+
     public static <T> ApiResponse<T> success(T data, String message) {
         return ApiResponse.<T>builder()
                 .success(true)
@@ -311,7 +435,7 @@ public class ApiResponse<T> {
                 .data(data)
                 .build();
     }
-    
+
     public static <T> ApiResponse<T> error(String code, String message) {
         return ApiResponse.<T>builder()
                 .success(false)
@@ -319,16 +443,36 @@ public class ApiResponse<T> {
                 .build();
     }
 }
+```
 
-@Getter
-@Setter
+### Paginated Response
+
+```java
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ErrorInfo {
-    private String code;
-    private String message;
-    private List<FieldError> fieldErrors;
+public class PageResponse<T> {
+
+    private List<T> content;
+    private long totalElements;
+    private int totalPages;
+    private int size;
+    private int number;
+    private boolean first;
+    private boolean last;
+
+    public static <T> PageResponse<T> from(Page<T> page) {
+        return PageResponse.<T>builder()
+                .content(page.getContent())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .size(page.getSize())
+                .number(page.getNumber())
+                .first(page.isFirst())
+                .last(page.isLast())
+                .build();
+    }
 }
 ```
 
@@ -339,10 +483,10 @@ public class ErrorInfo {
 ```java
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class ResourceNotFoundException extends RuntimeException {
-    
+
     private final String resource;
     private final Object identifier;
-    
+
     public ResourceNotFoundException(String resource, Object identifier) {
         super(String.format("%s not found with identifier: %s", resource, identifier));
         this.resource = resource;
@@ -352,9 +496,9 @@ public class ResourceNotFoundException extends RuntimeException {
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class BusinessException extends RuntimeException {
-    
+
     private final String code;
-    
+
     public BusinessException(String code, String message) {
         super(message);
         this.code = code;
@@ -369,42 +513,42 @@ public class BusinessException extends RuntimeException {
 @RequiredArgsConstructor
 @Slf4j
 public class GlobalExceptionHandler {
-    
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleNotFound(ResourceNotFoundException ex) {
         log.warn("Resource not found: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ApiResponse.error("NOT_FOUND", ex.getMessage()));
     }
-    
+
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiResponse<Void>> handleBusiness(BusinessException ex) {
         log.warn("Business error: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.error(ex.getCode(), ex.getMessage()));
     }
-    
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Void>> handleValidation(
             MethodArgumentNotValidException ex) {
-        
+
         List<FieldError> errors = ex.getBindingResult().getFieldErrors().stream()
                 .map(e -> new FieldError(e.getField(), e.getDefaultMessage()))
                 .collect(Collectors.toList());
-        
+
         ErrorInfo errorInfo = ErrorInfo.builder()
                 .code("VALIDATION_ERROR")
                 .message("Validation failed")
                 .fieldErrors(errors)
                 .build();
-        
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.<Void>builder()
                         .success(false)
                         .error(errorInfo)
                         .build());
     }
-    
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneral(Exception ex) {
         log.error("Unexpected error", ex);
@@ -435,14 +579,14 @@ public class GlobalExceptionHandler {
 ```java
 @Slf4j
 public class UserService {
-    
+
     public void performAction() {
         // Use appropriate log levels
         log.debug("Debug info for troubleshooting");
         log.info("User action: {}", userId);        // User actions
         log.warn("Potential issue: {}", detail);    // Recoverable issues
         log.error("Error occurred: {}", ex.getMessage(), ex);  // Errors
-        
+
         // Don't log sensitive data
         // log.info("Password: {}", password);  // BAD
     }
@@ -451,31 +595,49 @@ public class UserService {
 
 ## Security Guidelines
 
-### JWT Authentication
+### JWT Authentication (jjwt 0.12+)
 
 ```java
 @Component
-@RequiredArgsConstructor
+@Slf4j
 public class JwtTokenProvider {
-    
-    private final UserDetailsService userDetailsService;
-    
-    public String generateToken(Authentication authentication) {
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${jwt.expiration}")
+    private long jwtExpiration;
+
+    private SecretKey getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(
+            java.util.Base64.getEncoder().encodeToString(jwtSecret.getBytes()));
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String generateAccessToken(Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + jwtExpiration);
+
         return Jwts.builder()
-                .setSubject(userPrincipal.getId().toString())
+                .subject(Long.toString(userPrincipal.getId()))
+                .claim("email", userPrincipal.getEmail())
                 .claim("role", userPrincipal.getRole())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION))
-                .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(getSigningKey())
                 .compact();
     }
-    
-    public boolean validateToken(String token) {
+
+    public boolean validateToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token);
+            Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(authToken);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
+            log.error("Invalid JWT: {}", e.getMessage());
             return false;
         }
     }
@@ -484,21 +646,22 @@ public class JwtTokenProvider {
 
 ### Password Security
 
+Uses Spring Security's built-in `PasswordEncoder` bean (not a custom class):
+
 ```java
-@Component
-@RequiredArgsConstructor
-public class PasswordEncoder {
-    
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-    
-    public String encode(String rawPassword) {
-        return encoder.encode(rawPassword);
-    }
-    
-    public boolean matches(String rawPassword, String encodedPassword) {
-        return encoder.matches(rawPassword, encodedPassword);
-    }
+@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
 }
+```
+
+Injected in services:
+
+```java
+private final PasswordEncoder passwordEncoder;
+
+// Usage
+user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
 ```
 
 ## Database Conventions
@@ -507,12 +670,12 @@ public class PasswordEncoder {
 
 - Use **snake_case**
 - Use **plural nouns**
-- Examples: `users`, `sales_orders`, `inventory_items`
+- Examples: `users`, `sales_orders`, `inventory_items`, `invoice_lines`
 
 ### Column Naming
 
 - Use **snake_case**
-- Foreign keys: `<table>_id` (e.g., `user_id`)
+- Foreign keys: `<table>_id` (e.g., `user_id`, `role_id`)
 - Timestamps: `created_at`, `updated_at`, `deleted_at`
 - Booleans: `is_<adjective>` (e.g., `is_active`, `is_deleted`)
 
@@ -527,3 +690,6 @@ CREATE INDEX idx_orders_status ON orders(status);
 -- Composite indexes
 CREATE INDEX idx_orders_customer_status ON orders(customer_id, status);
 ```
+
+---
+*Last audited: 2026-05-10*

@@ -1,5 +1,7 @@
 # System Architecture Overview
 
+> **⚠️ Some details may be outdated.** See the comprehensive [requirements.html](../requirements.html) for the current system state.
+
 ## Introduction
 
 The ERP system is a full-stack web application designed for small-to-medium enterprises to manage core business operations including inventory, sales, purchasing, finance, and human resources.
@@ -251,7 +253,11 @@ Security is implemented in layers:
 
 - [Navigation Structure](navigation.md)
 - [Pages Inventory](pages.md)
-- [API Overview](../api/overview.md)
+- [API Endpoints](../api/endpoints.md)
+- [Data Models](../api/data-models.md)
 - [Frontend Guidelines](../guidelines/frontend.md)
 - [Backend Guidelines](../guidelines/backend.md)
-- [Team Roles & Diagram Assignment](../team/roles.md)
+- [Linting Guidelines](../guidelines/linting.md)
+
+---
+*Last audited: 2026-05-10*

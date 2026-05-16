@@ -1,5 +1,7 @@
 # API Endpoints
 
+# API Endpoints
+
 ## Base URL
 
 ```
