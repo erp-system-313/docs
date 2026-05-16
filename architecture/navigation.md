@@ -1,5 +1,7 @@
 # Navigation Structure
 
+> **⚠️ This document is partially outdated.** See the comprehensive [requirements.html](../requirements.html) for the current route tree and navigation structure.
+
 ## Sidebar Navigation
 
 The sidebar contains the following menu structure:

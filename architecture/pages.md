@@ -1,5 +1,7 @@
 # ERP System Pages Architecture
 
+> **⚠️ This document is partially outdated.** See the comprehensive [requirements.html](../requirements.html) for the current route map (55+ pages across 12 modules).
+
 ## Overview
 This document outlines all pages/routes for the ERP system webapp, organized by module.
 

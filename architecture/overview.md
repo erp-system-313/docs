@@ -1,5 +1,7 @@
 # System Architecture Overview
 
+> **⚠️ Some details may be outdated.** See the comprehensive [requirements.html](../requirements.html) for the current system state.
+
 ## Introduction
 
 The ERP system is a full-stack web application designed for small-to-medium enterprises to manage core business operations including inventory, sales, purchasing, finance, and human resources.

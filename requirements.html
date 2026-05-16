@@ -1,0 +1,2110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ERP System - Requirements Document</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --primary: #1a73e8; --primary-dark: #1557b0; --accent: #34a853;
+  --bg: #f8fafc; --card: #fff; --border: #e2e8f0; --text: #1e293b;
+  --text-muted: #64748b; --sidebar: #0f172a; --sidebar-text: #cbd5e1;
+}
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--text); background: var(--bg); line-height: 1.7; display: flex; }
+nav { position: fixed; top: 0; left: 0; width: 280px; height: 100vh; background: var(--sidebar); color: var(--sidebar-text); overflow-y: auto; z-index: 100; padding: 0; }
+nav .logo { padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,.08); }
+nav .logo h1 { font-size: 16px; color: #fff; font-weight: 700; }
+nav .logo span { font-size: 12px; color: var(--sidebar-text); }
+nav ul { list-style: none; padding: 12px 0; }
+nav ul li a { display: block; padding: 8px 20px; color: var(--sidebar-text); text-decoration: none; font-size: 13px; transition: all .15s; border-left: 3px solid transparent; }
+nav ul li a:hover, nav ul li a.active { background: rgba(255,255,255,.06); color: #fff; border-left-color: var(--primary); }
+nav ul li .section-label { padding: 16px 20px 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; font-weight: 600; }
+main { margin-left: 280px; flex: 1; min-height: 100vh; max-width: 1200px; padding: 40px 48px 80px; }
+section { margin-bottom: 56px; }
+h2 { font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 24px; padding-bottom: 12px; border-bottom: 3px solid var(--primary); }
+h3 { font-size: 20px; font-weight: 600; color: var(--text); margin: 32px 0 16px; }
+h4 { font-size: 16px; font-weight: 600; color: var(--text); margin: 24px 0 12px; }
+p, li { font-size: 14px; color: var(--text); line-height: 1.8; }
+p { margin-bottom: 12px; }
+.mermaid { background: var(--card); padding: 24px; border-radius: 12px; border: 1px solid var(--border); margin: 20px 0; overflow-x: auto; text-align: center; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin: 16px 0; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+.card h4 { margin: 0 0 8px; font-size: 15px; }
+.card p { font-size: 13px; color: var(--text-muted); margin: 0; }
+.card .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-top: 8px; }
+.badge-green { background: #dcfce7; color: #166534; }
+.badge-blue { background: #dbeafe; color: #1e40af; }
+.badge-purple { background: #f3e8ff; color: #6b21a8; }
+.badge-orange { background: #ffedd5; color: #9a3412; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+th { background: #f1f5f9; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: var(--text-muted); }
+tr:hover td { background: #f8fafc; }
+code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+pre { background: #1e293b; color: #e2e8f0; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 12px; line-height: 1.6; margin: 12px 0; font-family: 'JetBrains Mono', monospace; }
+pre .comment { color: #94a3b8; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin: 2px; }
+.tag-get { background: #dbeafe; color: #1d4ed8; }
+tag-post { background: #dcfce7; color: #15803d; }
+tag-put { background: #fef9c3; color: #a16207; }
+tag-delete { background: #fee2e2; color: #b91c1c; }
+tag-patch { background: #f3e8ff; color: #7c3aed; }
+.module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.module-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.module-card .header { padding: 16px 20px; font-weight: 600; font-size: 15px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.module-card .body { padding: 16px 20px; }
+.module-card .body ul { list-style: none; padding: 0; }
+.module-card .body ul li { padding: 4px 0; font-size: 13px; color: var(--text); }
+.module-card .body ul li::before { content: '•'; color: var(--primary); margin-right: 8px; }
+.endpoint-row { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+.endpoint-row .method { flex-shrink: 0; min-width: 60px; }
+.endpoint-row .path { word-break: break-all; }
+@media (max-width: 768px) { nav { display: none; } main { margin-left: 0; padding: 24px 16px; } }
+.warning { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-size: 13px; color: #92400e; }
+.info { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-size: 13px; color: #1e40af; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><h1>ERP Requirements</h1><span>Unified Business Platform</span></div>
+  <ul>
+    <li class="section-label">Overview</li>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#tech-stack">Tech Stack</a></li>
+    <li><a href="#use-cases">Use Case Diagrams</a></li>
+    <li><a href="#erd">Entity-Relationship Diagram</a></li>
+    <li class="section-label">Domain Models</li>
+    <li><a href="#class-auth">Class: Auth & Admin</a></li>
+    <li><a href="#class-sales">Class: Sales & CRM</a></li>
+    <li><a href="#class-finance">Class: Finance</a></li>
+    <li><a href="#class-inventory">Class: Inventory</a></li>
+    <li><a href="#class-purchasing">Class: Purchasing</a></li>
+    <li><a href="#class-hr">Class: HR</a></li>
+    <li><a href="#class-support">Class: Support & Projects</a></li>
+    <li><a href="#class-recruitment">Class: Recruitment</a></li>
+    <li class="section-label">Data Models</li>
+    <li><a href="#models-admin">Admin & Auth</a></li>
+    <li><a href="#models-sales">Sales & CRM</a></li>
+    <li><a href="#models-finance">Finance</a></li>
+    <li><a href="#models-inventory">Inventory</a></li>
+    <li><a href="#models-purchasing">Purchasing</a></li>
+    <li><a href="#models-hr">HR</a></li>
+    <li><a href="#models-support">Support & Projects</a></li>
+    <li><a href="#models-recruitment">Recruitment</a></li>
+    <li class="section-label">API</li>
+    <li><a href="#endpoints">API Endpoints</a></li>
+    <li class="section-label">Frontend</li>
+    <li><a href="#frontend-pages">Frontend Pages</a></li>
+    <li><a href="#frontend-components">UI Components</a></li>
+    <li><a href="#routes">Route Map</a></li>
+    <li class="section-label">Flows</li>
+    <li><a href="#sequences">Sequence Diagrams</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section id="introduction">
+<h2>Introduction</h2>
+<p>A unified ERP platform to streamline daily operations, improve data visibility, and support decision-making. The system follows a modular architecture with a Spring Boot backend and React TypeScript frontend.</p>
+
+<div class="card-grid">
+  <div class="card"><h4>Dashboard</h4><p>Real-time metrics for sales, low stock, pending invoices</p></div>
+  <div class="card"><h4>Sales &amp; CRM</h4><p>Orders, customers, pipeline management</p></div>
+  <div class="card"><h4>Inventory</h4><p>Products, categories, stock levels, UoM</p></div>
+  <div class="card"><h4>Purchasing</h4><p>Purchase orders, suppliers, stock movements</p></div>
+  <div class="card"><h4>Finance</h4><p>Chart of accounts, invoices, journal entries, payments, taxes</p></div>
+  <div class="card"><h4>HR</h4><p>Employees, attendance, leave, contracts</p></div>
+  <div class="card"><h4>Administration</h4><p>Users, roles, permissions, audit logs</p></div>
+  <div class="card"><h4>Support</h4><p>Tickets, comments, SLA, knowledge base</p></div>
+  <div class="card"><h4>Projects</h4><p>Projects, tasks, stages, Gantt charts</p></div>
+  <div class="card"><h4>Recruitment</h4><p>Job openings, applicants, pipeline</p></div>
+</div>
+</section>
+
+<section id="tech-stack">
+<h2>Tech Stack</h2>
+<div class="card-grid">
+  <div class="card"><h4>Frontend</h4><p>React 19, TypeScript, Vite 8, Ant Design 6, react-hook-form, yup, dayjs, axios, Recharts</p></div>
+  <div class="card"><h4>Backend</h4><p>Java 21, Spring Boot 3.2.5, Spring Data JPA, Spring Security, Flyway, PostgreSQL, Redis</p></div>
+  <div class="card"><h4>DevOps</h4><p>Docker, Docker Compose, GitHub Actions, Nix flake</p></div>
+</div>
+</section>
+
+<section id="use-cases">
+<h2>Use Case Diagrams</h2>
+
+<h3>Overall System Actors</h3>
+<div class="mermaid">
+graph TB
+    A[Admin] --> B[Manage Users]
+    A --> C[Configure System]
+    A --> D[View Audit Logs]
+    A --> E[Full CRUD Access]
+    M[Manager] --> F[View Reports]
+    M --> G[Manage Team Data]
+    M --> H[Approve Leave]
+    M --> I[View Dashboard]
+    S[Staff] --> J[Submit Leave Request]
+    S --> K[Clock In/Out]
+    S --> L[View Own Data]
+    S --> M1[Create Support Tickets]
+</div>
+
+<h3>Sales &amp; CRM</h3>
+<div class="mermaid">
+graph TB
+    U[User] --> SO[Manage Sales Orders]
+    U --> C[Manage Customers]
+    U --> Q[Create Quotations]
+    U --> P[Manage Pipeline]
+    U --> L[Manage Leads]
+    SO --> S1[Create Order]
+    SO --> S2[Confirm Order]
+    SO --> S3[Ship Order]
+    SO --> S4[Cancel Order]
+    SO --> S5[Generate Invoice]
+    P --> PS[Update Stage]
+    P --> PW[Mark Won/Lost]
+    L --> LC[Convert to Opportunity]
+</div>
+
+<h3>Finance</h3>
+<div class="mermaid">
+graph TB
+    U[User] --> A[Manage Accounts]
+    U --> I[Manage Invoices]
+    U --> J[Manage Journal Entries]
+    U --> P[Process Payments]
+    U --> T[Manage Taxes]
+    U --> R[View Reports]
+    I --> IS[Send Invoice]
+    I --> IC[Cancel Invoice]
+    I --> IP[Record Payment]
+    J --> JP[Post Entry]
+    J --> JR[Reverse Entry]
+    R --> RB[Balance Sheet]
+    R --> RPL[Profit & Loss]
+    R --> RGL[General Ledger]
+    R --> RTB[Trial Balance]
+</div>
+
+<h3>HR</h3>
+<div class="mermaid">
+graph TB
+    A[Admin] --> E[Manage Employees]
+    A --> D[Manage Departments]
+    A --> J[Manage Positions]
+    A --> C[Manage Contracts]
+    M[Manager] --> LR[Approve/Reject Leave]
+    M --> AT[View Attendance]
+    S[Staff] --> LRQ[Submit Leave Request]
+    S --> CI[Clock In/Out]
+    S --> V[View Own Attendance]
+</div>
+
+<h3>Inventory, Purchasing &amp; Projects</h3>
+<div class="mermaid">
+graph TB
+    U[User] --> P[Manage Products]
+    U --> CAT[Manage Categories]
+    U --> SU[Manage Suppliers]
+    U --> PO[Manage Purchase Orders]
+    PO --> POR[Receive Goods]
+    PO --> POC[Cancel PO]
+    U --> SM[View Stock Movements]
+    U --> PRJ[Manage Projects]
+    PRJ --> T[Manage Tasks]
+    PRJ --> G[View Gantt]
+    PRJ --> S[Change Project State]
+</div>
+
+<h3>Support &amp; Recruitment</h3>
+<div class="mermaid">
+graph TB
+    U[User] --> TK[Manage Tickets]
+    TK --> TKC[Add Comments]
+    TK --> TKA[Assign Ticket]
+    TK --> TKS[Change Stage]
+    TK --> TKL[Close Ticket]
+    U --> JO[Manage Job Openings]
+    U --> AP[Manage Applicants]
+    AP --> APS[Update Pipeline Stage]
+</div>
+</section>
+
+<section id="erd">
+<h2>Entity-Relationship Diagram</h2>
+<div class="mermaid">
+erDiagram
+    users ||--o{ audit_logs : "has"
+    users ||--o| employees : "linked to"
+    users }o--|| roles : "belongs to"
+    roles }o--o{ permissions : "has"
+
+    employees ||--o{ leave_requests : "submits"
+    employees ||--o{ attendance : "records"
+    employees ||--o{ contracts : "has"
+    employees ||--o{ leave_balances : "has"
+    employees }o--|| departments : "belongs to"
+    employees }o--|| job_positions : "holds"
+
+    departments ||--o{ employees : "contains"
+    departments ||--o{ job_positions : "has"
+
+    products }o--|| categories : "belongs to"
+    products }o--o| suppliers : "supplied by"
+    products ||--o{ stock_movements : "has"
+    products ||--o{ purchase_order_lines : "referenced in"
+    products ||--o{ sales_order_lines : "referenced in"
+
+    categories ||--o{ products : "contains"
+
+    suppliers ||--o{ purchase_orders : "places"
+    suppliers ||--o{ products : "supplies"
+
+    purchase_orders ||--o{ purchase_order_lines : "has"
+    stock_movements ||--|| products : "tracks"
+
+    customers ||--o{ sales_orders : "places"
+    sales_orders ||--o{ sales_order_lines : "has"
+    sales_orders ||--o| invoices : "billed by"
+    sales_orders ||--o{ crm_leads : "converted from"
+
+    invoices ||--o{ invoice_lines : "has"
+    invoices ||--o{ payments : "receives"
+
+    accounts ||--o{ journal_entry_lines : "referenced in"
+    accounts ||--o{ invoice_lines : "referenced in"
+    journal_entries ||--o{ journal_entry_lines : "has"
+
+    moves ||--o{ move_lines : "has"
+    moves ||--o| journals : "belongs to"
+    moves ||--o| accounts : "references"
+
+    tickets ||--o{ ticket_comments : "has"
+    tickets }o--|| helpdesk_teams : "assigned to"
+    tickets }o--|| helpdesk_stages : "in stage"
+
+    projects ||--o{ tasks : "has"
+    projects ||--o{ task_stages : "has"
+
+    job_openings ||--o{ applicants : "attracts"
+    recruitment_stages ||--o{ applicants : "categorizes"
+
+    crm_leads }o--|| crm_lead_stages : "in stage"
+</div>
+</section>
+
+<section id="class-auth">
+<h2>Class Diagram: Auth &amp; Administration</h2>
+<div class="mermaid">
+classDiagram
+    class User {
+        +Long id
+        +String email
+        +String passwordHash
+        +String firstName
+        +String lastName
+        +Role role
+        +Employee employee
+        +Boolean isActive
+        +LocalDateTime lastLoginAt
+        +String resetToken
+        +LocalDateTime resetTokenExpiresAt
+        +getFullName()
+    }
+    class Role {
+        +Long id
+        +String name
+        +String description
+        +String permissions
+        +Boolean isActive
+        +Boolean isSystem
+        +Set~Permission~ rolePermissions
+    }
+    class Permission {
+        +Long id
+        +String module
+        +String action
+        +String description
+    }
+    class AuditLog {
+        +Long id
+        +User user
+        +String action
+        +String entityType
+        +Long entityId
+        +Map changes
+        +String ipAddress
+        +String details
+        +LocalDateTime createdAt
+    }
+    class Settings {
+        +Long id
+        +String settingKey
+        +String settingValue
+        +String settingType
+        +String description
+    }
+    User "N" --> "1" Role
+    Role "N" --> "M" Permission
+    User "1" --> "0..1" Employee
+    User "1" --> "N" AuditLog
+</div>
+</section>
+
+<section id="class-sales">
+<h2>Class Diagram: Sales &amp; CRM</h2>
+<div class="mermaid">
+classDiagram
+    class SalesOrder {
+        +Long id
+        +String orderNumber
+        +Customer customer
+        +LocalDateTime orderDate
+        +OrderStatus status
+        +BigDecimal subtotal
+        +BigDecimal taxAmount
+        +BigDecimal totalAmount
+        +String notes
+        +PaymentTerm paymentTerm
+        +PriceList pricelist
+        +Incoterm incoterm
+        +SalesTeam team
+        +List~SalesOrderLine~ lines
+        +calculateTotals()
+    }
+    class SalesOrderLine {
+        +Long id
+        +SalesOrder order
+        +Product product
+        +BigDecimal quantity
+        +BigDecimal unitPrice
+        +BigDecimal lineTotal
+        +BigDecimal discount
+        +String displayType
+    }
+    class Customer {
+        +Long id
+        +String name
+        +String email
+        +String phone
+        +String address
+        +BigDecimal creditLimit
+        +String paymentTerms
+        +Boolean isActive
+    }
+    class Partner {
+        +Long id
+        +String name
+        +PartnerType type
+        +Partner parent
+        +String email
+        +String phone
+        +String taxId
+        +String address
+    }
+    class CrmLead {
+        +Long id
+        +String name
+        +LeadType type
+        +CrmLeadStage stage
+        +String priority
+        +BigDecimal expectedRevenue
+        +Integer probability
+        +String partnerName
+        +String source
+        +String campaign
+        +LocalDateTime convertedAt
+    }
+    class CrmLeadStage {
+        +Long id
+        +String name
+        +Integer sequence
+        +Boolean isWon
+        +Boolean isFolded
+    }
+    class SalesTeam {
+        +Long id
+        +String name
+        +String description
+        +BigDecimal targetRevenue
+    }
+    class PriceList {
+        +Long id
+        +String name
+        +Long currencyId
+        +LocalDate validFrom
+        +LocalDate validTo
+    }
+    Customer "1" --> "N" SalesOrder
+    SalesOrder "1" --> "N" SalesOrderLine
+    SalesOrder --> SalesTeam
+    CrmLead --> CrmLeadStage
+</div>
+</section>
+
+<section id="class-finance">
+<h2>Class Diagram: Finance &amp; Accounting</h2>
+<div class="mermaid">
+classDiagram
+    class Account {
+        +Long id
+        +String code
+        +String name
+        +AccountType type
+        +InternalGroup internalGroup
+        +Boolean reconcile
+        +Account parent
+        +AccountGroup group
+        +List~AccountTag~ tags
+    }
+    class Move {
+        +Long id
+        +String name
+        +String reference
+        +LocalDate date
+        +MoveState state
+        +MoveType moveType
+        +Journal journal
+        +BigDecimal amountUntaxed
+        +BigDecimal amountTax
+        +BigDecimal amountTotal
+        +BigDecimal amountResidual
+        +List~MoveLine~ lines
+    }
+    class MoveLine {
+        +Long id
+        +Move move
+        +Account account
+        +LineDisplayType displayType
+        +String name
+        +BigDecimal debit
+        +BigDecimal credit
+        +BigDecimal amountCurrency
+        +Long partnerId
+        +Long productId
+        +BigDecimal quantity
+    }
+    class Invoice {
+        +Long id
+        +String invoiceNumber
+        +Customer customer
+        +LocalDate invoiceDate
+        +LocalDate dueDate
+        +InvoiceStatus status
+        +BigDecimal subtotal
+        +BigDecimal taxAmount
+        +BigDecimal totalAmount
+        +BigDecimal paidAmount
+    }
+    class InvoiceLine {
+        +Long id
+        +Invoice invoice
+        +Product product
+        +String description
+        +BigDecimal quantity
+        +BigDecimal unitPrice
+        +BigDecimal lineTotal
+        +Long glAccountId
+    }
+    class JournalEntry {
+        +Long id
+        +String entryNumber
+        +LocalDate date
+        +JournalType journalType
+        +String description
+        +String reference
+        +JournalEntryStatus status
+        +User createdBy
+        +List~JournalEntryLine~ lines
+    }
+    class JournalEntryLine {
+        +Long id
+        +JournalEntry entry
+        +Account account
+        +BigDecimal debit
+        +BigDecimal credit
+        +String description
+    }
+    class Payment {
+        +Long id
+        +PaymentDirection paymentType
+        +PaymentPartnerType partnerType
+        +BigDecimal amount
+        +Long partnerId
+        +PaymentMethodLine paymentMethodLine
+        +Move move
+        +Boolean isReconciled
+    }
+    class Tax {
+        +Long id
+        +String name
+        +TaxUseType typeTaxUse
+        +TaxAmountType amountType
+        +BigDecimal amount
+        +Boolean priceInclude
+        +TaxGroup taxGroup
+        +List~TaxRepartitionLine~ repartitionLines
+    }
+    Account "1" --> "N" MoveLine
+    Move "1" --> "N" MoveLine
+    Invoice "1" --> "N" InvoiceLine
+    JournalEntry "1" --> "N" JournalEntryLine
+    Account "1" --> "N" JournalEntryLine
+</div>
+</section>
+
+<section id="class-inventory">
+<h2>Class Diagram: Inventory</h2>
+<div class="mermaid">
+classDiagram
+    class Product {
+        +Long id
+        +String sku
+        +String name
+        +String description
+        +Category category
+        +Supplier supplier
+        +BigDecimal unitPrice
+        +BigDecimal costPrice
+        +Integer reorderLevel
+        +Integer reorderQuantity
+        +String unitOfMeasure
+        +Integer currentStock
+        +String imageUrl
+        +Boolean isActive
+    }
+    class Category {
+        +Long id
+        +String name
+        +String description
+        +Long parentId
+        +Integer sortOrder
+        +Boolean isActive
+    }
+    class Uom {
+        +Long id
+        +String name
+        +String code
+        +UomCategory category
+        +BigDecimal factor
+        +BigDecimal rounding
+        +Boolean isReference
+        +UomType uomType
+    }
+    class UomCategory {
+        +Long id
+        +String name
+        +List~Uom~ uoms
+    }
+    Product "N" --> "1" Category
+    Product "N" --> "1" Supplier
+    Uom "N" --> "1" UomCategory
+</div>
+</section>
+
+<section id="class-purchasing">
+<h2>Class Diagram: Purchasing</h2>
+<div class="mermaid">
+classDiagram
+    class PurchaseOrder {
+        +Long id
+        +String poNumber
+        +Supplier supplier
+        +LocalDate orderDate
+        +Status status
+        +BigDecimal subtotal
+        +BigDecimal taxAmount
+        +BigDecimal totalAmount
+        +BigDecimal shippingCost
+        +LocalDate expectedDate
+        +String notes
+        +User createdBy
+        +List~PurchaseOrderLine~ lines
+    }
+    class PurchaseOrderLine {
+        +Long id
+        +PurchaseOrder purchaseOrder
+        +Product product
+        +BigDecimal quantity
+        +BigDecimal unitPrice
+        +BigDecimal discount
+        +BigDecimal lineTotal
+        +BigDecimal receivedQty
+        +String notes
+    }
+    class Supplier {
+        +Long id
+        +String code
+        +String name
+        +String contactPerson
+        +String email
+        +String phone
+        +String address
+        +String taxId
+        +String paymentTerms
+        +BigDecimal totalPurchased
+        +Status status
+    }
+    class StockMovement {
+        +Long id
+        +Product product
+        +MovementType type
+        +BigDecimal quantity
+        +BigDecimal previousStock
+        +BigDecimal newStock
+        +String referenceType
+        +Long referenceId
+        +String notes
+    }
+    PurchaseOrder "1" --> "N" PurchaseOrderLine
+    PurchaseOrder "N" --> "1" Supplier
+    StockMovement "N" --> "1" Product
+</div>
+</section>
+
+<section id="class-hr">
+<h2>Class Diagram: Human Resources</h2>
+<div class="mermaid">
+classDiagram
+    class Employee {
+        +Long id
+        +User user
+        +String employeeCode
+        +String firstName
+        +String lastName
+        +String email
+        +String phone
+        +Department department
+        +JobPosition position
+        +LocalDate hireDate
+        +LocalDate terminationDate
+        +BigDecimal salary
+        +EmployeeStatus status
+        +String address
+    }
+    class Department {
+        +Long id
+        +String name
+        +Department parent
+        +Employee manager
+        +String description
+    }
+    class JobPosition {
+        +Long id
+        +String title
+        +Department department
+        +String description
+        +Integer expectedEmployees
+    }
+    class Contract {
+        +Long id
+        +Employee employee
+        +ContractType type
+        +LocalDate startDate
+        +LocalDate endDate
+        +BigDecimal wage
+        +String benefits
+        +ContractStatus status
+    }
+    class LeaveRequest {
+        +Long id
+        +Employee employee
+        +LocalDate startDate
+        +LocalDate endDate
+        +LeaveType type
+        +LeaveStatus status
+        +String reason
+        +String rejectionReason
+        +Employee approvedBy
+    }
+    class LeaveBalance {
+        +Long id
+        +Employee employee
+        +LeaveType type
+        +BigDecimal totalDays
+        +BigDecimal usedDays
+        +Integer year
+    }
+    class Attendance {
+        +Long id
+        +Employee employee
+        +LocalDate date
+        +LocalDateTime checkIn
+        +LocalDateTime checkOut
+        +AttendanceStatus status
+        +String notes
+    }
+    Employee "N" --> "1" Department
+    Employee "N" --> "1" JobPosition
+    Employee "1" --> "N" LeaveRequest
+    Employee "1" --> "N" LeaveBalance
+    Employee "1" --> "N" Attendance
+    Employee "1" --> "N" Contract
+</div>
+</section>
+
+<section id="class-support">
+<h2>Class Diagram: Support &amp; Projects</h2>
+<div class="mermaid">
+classDiagram
+    class Ticket {
+        +Long id
+        +String title
+        +String description
+        +Customer customer
+        +TicketPriority priority
+        +TicketStatus status
+        +Long assignedTo
+        +Long stageId
+        +Long teamId
+        +Long categoryId
+        +String channel
+        +LocalDateTime slaDeadline
+        +String slaStatus
+        +LocalDateTime closedAt
+        +Set~TicketComment~ ticketCommentSet
+    }
+    class TicketComment {
+        +Long id
+        +Ticket ticket
+        +String author
+        +String message
+        +Boolean isInternal
+    }
+    class HelpdeskTeam {
+        +Long id
+        +String name
+        +String description
+        +String teamLeadName
+        +String defaultPriority
+        +Boolean autoAssign
+    }
+    class HelpdeskStage {
+        +Long id
+        +String name
+        +Integer sequence
+        +Boolean fold
+        +Long teamId
+    }
+    class KbArticle {
+        +Long id
+        +String title
+        +String content
+        +Long categoryId
+        +String tags
+        +Integer views
+        +Boolean isPublished
+    }
+    class Project {
+        +Long id
+        +String name
+        +Long customerId
+        +LocalDate dateStart
+        +LocalDate dateEnd
+        +BigDecimal budget
+        +ProjectState state
+    }
+    class Task {
+        +Long id
+        +Long projectId
+        +String name
+        +String description
+        +Long assignedTo
+        +Long stageId
+        +LocalDate startDate
+        +LocalDate dueDate
+        +BigDecimal estimatedHours
+        +BigDecimal actualHours
+    }
+    class TaskStage {
+        +Long id
+        +Long projectId
+        +String name
+        +Integer sequence
+        +Boolean isDefault
+    }
+    Ticket "1" --> "N" TicketComment
+    Project "1" --> "N" Task
+    Project "1" --> "N" TaskStage
+</div>
+</section>
+
+<section id="class-recruitment">
+<h2>Class Diagram: Recruitment</h2>
+<div class="mermaid">
+classDiagram
+    class JobOpening {
+        +Long id
+        +String title
+        +Department department
+        +String description
+        +String requirements
+        +BigDecimal expectedSalary
+        +JobOpeningStatus status
+    }
+    class Applicant {
+        +Long id
+        +String name
+        +String email
+        +String phone
+        +String resumeUrl
+        +RecruitmentStage stage
+        +JobOpening jobOpening
+        +RecruitmentSource source
+        +BigDecimal salaryExpected
+        +String notes
+    }
+    class RecruitmentStage {
+        +Long id
+        +String name
+        +Integer sequence
+    }
+    class RecruitmentSource {
+        +Long id
+        +String name
+    }
+    JobOpening "1" --> "N" Applicant
+    RecruitmentStage "1" --> "N" Applicant
+    RecruitmentSource "1" --> "N" Applicant
+</div>
+</section>
+
+<section id="models-admin">
+<h2>Data Models: Admin &amp; Auth</h2>
+
+<h3>User</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK, auto-increment</td></tr>
+<tr><td>email</td><td>String</td><td>UNIQUE, NOT NULL, max 255</td></tr>
+<tr><td>passwordHash</td><td>String</td><td>NOT NULL, max 255</td></tr>
+<tr><td>firstName</td><td>String</td><td>max 100</td></tr>
+<tr><td>lastName</td><td>String</td><td>max 100</td></tr>
+<tr><td>roleId</td><td>FK → Role</td><td>Many-to-One</td></tr>
+<tr><td>employeeId</td><td>FK → Employee</td><td>One-to-One</td></tr>
+<tr><td>isActive</td><td>Boolean</td><td>default true</td></tr>
+<tr><td>lastLoginAt</td><td>LocalDateTime</td><td></td></tr>
+<tr><td>resetToken</td><td>String</td><td></td></tr>
+<tr><td>resetTokenExpiresAt</td><td>LocalDateTime</td><td></td></tr>
+<tr><td>createdAt</td><td>LocalDateTime</td><td>auto</td></tr>
+<tr><td>updatedAt</td><td>LocalDateTime</td><td>auto</td></tr>
+</table>
+
+<h3>Role</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>name</td><td>String</td><td>UNIQUE, NOT NULL, max 50</td></tr>
+<tr><td>description</td><td>Text</td><td></td></tr>
+<tr><td>permissions</td><td>String (JSONB)</td><td>legacy column</td></tr>
+<tr><td>isActive</td><td>Boolean</td><td>default true</td></tr>
+<tr><td>isSystem</td><td>Boolean</td><td></td></tr>
+</table>
+
+<h3>Permission</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>module</td><td>String</td><td>NOT NULL, max 50</td></tr>
+<tr><td>action</td><td>String</td><td>NOT NULL, max 50</td></tr>
+<tr><td>description</td><td>Text</td><td></td></tr>
+</table>
+
+<h3>AuditLog</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>userId</td><td>FK → User</td><td></td></tr>
+<tr><td>action</td><td>String</td><td>NOT NULL, max 100</td></tr>
+<tr><td>entityType</td><td>String</td><td>NOT NULL, max 100</td></tr>
+<tr><td>entityId</td><td>Long</td><td>NOT NULL</td></tr>
+<tr><td>changes</td><td>JSONB</td><td></td></tr>
+<tr><td>ipAddress</td><td>String</td><td>max 45</td></tr>
+<tr><td>details</td><td>Text</td><td></td></tr>
+<tr><td>createdAt</td><td>LocalDateTime</td><td>auto</td></tr>
+</table>
+
+<h3>Settings</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>settingKey</td><td>String</td><td>UNIQUE, NOT NULL, max 100</td></tr>
+<tr><td>settingValue</td><td>Text</td><td></td></tr>
+<tr><td>settingType</td><td>String</td><td>max 50, default STRING</td></tr>
+<tr><td>description</td><td>Text</td><td></td></tr>
+</table>
+</section>
+
+<section id="models-sales">
+<h2>Data Models: Sales &amp; CRM</h2>
+
+<h3>Customer</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>name</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>email</td><td>String</td><td></td></tr>
+<tr><td>phone</td><td>String</td><td></td></tr>
+<tr><td>address</td><td>String</td><td></td></tr>
+<tr><td>creditLimit</td><td>BigDecimal</td><td></td></tr>
+<tr><td>paymentTerms</td><td>String</td><td></td></tr>
+<tr><td>isActive</td><td>Boolean</td><td>default true</td></tr>
+</table>
+
+<h3>SalesOrder</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>orderNumber</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>customerId</td><td>FK → Customer</td><td></td></tr>
+<tr><td>orderDate</td><td>LocalDateTime</td><td></td></tr>
+<tr><td>status</td><td>OrderStatus (ENUM)</td><td>DRAFT|SENT|CONFIRMED|SHIPPED|CANCELLED</td></tr>
+<tr><td>subtotal</td><td>BigDecimal</td><td></td></tr>
+<tr><td>taxAmount</td><td>BigDecimal</td><td></td></tr>
+<tr><td>totalAmount</td><td>BigDecimal</td><td></td></tr>
+<tr><td>notes</td><td>Text</td><td></td></tr>
+<tr><td>paymentTermId</td><td>FK → PaymentTerm</td><td></td></tr>
+<tr><td>pricelistId</td><td>FK → PriceList</td><td></td></tr>
+<tr><td>incotermId</td><td>FK → Incoterm</td><td></td></tr>
+<tr><td>teamId</td><td>FK → SalesTeam</td><td></td></tr>
+</table>
+
+<h3>SalesOrderLine</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>orderId</td><td>FK → SalesOrder</td><td></td></tr>
+<tr><td>productId</td><td>FK → Product</td><td></td></tr>
+<tr><td>quantity</td><td>BigDecimal</td><td></td></tr>
+<tr><td>unitPrice</td><td>BigDecimal</td><td></td></tr>
+<tr><td>discount</td><td>BigDecimal</td><td></td></tr>
+<tr><td>lineTotal</td><td>BigDecimal</td><td>calculated</td></tr>
+<tr><td>displayType</td><td>String</td><td></td></tr>
+</table>
+
+<h3>Partner</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>name</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>type</td><td>PartnerType (ENUM)</td><td></td></tr>
+<tr><td>parentId</td><td>FK → Partner</td><td>self-ref</td></tr>
+<tr><td>email</td><td>String</td><td></td></tr>
+<tr><td>phone</td><td>String</td><td></td></tr>
+<tr><td>taxId</td><td>String</td><td></td></tr>
+<tr><td>address</td><td>String</td><td></td></tr>
+<tr><td>isActive</td><td>Boolean</td><td></td></tr>
+</table>
+
+<h3>CrmLead</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>name</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>type</td><td>LeadType (ENUM)</td><td></td></tr>
+<tr><td>stageId</td><td>FK → CrmLeadStage</td><td></td></tr>
+<tr><td>priority</td><td>String</td><td></td></tr>
+<tr><td>expectedRevenue</td><td>BigDecimal</td><td></td></tr>
+<tr><td>probability</td><td>Integer</td><td></td></tr>
+<tr><td>partnerName</td><td>String</td><td></td></tr>
+<tr><td>source</td><td>String</td><td></td></tr>
+<tr><td>campaign</td><td>String</td><td></td></tr>
+</table>
+
+<h3>CrmLeadStage</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>name</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>sequence</td><td>Integer</td><td></td></tr>
+<tr><td>isWon</td><td>Boolean</td><td></td></tr>
+<tr><td>isFolded</td><td>Boolean</td><td></td></tr>
+</table>
+</section>
+
+<section id="models-finance">
+<h2>Data Models: Finance</h2>
+
+<h3>Account</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>code</td><td>String</td><td></td></tr>
+<tr><td>name</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>type</td><td>AccountType (ENUM)</td><td>17 types</td></tr>
+<tr><td>internalGroup</td><td>InternalGroup (ENUM)</td><td>EQUITY|ASSET|LIABILITY|INCOME|EXPENSE</td></tr>
+<tr><td>reconcile</td><td>Boolean</td><td></td></tr>
+<tr><td>parentId</td><td>FK → Account</td><td>self-ref</td></tr>
+<tr><td>groupId</td><td>FK → AccountGroup</td><td></td></tr>
+</table>
+
+<h3>Move (Unified Journal Entry / Invoice)</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>name</td><td>String</td><td></td></tr>
+<tr><td>reference</td><td>String</td><td></td></tr>
+<tr><td>date</td><td>LocalDate</td><td></td></tr>
+<tr><td>state</td><td>MoveState (ENUM)</td><td>DRAFT|POSTED|CANCEL</td></tr>
+<tr><td>moveType</td><td>MoveType (ENUM)</td><td>ENTRY|OUT_INVOICE|IN_INVOICE|OUT_REFUND|IN_REFUND</td></tr>
+<tr><td>journalId</td><td>FK → Journal</td><td></td></tr>
+<tr><td>amountUntaxed</td><td>BigDecimal</td><td></td></tr>
+<tr><td>amountTax</td><td>BigDecimal</td><td></td></tr>
+<tr><td>amountTotal</td><td>BigDecimal</td><td></td></tr>
+<tr><td>amountResidual</td><td>BigDecimal</td><td></td></tr>
+</table>
+
+<h3>Invoice</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>invoiceNumber</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>customerId</td><td>FK → Customer</td><td></td></tr>
+<tr><td>invoiceDate</td><td>LocalDate</td><td></td></tr>
+<tr><td>dueDate</td><td>LocalDate</td><td></td></tr>
+<tr><td>status</td><td>InvoiceStatus (ENUM)</td><td>DRAFT|SENT|PAID|OVERDUE|CANCELLED</td></tr>
+<tr><td>subtotal</td><td>BigDecimal</td><td></td></tr>
+<tr><td>taxAmount</td><td>BigDecimal</td><td></td></tr>
+<tr><td>totalAmount</td><td>BigDecimal</td><td></td></tr>
+<tr><td>paidAmount</td><td>BigDecimal</td><td></td></tr>
+</table>
+
+<h3>JournalEntry</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>entryNumber</td><td>String</td><td></td></tr>
+<tr><td>date</td><td>LocalDate</td><td></td></tr>
+<tr><td>journalType</td><td>JournalType (ENUM)</td><td>SALE|PURCHASE|BANK|CASH|GENERAL</td></tr>
+<tr><td>description</td><td>String</td><td></td></tr>
+<tr><td>status</td><td>JournalEntryStatus (ENUM)</td><td>DRAFT|POSTED</td></tr>
+</table>
+
+<h3>Tax</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>name</td><td>String</td><td></td></tr>
+<tr><td>typeTaxUse</td><td>TaxUseType (ENUM)</td><td>SALE|PURCHASE|NONE</td></tr>
+<tr><td>amountType</td><td>TaxAmountType (ENUM)</td><td>PERCENT|FIXED|DIVISION|GROUP</td></tr>
+<tr><td>amount</td><td>BigDecimal</td><td></td></tr>
+<tr><td>priceInclude</td><td>Boolean</td><td></td></tr>
+</table>
+
+<h3>Payment</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>paymentType</td><td>PaymentDirection (ENUM)</td><td>INBOUND|OUTBOUND</td></tr>
+<tr><td>partnerType</td><td>PaymentPartnerType (ENUM)</td><td>CUSTOMER|SUPPLIER</td></tr>
+<tr><td>amount</td><td>BigDecimal</td><td></td></tr>
+<tr><td>partnerId</td><td>Long</td><td></td></tr>
+<tr><td>paymentMethodLineId</td><td>FK → PaymentMethodLine</td><td></td></tr>
+<tr><td>moveId</td><td>FK → Move</td><td></td></tr>
+<tr><td>isReconciled</td><td>Boolean</td><td></td></tr>
+</table>
+
+<h3>Journal</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>name</td><td>String</td><td></td></tr>
+<tr><td>code</td><td>String</td><td></td></tr>
+<tr><td>type</td><td>JournalType (ENUM)</td><td></td></tr>
+</table>
+
+<p><strong>Additional Finance Entities:</strong> AccountGroup, AccountTag, AnalyticAccount, AnalyticPlan, AnalyticLine, AnalyticDistribution, BankStatement, BankStatementLine, CurrencyRate, FiscalPosition, FiscalPositionTaxRule, FiscalPositionAccountRule, FullReconcile, PartialReconcile, ReconcileModel, ReconcileModelLine, PaymentMethod, PaymentMethodLine, PaymentProvider, PaymentTransaction, PaymentTerm, PaymentTermLine, Incoterm, ScheduledReport</p>
+</section>
+
+<section id="models-inventory">
+<h2>Data Models: Inventory</h2>
+
+<h3>Product</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>sku</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>name</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>description</td><td>Text</td><td></td></tr>
+<tr><td>categoryId</td><td>FK → Category</td><td></td></tr>
+<tr><td>supplierId</td><td>FK → Supplier</td><td></td></tr>
+<tr><td>unitPrice</td><td>BigDecimal</td><td></td></tr>
+<tr><td>costPrice</td><td>BigDecimal</td><td></td></tr>
+<tr><td>reorderLevel</td><td>Integer</td><td></td></tr>
+<tr><td>reorderQuantity</td><td>Integer</td><td></td></tr>
+<tr><td>unitOfMeasure</td><td>String</td><td></td></tr>
+<tr><td>currentStock</td><td>Integer</td><td></td></tr>
+<tr><td>imageUrl</td><td>String</td><td></td></tr>
+<tr><td>isActive</td><td>Boolean</td><td>default true</td></tr>
+</table>
+
+<h3>Category</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>name</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>description</td><td>String</td><td></td></tr>
+<tr><td>parentId</td><td>Long</td><td>self-ref</td></tr>
+<tr><td>sortOrder</td><td>Integer</td><td></td></tr>
+<tr><td>isActive</td><td>Boolean</td><td></td></tr>
+</table>
+
+<h3>Uom</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>name</td><td>String</td><td></td></tr>
+<tr><td>code</td><td>String</td><td></td></tr>
+<tr><td>categoryId</td><td>FK → UomCategory</td><td></td></tr>
+<tr><td>factor</td><td>BigDecimal</td><td></td></tr>
+<tr><td>rounding</td><td>BigDecimal</td><td></td></tr>
+<tr><td>isReference</td><td>Boolean</td><td></td></tr>
+<tr><td>uomType</td><td>UomType (ENUM)</td><td>UNIT|LENGTH|WEIGHT|VOLUME|TIME|AREA</td></tr>
+</table>
+</section>
+
+<section id="models-purchasing">
+<h2>Data Models: Purchasing</h2>
+
+<h3>PurchaseOrder</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>poNumber</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>supplierId</td><td>FK → Supplier</td><td></td></tr>
+<tr><td>orderDate</td><td>LocalDate</td><td></td></tr>
+<tr><td>status</td><td>Status (ENUM)</td><td>DRAFT|SUBMITTED|CONFIRMED|SHIPPED|RECEIVED|CANCELLED</td></tr>
+<tr><td>subtotal</td><td>BigDecimal</td><td></td></tr>
+<tr><td>taxAmount</td><td>BigDecimal</td><td></td></tr>
+<tr><td>totalAmount</td><td>BigDecimal</td><td></td></tr>
+<tr><td>shippingCost</td><td>BigDecimal</td><td></td></tr>
+<tr><td>expectedDate</td><td>LocalDate</td><td></td></tr>
+<tr><td>notes</td><td>Text</td><td></td></tr>
+</table>
+
+<h3>Supplier</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>code</td><td>String</td><td></td></tr>
+<tr><td>name</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>contactPerson</td><td>String</td><td></td></tr>
+<tr><td>email</td><td>String</td><td></td></tr>
+<tr><td>phone</td><td>String</td><td></td></tr>
+<tr><td>address</td><td>Text</td><td></td></tr>
+<tr><td>taxId</td><td>String</td><td></td></tr>
+<tr><td>paymentTerms</td><td>String</td><td></td></tr>
+<tr><td>totalPurchased</td><td>BigDecimal</td><td></td></tr>
+</table>
+
+<h3>StockMovement</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>productId</td><td>FK → Product</td><td></td></tr>
+<tr><td>type</td><td>MovementType (ENUM)</td><td>INBOUND|OUTBOUND|ADJUSTMENT|RETURN|DAMAGED</td></tr>
+<tr><td>quantity</td><td>BigDecimal</td><td></td></tr>
+<tr><td>previousStock</td><td>BigDecimal</td><td></td></tr>
+<tr><td>newStock</td><td>BigDecimal</td><td></td></tr>
+<tr><td>referenceType</td><td>String</td><td></td></tr>
+<tr><td>referenceId</td><td>Long</td><td></td></tr>
+</table>
+</section>
+
+<section id="models-hr">
+<h2>Data Models: Human Resources</h2>
+
+<h3>Employee</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>userId</td><td>FK → User</td><td>One-to-One</td></tr>
+<tr><td>employeeCode</td><td>String</td><td></td></tr>
+<tr><td>firstName</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>lastName</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>email</td><td>String</td><td></td></tr>
+<tr><td>phone</td><td>String</td><td></td></tr>
+<tr><td>departmentId</td><td>FK → Department</td><td></td></tr>
+<tr><td>positionId</td><td>FK → JobPosition</td><td></td></tr>
+<tr><td>hireDate</td><td>LocalDate</td><td></td></tr>
+<tr><td>terminationDate</td><td>LocalDate</td><td></td></tr>
+<tr><td>salary</td><td>BigDecimal</td><td></td></tr>
+<tr><td>status</td><td>EmployeeStatus (ENUM)</td><td>ACTIVE|INACTIVE|ON_LEAVE|TERMINATED</td></tr>
+</table>
+
+<h3>Department</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>name</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>parentId</td><td>FK → Department</td><td>self-ref</td></tr>
+<tr><td>managerId</td><td>FK → Employee</td><td></td></tr>
+<tr><td>description</td><td>Text</td><td></td></tr>
+</table>
+
+<h3>LeaveRequest</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>employeeId</td><td>FK → Employee</td><td></td></tr>
+<tr><td>startDate</td><td>LocalDate</td><td></td></tr>
+<tr><td>endDate</td><td>LocalDate</td><td></td></tr>
+<tr><td>type</td><td>LeaveType (ENUM)</td><td>ANNUAL|SICK|PERSONAL|UNPAID|MATERNITY</td></tr>
+<tr><td>status</td><td>LeaveStatus (ENUM)</td><td>PENDING|APPROVED|REJECTED|CANCELLED</td></tr>
+<tr><td>reason</td><td>Text</td><td></td></tr>
+<tr><td>approvedById</td><td>FK → Employee</td><td></td></tr>
+</table>
+
+<h3>Attendance</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>employeeId</td><td>FK → Employee</td><td></td></tr>
+<tr><td>date</td><td>LocalDate</td><td></td></tr>
+<tr><td>checkIn</td><td>LocalDateTime</td><td></td></tr>
+<tr><td>checkOut</td><td>LocalDateTime</td><td></td></tr>
+<tr><td>status</td><td>AttendanceStatus (ENUM)</td><td>PRESENT|ABSENT|LATE|LEAVE|HALF_DAY</td></tr>
+</table>
+
+<h3>Contract</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>employeeId</td><td>FK → Employee</td><td></td></tr>
+<tr><td>type</td><td>ContractType (ENUM)</td><td>PERMANENT|INTERNSHIP|FIXED_TERM|CONTRACTOR</td></tr>
+<tr><td>startDate</td><td>LocalDate</td><td></td></tr>
+<tr><td>endDate</td><td>LocalDate</td><td></td></tr>
+<tr><td>wage</td><td>BigDecimal</td><td></td></tr>
+<tr><td>status</td><td>ContractStatus (ENUM)</td><td>ACTIVE|EXPIRED|TERMINATED</td></tr>
+</table>
+</section>
+
+<section id="models-support">
+<h2>Data Models: Support &amp; Projects</h2>
+
+<h3>Ticket</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>title</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>description</td><td>Text</td><td></td></tr>
+<tr><td>customerId</td><td>FK → Customer</td><td></td></tr>
+<tr><td>priority</td><td>TicketPriority (ENUM)</td><td>LOW|MEDIUM|HIGH|URGENT</td></tr>
+<tr><td>status</td><td>TicketStatus (ENUM)</td><td>OPEN|IN_PROGRESS|RESOLVED|CLOSED</td></tr>
+<tr><td>assignedTo</td><td>Long</td><td></td></tr>
+<tr><td>stageId</td><td>FK → HelpdeskStage</td><td></td></tr>
+<tr><td>teamId</td><td>FK → HelpdeskTeam</td><td></td></tr>
+<tr><td>slaDeadline</td><td>LocalDateTime</td><td></td></tr>
+<tr><td>slaStatus</td><td>String</td><td></td></tr>
+</table>
+
+<h3>Project</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>name</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>customerId</td><td>Long</td><td></td></tr>
+<tr><td>dateStart</td><td>LocalDate</td><td></td></tr>
+<tr><td>dateEnd</td><td>LocalDate</td><td></td></tr>
+<tr><td>budget</td><td>BigDecimal</td><td></td></tr>
+<tr><td>state</td><td>ProjectState (ENUM)</td><td>PLANNING|ACTIVE|ON_HOLD|COMPLETED|CANCELLED</td></tr>
+</table>
+
+<h3>Task</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>projectId</td><td>FK → Project</td><td></td></tr>
+<tr><td>name</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>description</td><td>Text</td><td></td></tr>
+<tr><td>assignedTo</td><td>Long</td><td></td></tr>
+<tr><td>stageId</td><td>FK → TaskStage</td><td></td></tr>
+<tr><td>dueDate</td><td>LocalDate</td><td></td></tr>
+<tr><td>estimatedHours</td><td>BigDecimal</td><td></td></tr>
+<tr><td>actualHours</td><td>BigDecimal</td><td></td></tr>
+</table>
+</section>
+
+<section id="models-recruitment">
+<h2>Data Models: Recruitment</h2>
+
+<h3>JobOpening</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>title</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>departmentId</td><td>FK → Department</td><td></td></tr>
+<tr><td>description</td><td>Text</td><td></td></tr>
+<tr><td>requirements</td><td>Text</td><td></td></tr>
+<tr><td>expectedSalary</td><td>BigDecimal</td><td></td></tr>
+<tr><td>status</td><td>JobOpeningStatus (ENUM)</td><td>OPEN|CLOSED|CANCELLED</td></tr>
+</table>
+
+<h3>Applicant</h3>
+<table><tr><th>Field</th><th>Type</th><th>Constraints</th></tr>
+<tr><td>id</td><td>Long</td><td>PK</td></tr>
+<tr><td>name</td><td>String</td><td>NOT NULL</td></tr>
+<tr><td>email</td><td>String</td><td></td></tr>
+<tr><td>phone</td><td>String</td><td></td></tr>
+<tr><td>resumeUrl</td><td>String</td><td></td></tr>
+<tr><td>stageId</td><td>FK → RecruitmentStage</td><td></td></tr>
+<tr><td>jobOpeningId</td><td>FK → JobOpening</td><td></td></tr>
+<tr><td>sourceId</td><td>FK → RecruitmentSource</td><td></td></tr>
+<tr><td>salaryExpected</td><td>BigDecimal</td><td></td></tr>
+</table>
+</section>
+
+<section id="endpoints">
+<h2>API Endpoints</h2>
+<p>Base URL: <code>/api/v1</code> (Auth also responds at <code>/api/auth</code>)</p>
+<p>Response format: <code>{ "success": true, "data": T, "message": "..." }</code> | <code>{ "success": false, "error": { "code": "...", "message": "..." } }</code></p>
+
+<h3>Authentication</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/auth/login</code></td><td>User login</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/auth/refresh</code></td><td>Refresh JWT token</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/auth/logout</code></td><td>Logout</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/auth/forgot-password</code></td><td>Request password reset</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/auth/reset-password</code></td><td>Reset password</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/auth/change-password</code></td><td>Change password</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/auth/me</code></td><td>Get current user</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/auth/me</code></td><td>Update profile</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/auth/me/password</code></td><td>Change own password</td></tr>
+</table>
+
+<h3>Dashboard</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/dashboard/stats</code></td><td>Dashboard statistics</td></tr>
+</table>
+
+<h3>Users (Admin)</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/users</code></td><td>List users (paginated, filterable)</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/users/{id}</code></td><td>Get user by ID</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/users/email/{email}</code></td><td>Get user by email</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/users</code></td><td>Create user</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/users/{id}</code></td><td>Update user</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/users/{id}</code></td><td>Delete user</td></tr>
+</table>
+
+<h3>Roles &amp; Permissions</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/roles</code></td><td>List roles</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/roles/{id}</code></td><td>Get role</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/roles</code></td><td>Create role</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/roles/{id}</code></td><td>Update role</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/roles/{id}</code></td><td>Delete role</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/roles/{id}/permissions</code></td><td>Get role permissions</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/roles/{id}/permissions</code></td><td>Assign permissions</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/permissions</code></td><td>List all permissions</td></tr>
+</table>
+
+<h3>Settings (Admin)</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/settings</code></td><td>Get all settings</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/settings/company</code></td><td>Company settings</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/settings/company</code></td><td>Update company settings</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/settings/notifications</code></td><td>Notification settings</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/settings/notifications</code></td><td>Update notification settings</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/settings/hr</code></td><td>HR settings</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/settings/hr</code></td><td>Update HR settings</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/settings</code></td><td>Update single setting</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/settings/{key}</code></td><td>Delete setting</td></tr>
+</table>
+
+<h3>Audit Logs</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/audit-logs</code></td><td>List audit logs (filterable)</td></tr>
+</table>
+
+<h3>Sales Orders</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/sales-orders</code></td><td>List sales orders</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/sales-orders/{id}</code></td><td>Get sales order</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/sales-orders</code></td><td>Create sales order</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/sales-orders/{id}</code></td><td>Update sales order</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/sales-orders/{id}/send</code></td><td>Send quotation</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/sales-orders/{id}/confirm</code></td><td>Confirm order</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/sales-orders/{id}/ship</code></td><td>Ship order</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/sales-orders/{id}/cancel</code></td><td>Cancel order</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/sales-orders/{id}/duplicate</code></td><td>Duplicate order</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/sales-orders/{id}/invoice</code></td><td>Create invoice from order</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/sales-orders/{id}</code></td><td>Delete order</td></tr>
+</table>
+
+<h3>Customers</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/customers</code></td><td>List customers</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/customers/{id}</code></td><td>Get customer</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/customers/{id}/orders</code></td><td>Get customer orders</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/customers</code></td><td>Create customer</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/customers/{id}</code></td><td>Update customer</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/customers/{id}</code></td><td>Delete customer</td></tr>
+</table>
+
+<h3>CRM Pipeline</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/crm/pipeline/stages</code></td><td>List stages</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/crm/pipeline/stages/won</code></td><td>Won stages</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/crm/pipeline/stages</code></td><td>Create stage</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/crm/pipeline/stages/{id}</code></td><td>Update stage</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/crm/pipeline/stages/{id}</code></td><td>Delete stage</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/crm/pipeline/opportunities</code></td><td>Search leads</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/crm/pipeline/opportunities/{id}</code></td><td>Get lead</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/crm/pipeline/opportunities</code></td><td>Create lead</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/crm/pipeline/opportunities/{id}</code></td><td>Update lead</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/crm/pipeline/opportunities/{id}/won</code></td><td>Mark won</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/crm/pipeline/opportunities/{id}/lost</code></td><td>Mark lost</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/crm/pipeline/opportunities/{id}/convert</code></td><td>Convert to opportunity</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/crm/pipeline/opportunities/{id}</code></td><td>Delete lead</td></tr>
+</table>
+
+<h3>CRM (Legacy)</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/crm/dashboard</code></td><td>CRM dashboard</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/crm/leads</code></td><td>List leads</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/crm/leads/{id}</code></td><td>Get lead</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/crm/leads</code></td><td>Create lead</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/crm/leads/{id}</code></td><td>Update lead</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/crm/leads/{id}/convert</code></td><td>Convert lead</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/crm/pipelines</code></td><td>List pipeline stages</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/crm/opportunities</code></td><td>List opportunities</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/crm/opportunities/{id}/stage</code></td><td>Update stage</td></tr>
+</table>
+
+<h3>Finance - Accounts</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/accounts</code></td><td>List accounts</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/accounts/{id}</code></td><td>Get account</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/accounts/type/{type}</code></td><td>By type</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/accounts/group/{group}</code></td><td>By group</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/accounts/{id}/balance</code></td><td>Account balance</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/accounts/{id}/open-items</code></td><td>Open items</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/accounts/balances</code></td><td>Group balances</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/accounts</code></td><td>Create account</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/accounts/{id}</code></td><td>Update account</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/accounts/{id}</code></td><td>Delete account</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/accounts/groups</code></td><td>Account groups</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/accounts/groups</code></td><td>Create group</td></tr>
+</table>
+
+<h3>Finance - Invoices</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/invoices</code></td><td>List invoices</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/invoices/{id}</code></td><td>Get invoice</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/invoices/{id}/pdf</code></td><td>Get PDF</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/invoices</code></td><td>Create invoice</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/invoices/{id}</code></td><td>Update invoice</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/invoices/{id}/send</code></td><td>Send invoice</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/invoices/{id}/cancel</code></td><td>Cancel invoice</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/invoices/{id}/payments</code></td><td>Record payment</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/invoices/{id}</code></td><td>Delete invoice</td></tr>
+</table>
+
+<h3>Finance - Journal Entries</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/journal-entries</code></td><td>List journal entries</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/journal-entries/{id}</code></td><td>Get entry</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/journal-entries</code></td><td>Create entry</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/journal-entries/{id}/post</code></td><td>Post entry</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/journal-entries/{id}/reverse</code></td><td>Reverse entry</td></tr>
+</table>
+
+<h3>Finance - Move (Unified)</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/moves</code></td><td>List moves</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/moves/{id}</code></td><td>Get move</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/moves</code></td><td>Create move</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/moves/{id}/post</code></td><td>Post move</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/moves/{id}/cancel</code></td><td>Cancel move</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/moves/{id}/lines</code></td><td>Get move lines</td></tr>
+</table>
+
+<h3>Finance - Reports</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/reports/balance-sheet</code></td><td>Balance sheet</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/reports/profit-loss</code></td><td>Profit &amp; loss</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/reports/trial-balance</code></td><td>Trial balance</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/reports/general-ledger</code></td><td>General ledger</td></tr>
+</table>
+
+<h3>Finance - Tax, Payment, Journal, Bank, etc.</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-*">*</span></td><td><code>/api/v1/taxes</code></td><td>CRUD taxes</td></tr>
+<tr><td><span class="tag tag-*">*</span></td><td><code>/api/v1/payments</code></td><td>CRUD payments</td></tr>
+<tr><td><span class="tag tag-*">*</span></td><td><code>/api/v1/journals</code></td><td>CRUD journals</td></tr>
+<tr><td><span class="tag tag-*">*</span></td><td><code>/api/v1/payment-terms</code></td><td>CRUD payment terms</td></tr>
+<tr><td><span class="tag tag-*">*</span></td><td><code>/api/v1/bank-statements</code></td><td>CRUD + confirm/validate/close</td></tr>
+<tr><td><span class="tag tag-*">*</span></td><td><code>/api/v1/analytic</code></td><td>Analytic accounting CRUD</td></tr>
+<tr><td><span class="tag tag-*">*</span></td><td><code>/api/v1/fiscal-positions</code></td><td>Fiscal positions CRUD</td></tr>
+</table>
+
+<h3>Products (Inventory)</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/products</code></td><td>List products</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/products/{id}</code></td><td>Get product</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/products/low-stock</code></td><td>Low stock products</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/products</code></td><td>Create product</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/products/{id}</code></td><td>Update product</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/products/{id}</code></td><td>Delete product</td></tr>
+</table>
+
+<h3>Categories</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/categories</code></td><td>List categories</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/categories/{id}</code></td><td>Get category</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/categories</code></td><td>Create category</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/categories/{id}</code></td><td>Update category</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/categories/{id}</code></td><td>Delete category</td></tr>
+</table>
+
+<h3>Units of Measure (UoM)</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/uoms</code></td><td>List UoMs</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/uoms/{id}</code></td><td>Get UoM</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/uoms/by-category/{categoryId}</code></td><td>By category</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/uoms/by-type/{type}</code></td><td>By type</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/uoms</code></td><td>Create UoM</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/uoms/{id}</code></td><td>Update UoM</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/uoms/convert</code></td><td>Convert between UoMs</td></tr>
+<tr><td><span class="tag tag-*">*</span></td><td><code>/api/v1/uoms/categories</code></td><td>UoM categories CRUD</td></tr>
+</table>
+
+<h3>Suppliers</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/suppliers</code></td><td>List suppliers</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/suppliers/{id}</code></td><td>Get supplier</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/suppliers</code></td><td>Create supplier</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/suppliers/{id}</code></td><td>Update supplier</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/suppliers/{id}</code></td><td>Delete supplier</td></tr>
+</table>
+
+<h3>Purchase Orders</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/purchase-orders</code></td><td>List purchase orders</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/purchase-orders/{id}</code></td><td>Get PO</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/purchase-orders</code></td><td>Create PO</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/purchase-orders/{id}</code></td><td>Update PO</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/purchase-orders/{id}/receive</code></td><td>Receive goods</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/purchase-orders/{id}/cancel</code></td><td>Cancel PO</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/purchase-orders/{id}</code></td><td>Delete PO</td></tr>
+</table>
+
+<h3>Stock Movements</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/stock-movements</code></td><td>List stock movements</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/stock-movements</code></td><td>Create movement</td></tr>
+</table>
+
+<h3>HR - Employees</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/employees</code></td><td>List employees</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/employees/active</code></td><td>Active employees</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/employees/{id}</code></td><td>Get employee</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/employees/{id}/attendance</code></td><td>Employee attendance</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/employees</code></td><td>Create employee</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/employees/{id}</code></td><td>Update employee</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/employees/{id}</code></td><td>Delete employee</td></tr>
+</table>
+
+<h3>HR - Departments</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/departments</code></td><td>List departments</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/departments/{id}</code></td><td>Get department</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/departments</code></td><td>Create department</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/departments/{id}</code></td><td>Update department</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/departments/{id}</code></td><td>Delete department</td></tr>
+</table>
+
+<h3>HR - Attendance</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/attendance</code></td><td>List attendance</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/attendance/clocked-in</code></td><td>Currently clocked in</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/attendance/{id}</code></td><td>Get attendance record</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/attendance/clock-in</code></td><td>Clock in</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/attendance/clock-out</code></td><td>Clock out</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/attendance/manual</code></td><td>Manual entry</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/attendance/{id}</code></td><td>Update record</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/attendance/{id}</code></td><td>Delete record</td></tr>
+</table>
+
+<h3>HR - Leave</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/leave-requests</code></td><td>List leave requests</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/leave-requests/{id}</code></td><td>Get leave request</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/leave-requests</code></td><td>Submit leave request</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/leave-requests/{id}/approve</code></td><td>Approve</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/leave-requests/{id}/reject</code></td><td>Reject</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/leave-balances</code></td><td>Leave balances</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/leave-balances</code></td><td>Create balance</td></tr>
+</table>
+
+<h3>HR - Job Positions &amp; Contracts</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-*">*</span></td><td><code>/api/v1/job-positions</code></td><td>CRUD job positions</td></tr>
+<tr><td><span class="tag tag-*">*</span></td><td><code>/api/v1/contracts</code></td><td>CRUD contracts</td></tr>
+</table>
+
+<h3>Support - Tickets</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/support/tickets</code></td><td>List tickets</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/support/tickets/{id}</code></td><td>Get ticket</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/support/tickets/stats</code></td><td>Ticket stats</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/support/tickets</code></td><td>Create ticket</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/support/tickets/{id}</code></td><td>Update ticket</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/support/tickets/{id}</code></td><td>Delete ticket</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/support/tickets/{id}/comments</code></td><td>Add comment</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/support/tickets/{id}/assign</code></td><td>Assign ticket</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/support/tickets/{id}/stage</code></td><td>Change stage</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/support/tickets/{id}/close</code></td><td>Close ticket</td></tr>
+</table>
+
+<h3>Projects</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/projects</code></td><td>List projects</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/projects/{id}</code></td><td>Get project</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/projects</code></td><td>Create project</td></tr>
+<tr><td><span class="tag tag-patch">PATCH</span></td><td><code>/api/v1/projects/{id}/state</code></td><td>Update state</td></tr>
+<tr><td><span class="tag tag-delete">DELETE</span></td><td><code>/api/v1/projects/{id}</code></td><td>Delete project</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/projects/{id}/stages</code></td><td>Project stages</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/projects/{id}/tasks</code></td><td>Project tasks</td></tr>
+<tr><td><span class="tag tag-post">POST</span></td><td><code>/api/v1/projects/{id}/tasks</code></td><td>Create task</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/projects/{id}/gantt</code></td><td>Gantt data</td></tr>
+<tr><td><span class="tag tag-put">PUT</span></td><td><code>/api/v1/tasks/{id}</code></td><td>Update task</td></tr>
+</table>
+
+<h3>Recruitment</h3>
+<table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+<tr><td><span class="tag tag-*">*</span></td><td><code>/api/v1/job-openings</code></td><td>CRUD job openings</td></tr>
+<tr><td><span class="tag tag-*">*</span></td><td><code>/api/v1/applicants</code></td><td>CRUD applicants + stage move</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/recruitment/stages</code></td><td>List stages</td></tr>
+<tr><td><span class="tag tag-get">GET</span></td><td><code>/api/v1/recruitment/sources</code></td><td>List sources</td></tr>
+</table>
+</section>
+
+<section id="frontend-pages">
+<h2>Frontend Pages</h2>
+<p>55+ page components across 11 modules, built with React 19 + Ant Design 6 + TypeScript.</p>
+
+<div class="module-grid">
+
+<div class="module-card">
+<div class="header" style="background:#eef2ff;color:#4338ca;">🔐 Auth</div>
+<div class="body"><ul>
+<li><code>/login</code> - Login page</li>
+</ul></div>
+</div>
+
+<div class="module-card">
+<div class="header" style="background:#f0fdf4;color:#15803d;">📊 Dashboard</div>
+<div class="body"><ul>
+<li><code>/dashboard</code> - Stats, charts, KPIs</li>
+<li><code>/profile</code> - User profile</li>
+</ul></div>
+</div>
+
+<div class="module-card">
+<div class="header" style="background:#fef2f2;color:#b91c1c;">👤 Admin</div>
+<div class="body"><ul>
+<li><code>/admin/users</code> - User management</li>
+<li><code>/admin/roles</code> - Role management</li>
+<li><code>/admin/settings</code> - System settings</li>
+<li><code>/admin/audit-logs</code> - Audit trail</li>
+</ul></div>
+</div>
+
+<div class="module-card">
+<div class="header" style="background:#fefce8;color:#a16207;">💰 Sales</div>
+<div class="body"><ul>
+<li><code>/sales/orders</code> - Order list</li>
+<li><code>/sales/orders/new</code> - Create order</li>
+<li><code>/sales/orders/:id</code> - Order details</li>
+<li><code>/sales/orders/:id/edit</code> - Edit order</li>
+<li><code>/sales/customers</code> - Customer list</li>
+<li><code>/sales/customers/:id</code> - Customer details</li>
+</ul></div>
+</div>
+
+<div class="module-card">
+<div class="header" style="background:#f3e8ff;color:#6b21a8;">📈 CRM</div>
+<div class="body"><ul>
+<li><code>/crm</code> - CRM dashboard</li>
+<li><code>/crm/leads</code> - Lead list</li>
+<li><code>/crm/leads/:id</code> - Lead details</li>
+<li><code>/crm/pipeline</code> - Pipeline Kanban</li>
+</ul></div>
+</div>
+
+<div class="module-card">
+<div class="header" style="background:#ecfdf5;color:#065f46;">💳 Finance</div>
+<div class="body"><ul>
+<li><code>/finance/invoices</code> - Invoice list</li>
+<li><code>/finance/invoices/new</code> - Create invoice</li>
+<li><code>/finance/invoices/:id</code> - Invoice details</li>
+<li><code>/finance/invoices/:id/edit</code> - Edit invoice</li>
+<li><code>/finance/journal</code> - Journal entries</li>
+<li><code>/finance/journal/new</code> - New entry</li>
+<li><code>/finance/accounts</code> - Chart of accounts</li>
+</ul></div>
+</div>
+
+<div class="module-card">
+<div class="header" style="background:#fff7ed;color:#9a3412;">📦 Inventory</div>
+<div class="body"><ul>
+<li><code>/inventory/products</code> - Product list</li>
+<li><code>/inventory/products/new</code> - Create product</li>
+<li><code>/inventory/products/:id</code> - Product details</li>
+<li><code>/inventory/products/:id/edit</code> - Edit product</li>
+<li><code>/inventory/categories</code> - Categories (tree)</li>
+</ul></div>
+</div>
+
+<div class="module-card">
+<div class="header" style="background:#f0f9ff;color:#075985;">🏭 Purchasing</div>
+<div class="body"><ul>
+<li><code>/purchasing/suppliers</code> - Supplier list</li>
+<li><code>/purchasing/suppliers/:id</code> - Supplier details</li>
+<li><code>/purchasing/orders</code> - PO list</li>
+<li><code>/purchasing/orders/new</code> - Create PO</li>
+</ul></div>
+</div>
+
+<div class="module-card">
+<div class="header" style="background:#fdf2f8;color:#9d174d;">👥 HR</div>
+<div class="body"><ul>
+<li><code>/hr</code> - HR dashboard</li>
+<li><code>/hr/employees</code> - Employee list</li>
+<li><code>/hr/employees/:id</code> - Employee details</li>
+<li><code>/hr/attendance</code> - Attendance records</li>
+<li><code>/hr/leave</code> - Leave requests</li>
+<li><code>/hr/leave/allocations</code> - Leave allocations</li>
+<li><code>/hr/leave/calendar</code> - Leave calendar</li>
+<li><code>/hr/departments</code> - Departments</li>
+<li><code>/hr/job-positions</code> - Job positions</li>
+<li><code>/hr/contracts</code> - Contracts</li>
+</ul></div>
+</div>
+
+<div class="module-card">
+<div class="header" style="background:#f5f3ff;color:#5b21b6;">🎫 Support</div>
+<div class="body"><ul>
+<li><code>/support/tickets</code> - Ticket list</li>
+<li><code>/support/tickets/new</code> - Create ticket</li>
+<li><code>/support/tickets/:id</code> - Ticket details</li>
+<li><code>/support/tickets/:id/edit</code> - Edit ticket</li>
+</ul></div>
+</div>
+
+<div class="module-card">
+<div class="header" style="background:#fce7f3;color:#9d174d;">📋 Projects</div>
+<div class="body"><ul>
+<li><code>/projects</code> - Project list</li>
+<li><code>/projects/:id</code> - Project detail</li>
+<li><code>/projects/:id/gantt</code> - Gantt chart</li>
+</ul></div>
+</div>
+
+<div class="module-card">
+<div class="header" style="background:#fef9c3;color:#854d0e;">🎯 Recruitment</div>
+<div class="body"><ul>
+<li><code>/recruitment/jobs</code> - Job openings</li>
+<li><code>/recruitment/pipeline</code> - Pipeline Kanban</li>
+<li><code>/recruitment/applicants/:id</code> - Applicant detail</li>
+</ul></div>
+</div>
+
+</div>
+</section>
+
+<section id="frontend-components">
+<h2>Reusable UI Components</h2>
+<table><tr><th>Component</th><th>Description</th></tr>
+<tr><td>MainLayout</td><td>Ant Design Layout with Sider + Header + Content, responsive sidebar</td></tr>
+<tr><td>Sidebar</td><td>Navigation menu with role-based visibility (ADMIN/MANAGER/STAFF)</td></tr>
+<tr><td>DataTable</td><td>Wrapper around Ant Table with search, refresh, pagination</td></tr>
+<tr><td>PageHeader</td><td>Title + action buttons header</td></tr>
+<tr><td>FormField</td><td>Form input wrapper with label + validation</td></tr>
+<tr><td>StatusBadge</td><td>Tag/Badge for status display</td></tr>
+<tr><td>ConfirmModal</td><td>Reusable confirmation dialog</td></tr>
+<tr><td>EmptyState</td><td>Empty state with icon and message</td></tr>
+<tr><td>LoadingState</td><td>Centered spinner</td></tr>
+<tr><td>Breadcrumbs</td><td>Route-based breadcrumb trail</td></tr>
+<tr><td>TabPanel</td><td>Ant Design Tabs wrapper</td></tr>
+<tr><td>Toast</td><td>Toast notification wrapper</td></tr>
+<tr><td>LineItemTable</td><td>Editable table for order/invoice line items</td></tr>
+<tr><td>Autocomplete</td><td>Async searchable select with debounce</td></tr>
+<tr><td>ImportModal</td><td>CSV/Excel import modal</td></tr>
+<tr><td>RequireRole</td><td>Role-based access control wrapper</td></tr>
+</table>
+</section>
+
+<section id="routes">
+<h2>Route Map</h2>
+<div class="mermaid">
+graph TB
+    R[Route Tree] --> Pub[Public]
+    R --> Prot[Protected]
+    Pub --> L[/login]
+    Prot --> Main[MainLayout]
+    Main --> D[/dashboard]
+    Main --> P[/profile]
+    Main --> HR[HR /hr/*]
+    Main --> ADM[Admin /admin/*]
+    Main --> FIN[Finance /finance/*]
+    Main --> SAL[Sales /sales/*]
+    Main --> INV[Inventory /inventory/*]
+    Main --> CRM[CRM /crm/*]
+    Main --> REC[Recruitment /recruitment/*]
+    Main --> SUP[Support /support/*]
+    Main --> PUR[Purchasing /purchasing/*]
+    Main --> PRJ[Projects /projects/*]
+    ADM --> AR[RequireRole ADMIN]
+    AR --> AU[/admin/users]
+    AR --> ARO[/admin/roles]
+    AR --> AS[/admin/settings]
+    AR --> AL[/admin/audit-logs]
+    INV --> IR[RequireRole ADMIN/MANAGER]
+    IR --> IP[/inventory/products]
+    IR --> IC[/inventory/categories]
+    REC --> RR[RequireRole ADMIN/MANAGER/HR]
+    RR --> RJ[/recruitment/jobs]
+    RR --> RP[/recruitment/pipeline]
+</div>
+</section>
+
+<section id="sequences">
+<h2>Sequence Diagrams</h2>
+
+<h3>Sales Order Lifecycle</h3>
+<div class="mermaid">
+sequenceDiagram
+    actor U as User
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    U->>FE: Create Sales Order
+    FE->>BE: POST /api/v1/sales-orders
+    BE->>DB: INSERT sales_order + lines
+    DB-->>BE: Saved (status: DRAFT)
+    BE-->>FE: 201 SalesOrderDto
+    FE-->>U: Order Created
+
+    U->>FE: Send Quotation
+    FE->>BE: PUT /sales-orders/{id}/send
+    BE->>DB: UPDATE status = SENT
+    DB-->>BE: Updated
+    BE-->>FE: 200 OK
+
+    U->>FE: Confirm Order
+    FE->>BE: PUT /sales-orders/{id}/confirm
+    BE->>DB: UPDATE status = CONFIRMED
+    DB-->>BE: Updated
+    BE-->>FE: 200 OK
+
+    U->>FE: Ship Order
+    FE->>BE: PUT /sales-orders/{id}/ship
+    BE->>DB: UPDATE status = SHIPPED
+    Note over BE: Optionally create StockMovement
+    DB-->>BE: Updated
+    BE-->>FE: 200 OK
+
+    U->>FE: Generate Invoice
+    FE->>BE: POST /sales-orders/{id}/invoice
+    BE->>DB: CREATE invoice from order
+    DB-->>BE: Invoice created
+    BE-->>FE: 200 OK
+
+    U->>FE: Cancel Order
+    FE->>BE: PUT /sales-orders/{id}/cancel
+    BE->>DB: UPDATE status = CANCELLED
+    DB-->>BE: Updated
+    BE-->>FE: 200 OK
+</div>
+
+<h3>Employee Clock In/Out</h3>
+<div class="mermaid">
+sequenceDiagram
+    actor E as Employee
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    E->>FE: Click Clock In
+    FE->>BE: POST /attendance/clock-in
+    BE->>DB: Query employee by user
+    DB-->>BE: Employee found
+    BE->>DB: INSERT attendance (checkIn=now, status=PRESENT)
+    DB-->>BE: Saved
+    BE-->>FE: AttendanceDto
+    FE-->>E: Clocked In
+
+    Note over E,DB: ... work hours pass ...
+
+    E->>FE: Click Clock Out
+    FE->>BE: POST /attendance/clock-out
+    BE->>DB: UPDATE attendance (checkOut=now)
+    DB-->>BE: Updated
+    BE-->>FE: AttendanceDto
+    FE-->>E: Clocked Out
+</div>
+
+<h3>Leave Request Workflow</h3>
+<div class="mermaid">
+sequenceDiagram
+    actor S as Employee
+    actor M as Manager
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    S->>FE: Submit Leave Request
+    FE->>BE: POST /leave-requests
+    BE->>DB: INSERT leave_request (status: PENDING)
+    DB-->>BE: Saved
+    BE-->>FE: LeaveRequestDto
+    FE-->>S: Submitted
+
+    M->>FE: View Pending Requests
+    FE->>BE: GET /leave-requests?status=PENDING
+    BE->>DB: SELECT pending requests
+    DB-->>BE: List
+    BE-->>FE: PageResponse
+    FE-->>M: Pending list
+
+    M->>FE: Approve Request
+    FE->>BE: PUT /leave-requests/{id}/approve
+    BE->>DB: UPDATE status = APPROVED, approved_by
+    BE->>DB: UPDATE leave_balance (usedDays + diff)
+    DB-->>BE: Updated
+    BE-->>FE: LeaveRequestDto
+    FE-->>M: Approved
+</div>
+
+<h3>CRM Lead Conversion</h3>
+<div class="mermaid">
+sequenceDiagram
+    actor U as User
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    U->>FE: Create Lead
+    FE->>BE: POST /crm/leads
+    BE->>DB: INSERT lead (status: NEW)
+    DB-->>BE: Saved
+    BE-->>FE: LeadDto
+    FE-->>U: Lead Created
+
+    U->>FE: Qualify Lead
+    FE->>BE: PUT /crm/leads/{id}
+    BE->>DB: UPDATE status = QUALIFIED
+    DB-->>BE: Updated
+    BE-->>FE: LeadDto
+
+    U->>FE: Convert Lead
+    FE->>BE: POST /crm/leads/{id}/convert
+    BE->>DB: INSERT opportunity
+    BE->>DB: UPDATE lead status = CONVERTED
+    DB-->>BE: Done
+    BE-->>FE: OpportunityDto
+    FE-->>U: Converted to Opportunity
+</div>
+
+<h3>Support Ticket Flow</h3>
+<div class="mermaid">
+sequenceDiagram
+    actor C as Customer/Staff
+    actor A as Agent
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    C->>FE: Create Ticket
+    FE->>BE: POST /support/tickets
+    BE->>DB: INSERT ticket (status: OPEN)
+    DB-->>BE: Saved
+    BE-->>FE: TicketDto
+    FE-->>C: Ticket Created
+
+    A->>FE: Assign Ticket
+    FE->>BE: POST /support/tickets/{id}/assign
+    BE->>DB: UPDATE assigned_to
+    DB-->>BE: Updated
+    BE-->>FE: TicketDto
+
+    A->>FE: Add Internal Comment
+    FE->>BE: POST /support/tickets/{id}/comments
+    BE->>DB: INSERT comment (isInternal: true)
+    DB-->>BE: Saved
+    BE-->>FE: TicketCommentDto
+
+    A->>FE: Resolve Ticket
+    FE->>BE: POST /support/tickets/{id}/close
+    BE->>DB: UPDATE status = CLOSED, closed_at
+    DB-->>BE: Updated
+    BE-->>FE: TicketDto
+</div>
+
+<h3>Purchase Order Receiving</h3>
+<div class="mermaid">
+sequenceDiagram
+    actor U as User
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    U->>FE: Create Purchase Order
+    FE->>BE: POST /purchase-orders
+    BE->>DB: INSERT PO + lines (status: DRAFT)
+    DB-->>BE: Saved
+    BE-->>FE: PurchaseOrderDto
+
+    U->>FE: Receive Goods
+    FE->>BE: PUT /purchase-orders/{id}/receive
+    BE->>DB: UPDATE PO lines received_qty
+    BE->>DB: UPDATE PO status = RECEIVED
+    Note over BE: Create StockMovement records
+    BE->>DB: INSERT stock_movements (type: INBOUND)
+    Note over BE: Update product stock
+    BE->>DB: UPDATE products.currentStock
+    DB-->>BE: All updated
+    BE-->>FE: PurchaseOrderDto
+    FE-->>U: Goods Received
+</div>
+
+<h3>Invoice Payment</h3>
+<div class="mermaid">
+sequenceDiagram
+    actor U as User
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+
+    U->>FE: Create Invoice
+    FE->>BE: POST /invoices
+    BE->>DB: INSERT invoice + lines (status: DRAFT)
+    DB-->>BE: Saved
+
+    U->>FE: Send Invoice
+    FE->>BE: POST /invoices/{id}/send
+    BE->>DB: UPDATE status = SENT
+    DB-->>BE: Updated
+
+    U->>FE: Record Payment
+    FE->>BE: POST /invoices/{id}/payments
+    BE->>DB: INSERT payment record
+    Note over BE: Update invoice paid_amount
+    BE->>DB: UPDATE invoice.paidAmount
+    alt Full Payment
+        BE->>DB: UPDATE invoice status = PAID
+    else Partial Payment
+        BE->>DB: UPDATE invoice status stays SENT
+    end
+    DB-->>BE: Updated
+    BE-->>FE: InvoiceDto
+    FE-->>U: Payment Recorded
+</div>
+</section>
+
+<section style="margin-top:48px;padding:24px;background:var(--card);border:1px solid var(--border);border-radius:12px;text-align:center;color:var(--text-muted);font-size:13px;">
+  <strong>ERP System &mdash; Requirements Document</strong><br>
+  Generated from service/ and web/ source code repositories.<br>
+  Last updated: May 2026
+</section>
+
+</main>
+
+<script>
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'base',
+  themeVariables: {
+    primaryColor: '#1a73e8',
+    secondaryColor: '#e8f0fe',
+    tertiaryColor: '#f8fafc',
+    mainBkg: '#ffffff',
+    lineColor: '#94a3b8',
+    textColor: '#1e293b',
+    fontSize: '13px'
+  },
+  flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+  sequence: { useMaxWidth: true, showSequenceNumbers: false }
+});
+</script>
+</body>
+</html>

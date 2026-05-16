@@ -1,5 +1,7 @@
 # Data Models
 
+> **⚠️ This document is partially outdated.** See the comprehensive [requirements.html](../requirements.html) for the complete, source-accurate data models across all modules.
+
 ## Authentication
 
 ### User

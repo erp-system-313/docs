@@ -1,5 +1,7 @@
 # API Endpoints
 
+> **⚠️ This document is partially outdated.** See the comprehensive [requirements.html](../requirements.html) for the complete, source-accurate endpoint listing (200+ endpoints across all 57 controllers).
+
 Base URL: `/api/v1`
 
 ## Authentication

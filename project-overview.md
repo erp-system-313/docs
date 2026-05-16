@@ -1,35 +1,54 @@
-# Overview
+# ERP System — Overview
 
-A unified platform to streamline daily operations, improve data visibility, and support decision-making. The system is built with a modern tech stack and follows a modular architecture, making it easy to maintain and extend.
+A unified ERP platform to streamline daily operations, improve data visibility, and support decision-making. The system follows a modular architecture with a Spring Boot backend and React TypeScript frontend, making it easy to maintain and extend.
 
-### Key Features
+## Key Features
 
-- **Dashboard**: Real-time overview of key metrics (sales, low stock, pending invoices).
-- **Inventory Management**: Track products, categories, stock levels, and movements.
-- **Sales & Customers**: Manage sales orders, customers, invoices, and payments.
-- **Purchasing & Suppliers**: Handle purchase orders and supplier information.
-- **Finance & Accounting**: Chart of accounts, journal entries, and financial reports.
-- **Human Resources**: Employee records, attendance, and leave requests.
-- **Administration**: User roles, permissions, and company settings.
+- **Dashboard**: Real-time overview of key metrics (sales, low stock, pending invoices)
+- **Inventory Management**: Products, categories, stock levels, UoM, and stock movements
+- **Sales & CRM**: Sales orders, customers, partners, price lists, pipeline management, lead conversion
+- **Purchasing & Suppliers**: Purchase orders, supplier management, goods receiving
+- **Finance & Accounting**: Chart of accounts, invoices, journal entries, payments, taxes, bank statements, analytic accounting, financial reports (balance sheet, P&L, trial balance, general ledger)
+- **Human Resources**: Employee records, attendance clock-in/out, leave requests & approvals, contracts, departments, job positions
+- **Administration**: Users, roles, permissions, audit logs, system settings
+- **Support/Helpdesk**: Tickets, comments, teams, stages, SLA, knowledge base
+- **Projects**: Projects, tasks, stages, Gantt charts
+- **Recruitment**: Job openings, applicants, pipeline stages
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-- **Frontend**: React with TypeScript
-- **Backend**: Spring Boot
-- **DevOps**: Docker, GitHub Actions
+- **Frontend**: React 19, TypeScript, Vite 8, Ant Design 6, react-hook-form + yup, dayjs, axios, Recharts
+- **Backend**: Java 21, Spring Boot 3.2.5, Spring Data JPA, Spring Security + JWT, Flyway (PostgreSQL migrations), Redis
+- **DevOps**: Docker, Docker Compose, Nix flake, GitHub Actions
 
-## 👥 Team
+## Team
 
 - 3 Frontend Developers
 - 3 Backend Developers
 
-## Modules & Pages
+## Modules
 
-The application consists of **6 core modules** with over **20 pages**, including:
+The application consists of **10+ modules** with **55+ pages**:
 
-- Dashboard, Product List, Sales Orders, Invoices, Suppliers, Employees, Reports, and more.
+| Module | Pages |
+|--------|-------|
+| Auth | Login |
+| Common | Dashboard, Profile |
+| Admin | Users, Roles, Settings, Audit Logs |
+| CRM | Dashboard, Leads, Lead Details, Pipeline |
+| Sales | Customers List, Customer Details, Orders List, Order Details, Order Form |
+| Finance | Chart of Accounts, Invoices List, Invoice Details, Invoice Form, Journal Entries, Journal Entry Form |
+| Inventory | Product List, Product Details, Create/Edit Product, Category List |
+| Purchasing | Supplier List, Supplier Details, PO List, Create PO |
+| HR | HR Dashboard, Employees List, Employee Details, Attendance, Leave Requests, Leave Allocations, Leave Calendar, Departments, Job Positions, Contracts |
+| Support | Tickets List, Ticket Details, Create/Edit Ticket |
+| Projects | Project List, Project Detail, Gantt |
+| Recruitment | Job Openings, Pipeline, Applicant Details |
 
-## Getting Started
+## Full Requirements Document
 
-Instructions for setting up the development environment will be added soon.
+A comprehensive interactive HTML document is available at:
+[`docs/requirements.html`](./requirements.html)
+
+It includes use case diagrams, ERD, class diagrams, data models, API endpoint reference, frontend page inventory, route maps, and sequence diagrams — all generated from the actual source code.
 
